@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String
+  phone         String?
+  image         String?
+  role          String    @default("CLIENT") // CLIENT, PROVIDER, ADMIN
+  verified      Boolean   @default(false)
+  description   String?
+  experience    String?
+  certifications String?
+  zone          String?
+  availability  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  servicios    Servicio[]
+  opiniones    Opinion[]
+  mensajesEnviados   Mensaje[]  @relation("MensajeEmisor")
+  mensajesRecibidos  Mensaje[]  @relation("MensajeReceptor")
+  fotos            Foto[]     @relation("UserFotos")
+  chatsCreados      Chat[]      @relation("ChatCreador")
+  chatsParticipante Chat[]      @relation("ChatParticipante")
+}
+
+model Servicio {
+  id          String   @id @default(cuid())
+  titulo      String
+  descripcion String
+  categoria   String
+  precio      Float?
+  precioTexto String?
+  ubicacion   String?
+  disponibilidad String?
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  usuarioId   String
+  usuario     User     @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  fotos       Foto[]
+  opiniones   Opinion[]
+}
+
+model Foto {
+  id         String   @id @default(cuid())
+  archivo    String
+  tipo       String   @default("SERVICIO") // SERVICIO, PERFIL, OPINION
+  createdAt  DateTime @default(now())
+
+  servicioId String?
+  servicio   Servicio? @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+  opinionId  String?
+  opinion    Opinion?  @relation(fields: [opinionId], references: [id], onDelete: Cascade)
+  usuarioId  String?
+  usuario    User?     @relation("UserFotos", fields: [usuarioId], references: [id], onDelete: SetNull)
+}
+
+model Opinion {
+  id         String   @id @default(cuid())
+  puntuacion Int
+  comentario String?
+  createdAt  DateTime @default(now())
+
+  servicioId String
+  servicio   Servicio @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+
+  clienteId  String
+  cliente    User     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+
+  fotos      Foto[]
+}
+
+model Chat {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  creadorId     String
+  creador       User     @relation("ChatCreador", fields: [creadorId], references: [id], onDelete: Cascade)
+  participanteId String
+  participante  User     @relation("ChatParticipante", fields: [participanteId], references: [id], onDelete: Cascade)
+
+  mensajes      Mensaje[]
+}
+
+model Mensaje {
+  id        String   @id @default(cuid())
+  contenido String?
+  imagen    String?
+  leido     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  emisorId  String
+  emisor    User     @relation("MensajeEmisor", fields: [emisorId], references: [id], onDelete: Cascade)
+  receptorId String
+  receptor  User     @relation("MensajeReceptor", fields: [receptorId], references: [id], onDelete: Cascade)
+}
