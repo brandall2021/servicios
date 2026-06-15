@@ -63,34 +63,60 @@ npm run dev
 | carlos@example.com | 123456 | Proveedor |
 | cliente@example.com | 123456 | Cliente |
 
-## Deploy con Docker
+## Deploy en Dokploy
 
-```bash
-# Construir la imagen
-docker build -t servicios:latest .
+### 1. Crear un nuevo proyecto en Dokploy
 
-# Ejecutar
-docker run -d -p 3000:3000 \
-  -e DATABASE_URL="postgresql://user:pass@host:5432/servicios?schema=public" \
-  -e NEXTAUTH_URL="https://tudominio.com" \
-  -e NEXTAUTH_SECRET="$(openssl rand -base64 32)" \
-  --name servicios \
-  servicios:latest
-```
+1. Iniciá sesión en tu panel de Dokploy
+2. Hacé clic en **"Nuevo proyecto"** y luego en **"Nuevo servicio"**
+3. Elegí **"Docker"** como tipo de servicio
 
-### Deploy en Dokploy / VPS
+### 2. Conectar el repositorio
 
-Configurar estas variables de entorno en tu plataforma:
+1. En **"Source"**, seleccioná **"GitHub"**
+2. Conectá tu cuenta de GitHub si no lo está
+3. Seleccioná el repositorio `brandall2021/servicios`
+4. Elegí la rama `main`
+5. Dokploy va a detectar automáticamente el `Dockerfile`
 
-| Variable | Descripción |
-|---|---|
-| `DATABASE_URL` | Conexión a PostgreSQL |
-| `NEXTAUTH_URL` | URL pública del sitio (ej: `https://servicios.tudominio.com`) |
-| `NEXTAUTH_SECRET` | Secreto para NextAuth |
-| `GOOGLE_CLIENT_ID` | (opcional) Google OAuth Client ID |
-| `GOOGLE_CLIENT_SECRET` | (opcional) Google OAuth Client Secret |
+### 3. Configurar variables de entorno
 
-El contenedor ejecuta automáticamente `prisma migrate deploy` al iniciar para mantener la base de datos actualizada.
+En la sección **"Environment"** de Dokploy, agregá estas variables:
+
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `DATABASE_URL` | Conexión a PostgreSQL | `postgresql://brandall:Hansol1974%2B@186.153.163.188:5432/servicios?schema=public` |
+| `NEXTAUTH_URL` | URL pública del sitio | `https://servicios.tudominio.com` |
+| `NEXTAUTH_SECRET` | Secreto para NextAuth (generar con `openssl rand -base64 32`) | `n8mR4vG2Xq7Kc1Pz9Ld0WfT6yJr3SbUaH5eQm2Nx8A0=` |
+| `GOOGLE_CLIENT_ID` | (opcional) ID de Google OAuth | `...` |
+| `GOOGLE_CLIENT_SECRET` | (opcional) Secret de Google OAuth | `...` |
+
+### 4. Configurar puerto
+
+En **"Ports"**, configurá:
+- **Puerto interno:** `3000` (el EXPOSE del Dockerfile)
+- **Puerto público:** `3000` (o el que quieras)
+
+### 5. Configurar dominio
+
+1. En **"Domains"**, agregá el dominio donde querés que responda el sitio
+2. Dokploy va a configurar automáticamente el SSL/HTTPS
+
+### 6. Hacer deploy
+
+1. Hacé clic en **"Deploy"**
+2. Dokploy va a clonar el repo, construir la imagen Docker y levantar el contenedor
+3. Al iniciar, el contenedor corre automáticamente `prisma migrate deploy` para crear las tablas en la base de datos
+
+### Notas importantes
+
+- La base de datos PostgreSQL debe estar accesible desde el servidor donde corre Dokploy
+- Si usás la misma base que tus otros proyectos (`186.153.163.188:5432`), asegurate de crear la base `servicios` primero:
+  ```sql
+  CREATE DATABASE servicios;
+  ```
+- El puerto interno **3000** debe coincidir con el EXPOSE del Dockerfile
+- Usá los mismos valores de `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` que ya usan tus otros proyectos
 
 ## Estructura del proyecto
 
