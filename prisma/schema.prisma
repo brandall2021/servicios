@@ -16,6 +16,8 @@ model User {
   image         String?
   role          String    @default("CLIENT") // CLIENT, PROVIDER, ADMIN
   verified      Boolean   @default(false)
+  baneado       Boolean   @default(false)
+  motivoBaneo   String?
   description   String?
   experience    String?
   certifications String?
@@ -31,6 +33,8 @@ model User {
   fotos            Foto[]     @relation("UserFotos")
   chatsCreados      Chat[]      @relation("ChatCreador")
   chatsParticipante Chat[]      @relation("ChatParticipante")
+  reportesHechos    Report[]   @relation("ReportesHechos")
+  reportesRecibidos Report[]   @relation("ReportesRecibidos")
 }
 
 model Servicio {
@@ -51,6 +55,7 @@ model Servicio {
 
   fotos       Foto[]
   opiniones   Opinion[]
+  reportes    Report[]
 }
 
 model Foto {
@@ -80,6 +85,26 @@ model Opinion {
   cliente    User     @relation(fields: [clienteId], references: [id], onDelete: Cascade)
 
   fotos      Foto[]
+  reportes   Report[]
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  motivo      String   // SPAM, FALSO, INADECUADO, OTRO
+  descripcion String?
+  estado      String   @default("PENDIENTE") // PENDIENTE, REVISADO, RESUELTO
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  denuncianteId String
+  denunciante   User   @relation("ReportesHechos", fields: [denuncianteId], references: [id], onDelete: Cascade)
+
+  servicioId  String?
+  servicio    Servicio? @relation(fields: [servicioId], references: [id], onDelete: SetNull)
+  opinionId   String?
+  opinion     Opinion?  @relation(fields: [opinionId], references: [id], onDelete: SetNull)
+  usuarioId   String?
+  usuario     User?     @relation("ReportesRecibidos", fields: [usuarioId], references: [id], onDelete: SetNull)
 }
 
 model Chat {

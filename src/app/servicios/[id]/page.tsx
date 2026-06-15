@@ -9,6 +9,7 @@ import Link from "next/link"
 import { MapPin, Calendar, Shield, ChevronLeft, MessageSquare } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 import { OpinionForm } from "./opinion-form"
+import { ReportButton } from "./report-button"
 import { auth } from "@/lib/auth"
 
 interface Props {
@@ -257,6 +258,10 @@ export default async function ServicioDetailPage({ params }: Props) {
               </CardContent>
             </Card>
           )}
+
+          <div className="text-center">
+            <ReportButton servicioId={servicio.id} proveedorId={servicio.usuarioId} />
+          </div>
         </div>
       </div>
     </div>

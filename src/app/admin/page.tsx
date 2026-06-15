@@ -2,7 +2,8 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, Star, AlertTriangle } from "lucide-react"
+import { Users, Briefcase, Star, AlertTriangle, Ban } from "lucide-react"
+import Link from "next/link"
 
 export default async function AdminPage() {
   const session = await auth()
@@ -13,42 +14,71 @@ export default async function AdminPage() {
     prisma.user.count({ where: { role: "CLIENT" } }),
     prisma.user.count({ where: { role: "PROVIDER" } }),
     prisma.servicio.count(),
+    prisma.servicio.count({ where: { activo: false } }),
     prisma.opinion.count(),
+    prisma.report.count(),
+    prisma.report.count({ where: { estado: "PENDIENTE" } }),
+    prisma.user.count({ where: { baneado: true } }),
   ])
 
-  const [totalUsers, totalClients, totalProviders, totalServicios, totalOpiniones] = totals
+  const [totalUsers, totalClients, totalProviders, totalServicios, serviciosInactivos, totalOpiniones, totalReports, reportsPendientes, totalBaneados] = totals
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="text-2xl font-bold text-zinc-900 mb-6">Panel de Administración</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-zinc-500">Total Usuarios</p>
-                <p className="text-2xl font-bold text-zinc-900">{totalUsers.toLocaleString()}</p>
+        <Link href="/admin/usuarios">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-zinc-500">Usuarios</p>
+                  <p className="text-2xl font-bold text-zinc-900">{totalUsers.toLocaleString()}</p>
+                </div>
+                <Users className="h-8 w-8 text-blue-600" />
               </div>
-              <Users className="h-8 w-8 text-blue-600" />
-            </div>
-            <div className="mt-2 text-xs text-zinc-400">
-              {totalClients} clientes &middot; {totalProviders} proveedores
-            </div>
-          </CardContent>
-        </Card>
+              <div className="mt-2 text-xs text-zinc-400">
+                {totalClients} clientes · {totalProviders} proveedores
+                {totalBaneados > 0 && <span className="text-red-500"> · {totalBaneados} bloqueados</span>}
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-zinc-500">Servicios</p>
-                <p className="text-2xl font-bold text-zinc-900">{totalServicios.toLocaleString()}</p>
+        <Link href="/admin/servicios">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-zinc-500">Servicios</p>
+                  <p className="text-2xl font-bold text-zinc-900">{totalServicios.toLocaleString()}</p>
+                </div>
+                <Briefcase className="h-8 w-8 text-green-600" />
               </div>
-              <Briefcase className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
+              {serviciosInactivos > 0 && (
+                <div className="mt-2 text-xs text-red-500">{serviciosInactivos} inactivos</div>
+              )}
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/admin/denuncias">
+          <Card className={`hover:shadow-md transition-shadow cursor-pointer ${reportsPendientes > 0 ? "border-yellow-300" : ""}`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-zinc-500">Denuncias</p>
+                  <p className="text-2xl font-bold text-zinc-900">{totalReports.toLocaleString()}</p>
+                </div>
+                <AlertTriangle className={`h-8 w-8 ${reportsPendientes > 0 ? "text-yellow-500" : "text-zinc-400"}`} />
+              </div>
+              {reportsPendientes > 0 && (
+                <div className="mt-2 text-xs text-yellow-600 font-medium">{reportsPendientes} pendientes</div>
+              )}
+            </CardContent>
+          </Card>
+        </Link>
 
         <Card>
           <CardContent className="p-6">
@@ -61,18 +91,6 @@ export default async function AdminPage() {
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-zinc-500">Reportes</p>
-                <p className="text-2xl font-bold text-zinc-900">0</p>
-              </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -81,20 +99,40 @@ export default async function AdminPage() {
             <CardTitle className="text-lg">Gestión Rápida</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <a
+            <Link
               href="/admin/usuarios"
-              className="block p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
             >
-              <p className="font-medium text-zinc-900">Usuarios</p>
-              <p className="text-sm text-zinc-500">Gestionar clientes y proveedores</p>
-            </a>
-            <a
-              href="/admin/categorias"
-              className="block p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
+              <Users className="h-5 w-5 text-blue-600" />
+              <div>
+                <p className="font-medium text-zinc-900">Usuarios</p>
+                <p className="text-sm text-zinc-500">Verificar, bloquear o eliminar usuarios</p>
+              </div>
+            </Link>
+            <Link
+              href="/admin/servicios"
+              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
             >
-              <p className="font-medium text-zinc-900">Categorías</p>
-              <p className="text-sm text-zinc-500">Administrar categorías de servicios</p>
-            </a>
+              <Briefcase className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="font-medium text-zinc-900">Servicios</p>
+                <p className="text-sm text-zinc-500">Activar o desactivar servicios publicados</p>
+              </div>
+            </Link>
+            <Link
+              href="/admin/denuncias"
+              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
+            >
+              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <div>
+                <p className="font-medium text-zinc-900">Denuncias</p>
+                <p className="text-sm text-zinc-500">
+                  {reportsPendientes > 0
+                    ? `${reportsPendientes} denuncias pendientes de revisar`
+                    : "Gestionar denuncias de usuarios"}
+                </p>
+              </div>
+            </Link>
           </CardContent>
         </Card>
 
@@ -113,12 +151,24 @@ export default async function AdminPage() {
                 <span className="font-medium">{totalProviders.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-zinc-500">Servicios publicados</span>
-                <span className="font-medium">{totalServicios.toLocaleString()}</span>
+                <span className="text-zinc-500">Servicios activos</span>
+                <span className="font-medium">{(totalServicios - serviciosInactivos).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-zinc-500">Servicios inactivos</span>
+                <span className="font-medium text-red-600">{serviciosInactivos.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-zinc-500">Opiniones</span>
                 <span className="font-medium">{totalOpiniones.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-zinc-500">Denuncias pendientes</span>
+                <span className="font-medium text-yellow-600">{reportsPendientes.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-zinc-500">Usuarios bloqueados</span>
+                <span className="font-medium text-red-600">{totalBaneados.toLocaleString()}</span>
               </div>
             </div>
           </CardContent>
