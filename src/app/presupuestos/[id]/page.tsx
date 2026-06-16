@@ -30,5 +30,17 @@ export default async function PresupuestoPage({ params }: { params: Promise<{ id
   const isProvider = request.servicio.usuarioId === session.user.id
   if (!isOwner && !isProvider) redirect("/")
 
-  return <BudgetDetail request={request} currentUserId={session.user.id} isProvider={isProvider} />
+  const serialized = {
+    ...request,
+    createdAt: request.createdAt.toISOString(),
+    updatedAt: request.updatedAt.toISOString(),
+    cotizaciones: request.cotizaciones.map((c) => ({
+      ...c,
+      createdAt: c.createdAt.toISOString(),
+      updatedAt: c.updatedAt.toISOString(),
+      validUntil: c.validUntil?.toISOString() ?? null,
+    })),
+  }
+
+  return <BudgetDetail request={serialized} currentUserId={session.user.id} isProvider={isProvider} />
 }
