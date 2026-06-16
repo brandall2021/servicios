@@ -34,6 +34,21 @@ export default async function PresupuestosPage() {
 
   const isProvider = session.user.role === "PROVIDER" || session.user.role === "ADMIN"
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function serializeDates(items: any[]) {
+    return items.map((item: any) => ({
+      ...item,
+      createdAt: item.createdAt?.toISOString?.() ?? item.createdAt,
+      updatedAt: item.updatedAt?.toISOString?.() ?? item.updatedAt,
+      cotizaciones: item.cotizaciones?.map?.((c: any) => ({
+        ...c,
+        createdAt: c.createdAt?.toISOString?.() ?? c.createdAt,
+        updatedAt: c.updatedAt?.toISOString?.() ?? c.updatedAt,
+        validUntil: c.validUntil?.toISOString?.() ?? c.validUntil ?? null,
+      })) ?? [],
+    }))
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       <div className="flex items-center justify-between mb-6">
@@ -48,7 +63,7 @@ export default async function PresupuestosPage() {
           <h2 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-3">
             Solicitudes recibidas ({cotizacionesPendientes.length})
           </h2>
-          <BudgetList requests={cotizacionesPendientes} rol="proveedor" />
+          <BudgetList requests={serializeDates(cotizacionesPendientes)} rol="proveedor" />
         </div>
       )}
 
@@ -59,7 +74,7 @@ export default async function PresupuestosPage() {
           </h2>
         </div>
         {misSolicitudes.length > 0 ? (
-          <BudgetList requests={misSolicitudes} rol="cliente" />
+          <BudgetList requests={serializeDates(misSolicitudes)} rol="cliente" />
         ) : (
           <div className="text-center py-16 bg-stone-50 rounded-xl border border-stone-200/60">
             <div className="h-12 w-12 rounded-xl bg-stone-100 flex items-center justify-center mx-auto mb-3">
