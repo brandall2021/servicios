@@ -44,10 +44,10 @@ export function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div className="col-span-2 sm:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-3">
-                <div className="h-7 w-7 rounded-lg bg-emerald-600 flex items-center justify-center">
-                  <Sparkles className="h-3.5 w-3.5 text-white" />
+                <div className="h-7 w-7 rounded-lg overflow-hidden">
+                  <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
                 </div>
-                <span className="font-semibold text-sm text-stone-900 tracking-tight">Encuentra</span>
+                <span className="font-semibold text-sm text-stone-900 tracking-tight">Servicios</span>
               </Link>
               <p className="text-xs text-stone-500 leading-relaxed max-w-xs">
                 La plataforma que conecta clientes con profesionales verificados en Argentina. Encontrá, compará y contratá con confianza.
@@ -75,7 +75,7 @@ export function Footer() {
           </div>
         </div>
         <div className="py-6 border-t border-stone-200/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-stone-400">
-          <p>&copy; {new Date().getFullYear()} Encuentra. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Servicios. Todos los derechos reservados.</p>
           <p>Hecho en Argentina</p>
         </div>
       </div>

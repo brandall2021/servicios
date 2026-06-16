@@ -16,10 +16,10 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16 bg-white/90 backdrop-blur-xl border border-stone-200/80 rounded-2xl px-4 sm:px-6 shadow-[0_1px_2px_rgba(28,25,23,0.04)]">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="h-8 w-8 rounded-xl bg-emerald-600 flex items-center justify-center shadow-inner group-hover:shadow-md transition-shadow duration-300">
-              <Sparkles className="h-4 w-4 text-white" />
+            <div className="h-8 w-8 rounded-xl overflow-hidden">
+              <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
             </div>
-            <span className="font-semibold text-base text-stone-900 tracking-tight">Encuentra</span>
+            <span className="font-semibold text-base text-stone-900 tracking-tight">Servicios</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
