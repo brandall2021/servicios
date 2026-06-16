@@ -86,8 +86,8 @@ export function AdminUserList({ usuarios }: { usuarios: User[] }) {
               <td className="py-3 px-4 text-center text-zinc-500">{u._count.servicios}</td>
               <td className="py-3 px-4 text-center">
                 <div className="flex items-center justify-center gap-1">
-                  {u.verified && <CheckCircle className="h-4 w-4 text-green-600" title="Verificado" />}
-                  {u.baneado && <Ban className="h-4 w-4 text-red-600" title="Bloqueado" />}
+                  {u.verified && <span title="Verificado"><CheckCircle className="h-4 w-4 text-green-600" /></span>}
+                  {u.baneado && <span title="Bloqueado"><Ban className="h-4 w-4 text-red-600" /></span>}
                   {!u.verified && !u.baneado && <span className="text-zinc-300">—</span>}
                 </div>
               </td>

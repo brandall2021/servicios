@@ -109,7 +109,7 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {servicios.length > 0 ? (
-            servicios.map((s) => <ServiceCard key={s.id} servicio={s as never} />)
+            servicios.map((s) => <ServiceCard key={s.id} servicio={s} />)
           ) : (
             <p className="text-zinc-400 col-span-full text-center py-12">
               No hay servicios publicados aún. ¡Sé el primero!
@@ -129,7 +129,7 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {providers.map((p) => (
-                <ProviderCard key={p.id} provider={p as never} />
+                <ProviderCard key={p.id} provider={p} />
               ))}
             </div>
           </div>

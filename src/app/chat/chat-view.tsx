@@ -45,12 +45,13 @@ export function ChatView({
   const [sending, setSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  if (proveedorId && !activeChatId) {
+  useEffect(() => {
+    if (!proveedorId || activeChatId) return
     const existing = chats.find((c) => c.otherUser.id === proveedorId)
     if (existing) {
       setActiveChatId(existing.id)
     }
-  }
+  }, [proveedorId, activeChatId, chats])
 
   useEffect(() => {
     if (!activeChatId) return
@@ -68,12 +69,16 @@ export function ChatView({
     e.preventDefault()
     if (!newMessage.trim() || !activeChatId) return
 
+    const activeChat = chats.find((c) => c.id === activeChatId)
+    if (!activeChat) return
+
     setSending(true)
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chatId: activeChatId,
+        receptorId: activeChat.otherUser.id,
         contenido: newMessage.trim(),
       }),
     })

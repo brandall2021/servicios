@@ -12,12 +12,17 @@ export async function POST(req: Request) {
     const { receptorId, chatId, contenido } = await req.json()
 
     if (chatId) {
+      const chat = await prisma.chat.findUnique({ where: { id: chatId } })
+      if (!chat) {
+        return NextResponse.json({ error: "Chat no encontrado" }, { status: 404 })
+      }
+      const receptor = receptorId || (chat.creadorId === session.user.id ? chat.participanteId : chat.creadorId)
       const mensaje = await prisma.mensaje.create({
         data: {
           contenido,
           chatId,
           emisorId: session.user.id,
-          receptorId,
+          receptorId: receptor,
         },
       })
       await prisma.chat.update({

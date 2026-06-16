@@ -33,6 +33,7 @@ export default async function BuscarPage({ searchParams }: Props) {
       _count: { select: { opiniones: true } },
     },
     orderBy: { createdAt: "desc" },
+    take: 50,
   })
 
   const selectedCategoria = params.categoria || ""
@@ -83,7 +84,7 @@ export default async function BuscarPage({ searchParams }: Props) {
           {servicios.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {servicios.map((s) => (
-                <ServiceCard key={s.id} servicio={s as never} />
+                <ServiceCard key={s.id} servicio={s} />
               ))}
             </div>
           ) : (

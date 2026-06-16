@@ -1,4 +1,5 @@
 import type { DefaultSession } from "next-auth"
+import type { Prisma } from "@prisma/client"
 
 declare module "next-auth" {
   interface Session {
@@ -11,52 +12,45 @@ declare module "next-auth" {
 
 export type UserRole = "CLIENT" | "PROVIDER" | "ADMIN"
 
-export interface ServicioWithRelations {
-  id: string
-  titulo: string
-  descripcion: string
-  categoria: string
-  precio: number | null
-  precioTexto: string | null
-  ubicacion: string | null
-  disponibilidad: string | null
-  activo: boolean
-  createdAt: Date
-  usuario: {
-    id: string
-    name: string
-    email: string
-    image: string | null
-    role: string
+export type ServicioWithRelations = Prisma.ServicioGetPayload<{
+  include: {
+    usuario: true
+    fotos: { take: 1 }
+    opiniones: { include: { cliente: true; fotos: true }; take: 5 }
+    _count: { select: { opiniones: true } }
   }
-  fotos: { id: string; archivo: string }[]
-  opiniones: {
-    id: string
-    puntuacion: number
-    comentario: string | null
-    createdAt: Date
-    cliente: { id: string; name: string; image: string | null }
-    fotos: { id: string; archivo: string }[]
-  }[]
-  _count?: { opiniones: number }
-}
+}>
 
-export interface ProviderWithStats {
-  id: string
-  name: string
-  email: string
-  image: string | null
-  phone: string | null
-  description: string | null
-  experience: string | null
-  certifications: string | null
-  zone: string | null
-  availability: string | null
-  verified: boolean
-  _count: {
-    servicios: number
-    opiniones: number
+export type ProviderWithStats = Prisma.UserGetPayload<{
+  include: {
+    _count: { select: { servicios: true; opiniones: true } }
+    servicios: {
+      where: { activo: true }
+      include: {
+        fotos: { take: 1 }
+        opiniones: { include: { cliente: true; fotos: true } }
+      }
+      take: 3
+    }
   }
-  avgRating: number
-  servicios: ServicioWithRelations[]
-}
+}> & { avgRating: number }
+
+export type AdminUserWithCount = Prisma.UserGetPayload<{
+  include: { _count: { select: { servicios: true; opiniones: true } } }
+}>
+
+export type AdminServicioWithUser = Prisma.ServicioGetPayload<{
+  include: {
+    usuario: { select: { id: true; name: true } }
+    _count: { select: { opiniones: true } }
+  }
+}>
+
+export type AdminReportWithRelations = Prisma.ReportGetPayload<{
+  include: {
+    denunciante: { select: { id: true; name: true } }
+    servicio: { select: { id: true; titulo: true; activo: true } }
+    opinion: { select: { id: true; comentario: true; puntuacion: true } }
+    usuario: { select: { id: true; name: true; email: true } }
+  }
+}>

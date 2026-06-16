@@ -2,12 +2,13 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { AdminServiceList } from "./service-list"
+import type { AdminServicioWithUser } from "@/types"
 
 export default async function AdminServiciosPage() {
   const session = await auth()
   if (!session?.user || session.user.role !== "ADMIN") redirect("/")
 
-  const servicios = await prisma.servicio.findMany({
+  const servicios: AdminServicioWithUser[] = await prisma.servicio.findMany({
     include: {
       usuario: { select: { id: true, name: true } },
       _count: { select: { opiniones: true } },

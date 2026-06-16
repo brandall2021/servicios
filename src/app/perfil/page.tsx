@@ -75,7 +75,7 @@ export default async function PerfilPage() {
               <h2 className="text-lg font-semibold text-zinc-900 mb-4">Mis servicios</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {user.servicios.map((s) => (
-                  <ServiceCard key={s.id} servicio={s as never} />
+                  <ServiceCard key={s.id} servicio={s} />
                 ))}
               </div>
             </section>

@@ -2,12 +2,13 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { AdminReportList } from "./report-list"
+import type { AdminReportWithRelations } from "@/types"
 
 export default async function AdminDenunciasPage() {
   const session = await auth()
   if (!session?.user || session.user.role !== "ADMIN") redirect("/")
 
-  const reports = await prisma.report.findMany({
+  const reports: AdminReportWithRelations[] = await prisma.report.findMany({
     include: {
       denunciante: { select: { id: true, name: true } },
       servicio: { select: { id: true, titulo: true, activo: true } },
