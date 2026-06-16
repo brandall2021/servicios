@@ -33,47 +33,35 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
     const whereClause = Prisma.join(conditions, " AND ")
     const hav = Prisma.sql`cos(radians(${lat})) * cos(radians(s.lat)) * cos(radians(s.lng) - radians(${lng})) + sin(radians(${lat})) * sin(radians(s.lat))`
 
-    const sql = Prisma.sql`
-      SELECT s.*, u.id AS u_id, u.name AS u_name, u.email AS u_email, u.image AS u_image, u.role AS u_role,
-        (6371 * acos(${hav})) AS distance
+    const rows = await prisma.$queryRaw<Array<{ id: string; distance: number }>>(Prisma.sql`
+      SELECT s.id, (6371 * acos(${hav})) AS distance
       FROM "Servicio" s
-      JOIN "User" u ON u.id = s."usuarioId"
       WHERE ${whereClause}
         AND (6371 * acos(${hav})) <= ${radio}
       ORDER BY distance ASC
       LIMIT 50
-    `
+    `)
 
-    const rows = await prisma.$queryRaw<Array<Record<string, unknown>>>(sql)
+    const ids = rows.map((r) => r.id)
+    if (ids.length === 0) return []
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return rows.map((r: any) => ({
-      id: r.id,
-      titulo: r.titulo,
-      descripcion: r.descripcion,
-      categoria: r.categoria,
-      precio: r.precio,
-      precioTexto: r.precioTexto,
-      ubicacion: r.ubicacion,
-      lat: r.lat,
-      lng: r.lng,
-      disponibilidad: r.disponibilidad,
-      activo: r.activo,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
-      usuarioId: r.usuarioId,
-      distance: r.distance ? parseFloat(r.distance) : null,
-      usuario: {
-        id: r.u_id,
-        name: r.u_name,
-        email: r.u_email,
-        image: r.u_image,
-        role: r.u_role,
+    const servicios = await prisma.servicio.findMany({
+      where: { id: { in: ids } },
+      include: {
+        usuario: true,
+        fotos: { take: 1 },
+        opiniones: {
+          include: { cliente: true, fotos: true },
+          take: 5,
+        },
+        _count: { select: { opiniones: true } },
       },
-      fotos: [],
-      opiniones: [],
-      _count: { opiniones: 0 },
-    }))
+    })
+
+    const distanceMap = new Map(rows.map((r) => [r.id, r.distance]))
+    return servicios
+      .map((s) => ({ ...s, distance: distanceMap.get(s.id) ?? null }))
+      .sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
   }
 
   const where: Record<string, unknown> = { activo: true }
