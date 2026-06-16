@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { ServiceCard } from "@/components/shared/service-card"
 import { SearchBar } from "@/components/shared/search-bar"
@@ -15,38 +16,35 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
   const hasCoords = lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)
 
   if (hasCoords && radio !== null && !isNaN(radio)) {
-    const whereClauses: string[] = ['s.activo = true', 's.lat IS NOT NULL', 's.lng IS NOT NULL']
-    const queryParams: unknown[] = [lat, lng, lat, lng]
+    const conditions: Prisma.Sql[] = [
+      Prisma.sql`s.activo = true`,
+      Prisma.sql`s.lat IS NOT NULL`,
+      Prisma.sql`s.lng IS NOT NULL`,
+    ]
 
     if (params.categoria) {
-      whereClauses.push(`s.categoria = $${queryParams.length + 1}`)
-      queryParams.push(params.categoria)
+      conditions.push(Prisma.sql`s.categoria = ${params.categoria}`)
     }
     if (params.q) {
-      whereClauses.push(`(s.titulo ILIKE $${queryParams.length + 1} OR s.descripcion ILIKE $${queryParams.length + 2})`)
-      queryParams.push(`%${params.q}%`, `%${params.q}%`)
+      const pattern = `%${params.q}%`
+      conditions.push(Prisma.sql`(s.titulo ILIKE ${pattern} OR s.descripcion ILIKE ${pattern})`)
     }
 
-    queryParams.push(radio)
+    const whereClause = Prisma.join(conditions, " AND ")
+    const hav = Prisma.sql`cos(radians(${lat})) * cos(radians(s.lat)) * cos(radians(s.lng) - radians(${lng})) + sin(radians(${lat})) * sin(radians(s.lat))`
 
-    const rows = await prisma.$queryRaw<Array<Record<string, unknown>>>(`
+    const sql = Prisma.sql`
       SELECT s.*, u.id AS u_id, u.name AS u_name, u.email AS u_email, u.image AS u_image, u.role AS u_role,
-        (6371 * acos(
-          cos(radians($1::float)) * cos(radians(s.lat)) *
-          cos(radians(s.lng) - radians($2::float)) +
-          sin(radians($3::float)) * sin(radians(s.lat))
-        )) AS distance
+        (6371 * acos(${hav})) AS distance
       FROM "Servicio" s
       JOIN "User" u ON u.id = s."usuarioId"
-      WHERE ${whereClauses.join(" AND ")}
-        AND (6371 * acos(
-          cos(radians($1::float)) * cos(radians(s.lat)) *
-          cos(radians(s.lng) - radians($2::float)) +
-          sin(radians($3::float)) * sin(radians(s.lat))
-        )) <= $${queryParams.length}::float
+      WHERE ${whereClause}
+        AND (6371 * acos(${hav})) <= ${radio}
       ORDER BY distance ASC
       LIMIT 50
-    `, ...queryParams)
+    `
+
+    const rows = await prisma.$queryRaw<Array<Record<string, unknown>>>(sql)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return rows.map((r: any) => ({
