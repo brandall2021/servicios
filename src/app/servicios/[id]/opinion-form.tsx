@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { StarRating } from "@/components/shared/star-rating"
+import { Recaptcha } from "@/components/shared/recaptcha"
 
 interface OpinionFormProps {
   servicioId: string
@@ -15,21 +16,31 @@ export function OpinionForm({ servicioId }: OpinionFormProps) {
   const [puntuacion, setPuntuacion] = useState(0)
   const [comentario, setComentario] = useState("")
   const [loading, setLoading] = useState(false)
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const [recaptchaError, setRecaptchaError] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (puntuacion === 0) return
+
+    if (!recaptchaToken) {
+      setRecaptchaError(true)
+      return
+    }
+
     setLoading(true)
 
     const res = await fetch("/api/opiniones", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ servicioId, puntuacion, comentario }),
+      body: JSON.stringify({ servicioId, puntuacion, comentario, recaptchaToken }),
     })
 
     if (res.ok) {
       setPuntuacion(0)
       setComentario("")
+      setRecaptchaToken(null)
+      setRecaptchaError(false)
       router.refresh()
     }
     setLoading(false)
@@ -48,6 +59,10 @@ export function OpinionForm({ servicioId }: OpinionFormProps) {
         onChange={(e) => setComentario(e.target.value)}
         rows={3}
       />
+      <Recaptcha onChange={(token) => { setRecaptchaToken(token); setRecaptchaError(false) }} />
+      {recaptchaError && (
+        <p className="text-sm text-red-600">Completá el captcha para continuar</p>
+      )}
       <Button type="submit" disabled={loading || puntuacion === 0}>
         {loading ? "Enviando..." : "Publicar opinión"}
       </Button>

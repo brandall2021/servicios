@@ -13,12 +13,14 @@ Plataforma digital donde personas o empresas pueden ofrecer sus servicios, recib
 
 ## Funcionalidades
 
-- Registro con roles: Cliente, Proveedor, Administrador
+- Registro con roles: Cliente, Proveedor, Administrador (incluye Google OAuth)
 - Perfil de proveedor con descripción, experiencia, certificaciones y zona de trabajo
-- Publicación de servicios con categorías, precio y ubicación
-- Búsqueda avanzada con filtros por categoría, ubicación y texto
-- Sistema de calificaciones 1-5 estrellas con comentarios y fotos
+- Publicación de servicios con categorías, precio, ubicación y coordenadas GPS
+- Búsqueda avanzada con filtros por categoría, ubicación, texto y cercanía GPS
+- Búsqueda "Cerca de mí" con geolocalización y radio ajustable (10-200km)
+- Sistema de calificaciones 1-5 estrellas con comentarios, fotos y reCAPTCHA
 - Chat interno cliente ↔ proveedor
+- Sistema de presupuestos: solicitud, cotización y seguimiento
 - Panel administrativo con dashboard y gestión de usuarios
 - Migraciones automáticas al deploy
 
@@ -84,12 +86,13 @@ npm run dev
 En la sección **"Environment"** de Dokploy, agregá estas variables:
 
 | Variable | Descripción | Ejemplo |
-|---|---|---|
-| `DATABASE_URL` | Conexión a PostgreSQL | `postgresql://brandall:Hansol1974%2B@186.153.163.188:5432/servicios?schema=public` |
-| `NEXTAUTH_URL` | URL pública del sitio | `https://servicios.tudominio.com` |
-| `NEXTAUTH_SECRET` | Secreto para NextAuth (generar con `openssl rand -base64 32`) | `n8mR4vG2Xq7Kc1Pz9Ld0WfT6yJr3SbUaH5eQm2Nx8A0=` |
-| `GOOGLE_CLIENT_ID` | (opcional) ID de Google OAuth | `...` |
-| `GOOGLE_CLIENT_SECRET` | (opcional) Secret de Google OAuth | `...` |
+|---|---|---|---|
+| `DATABASE_URL` | Conexión a PostgreSQL | `postgresql://usuario:password@host:5432/servicios?schema=public` |
+| `NEXTAUTH_URL` | URL pública del sitio | `https://tudominio.com` |
+| `NEXTAUTH_SECRET` | Secreto para NextAuth (generar con `openssl rand -base64 32`) | `tu-secreto-aqui` |
+| `GOOGLE_CLIENT_ID` | (opcional) ID de Google OAuth | `tu-client-id.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | (opcional) Secret de Google OAuth | `tu-client-secret` |
+| `ADMIN_EMAIL` | Email del administrador | `admin@ejemplo.com` |
 
 ### 4. Configurar puerto
 
@@ -111,7 +114,7 @@ En **"Ports"**, configurá:
 ### Notas importantes
 
 - La base de datos PostgreSQL debe estar accesible desde el servidor donde corre Dokploy
-- Si usás la misma base que tus otros proyectos (`186.153.163.188:5432`), asegurate de crear la base `servicios` primero:
+- Si usás la misma base que tus otros proyectos, asegurate de crear la base `servicios` primero:
   ```sql
   CREATE DATABASE servicios;
   ```

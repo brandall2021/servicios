@@ -9,7 +9,25 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { servicioId, puntuacion, comentario } = await req.json()
+    const { servicioId, puntuacion, comentario, recaptchaToken } = await req.json()
+
+    if (!recaptchaToken) {
+      return NextResponse.json({ error: "reCAPTCHA requerido" }, { status: 400 })
+    }
+
+    const recaptchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: process.env.RECAPTCHA_SECRET_KEY || "",
+        response: recaptchaToken,
+      }),
+    })
+
+    const recaptchaData = await recaptchaRes.json()
+    if (!recaptchaData.success) {
+      return NextResponse.json({ error: "reCAPTCHA inválido" }, { status: 400 })
+    }
 
     if (!servicioId || !puntuacion || puntuacion < 1 || puntuacion > 5) {
       return NextResponse.json(

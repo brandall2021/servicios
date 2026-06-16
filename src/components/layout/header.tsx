@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
 import { Avatar } from "../ui/avatar"
-import { Sparkles, PlusCircle, LayoutDashboard, MessageSquare, Menu, X } from "lucide-react"
+import { Sparkles, PlusCircle, LayoutDashboard, MessageSquare, FileText, Menu, X } from "lucide-react"
 import { useState } from "react"
 
 export function Header() {
@@ -31,6 +31,13 @@ export function Header() {
             </Link>
             {session?.user ? (
               <>
+                <Link
+                  href="/presupuestos"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm text-stone-600 hover:text-stone-900 rounded-lg hover:bg-stone-100/80 transition-all duration-200"
+                >
+                  <FileText className="h-4 w-4" />
+                  Presupuestos
+                </Link>
                 {session.user.role === "PROVIDER" && (
                   <Link
                     href="/servicios/nuevo"
@@ -98,6 +105,9 @@ export function Header() {
               </Link>
               {session?.user ? (
                 <>
+                  <Link href="/presupuestos" className="flex items-center gap-2 px-3 py-2.5 text-sm text-stone-700 rounded-lg hover:bg-stone-100 transition-colors" onClick={() => setMenuOpen(false)}>
+                    <FileText className="h-4 w-4" /> Presupuestos
+                  </Link>
                   {session.user.role === "PROVIDER" && (
                     <Link href="/servicios/nuevo" className="flex items-center gap-2 px-3 py-2.5 text-sm text-stone-700 rounded-lg hover:bg-stone-100 transition-colors" onClick={() => setMenuOpen(false)}>
                       <PlusCircle className="h-4 w-4" /> Publicar servicio

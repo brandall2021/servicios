@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ServiceCard } from "@/components/shared/service-card"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
-import { PlusCircle, MessageSquare, Shield } from "lucide-react"
+import { PlusCircle, MessageSquare, Shield, FileText } from "lucide-react"
 import { ProfileForm } from "./profile-form"
 
 export default async function PerfilPage() {
@@ -91,6 +91,12 @@ export default async function PerfilPage() {
               </Button>
             </Link>
           )}
+          <Link href="/presupuestos">
+            <Button variant="outline" className="w-full">
+              <FileText className="h-4 w-4" />
+              Mis presupuestos
+            </Button>
+          </Link>
           <Link href="/chat">
             <Button variant="outline" className="w-full">
               <MessageSquare className="h-4 w-4" />

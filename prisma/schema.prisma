@@ -35,6 +35,8 @@ model User {
   chatsParticipante Chat[]      @relation("ChatParticipante")
   reportesHechos    Report[]   @relation("ReportesHechos")
   reportesRecibidos Report[]   @relation("ReportesRecibidos")
+  presupuestoSolicitados BudgetRequest[] @relation("BudgetCliente")
+  cotizacionesCreadas    BudgetQuote[]   @relation("BudgetProveedor")
 }
 
 model Servicio {
@@ -45,6 +47,8 @@ model Servicio {
   precio      Float?
   precioTexto String?
   ubicacion   String?
+  lat         Float?
+  lng         Float?
   disponibilidad String?
   activo      Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -56,6 +60,7 @@ model Servicio {
   fotos       Foto[]
   opiniones   Opinion[]
   reportes    Report[]
+  presupuestos BudgetRequest[]
 }
 
 model Foto {
@@ -134,4 +139,38 @@ model Mensaje {
   emisor    User     @relation("MensajeEmisor", fields: [emisorId], references: [id], onDelete: Cascade)
   receptorId String
   receptor  User     @relation("MensajeReceptor", fields: [receptorId], references: [id], onDelete: Cascade)
+}
+
+model BudgetRequest {
+  id          String   @id @default(cuid())
+  description String?
+  materiales  String?
+  status      String   @default("PENDIENTE") // PENDIENTE, COTIZADO, ACEPTADO, RECHAZADO, REVISION
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  servicioId  String
+  servicio    Servicio @relation(fields: [servicioId], references: [id], onDelete: Cascade)
+
+  clienteId   String
+  cliente     User     @relation("BudgetCliente", fields: [clienteId], references: [id], onDelete: Cascade)
+
+  cotizaciones BudgetQuote[]
+}
+
+model BudgetQuote {
+  id          String   @id @default(cuid())
+  amount      Float
+  breakdown   String?
+  notes       String?
+  validUntil  DateTime?
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  requestId    String
+  request      BudgetRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  proveedorId  String
+  proveedor    User         @relation("BudgetProveedor", fields: [proveedorId], references: [id], onDelete: Cascade)
 }

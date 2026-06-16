@@ -49,12 +49,17 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
               <StarRating value={avgRating} size="sm" showValue count={servicio.opiniones.length} readonly />
             )}
           </div>
-          {servicio.ubicacion && (
-            <div className="flex items-center gap-1 mt-2 text-xs text-stone-400">
-              <MapPin className="h-3 w-3" />
-              {servicio.ubicacion}
-            </div>
-          )}
+          <div className="flex items-center gap-1 mt-2 text-xs text-stone-400">
+            <MapPin className="h-3 w-3" />
+            {servicio.ubicacion || "Ubicación no especificada"}
+            {servicio.distance !== null && servicio.distance !== undefined && (
+              <span className="ml-auto font-medium text-emerald-600">
+                {servicio.distance < 1
+                  ? `${Math.round(servicio.distance * 1000)}m`
+                  : `${servicio.distance.toFixed(1)}km`}
+              </span>
+            )}
+          </div>
           {servicio.precio && (
             <div className="mt-2 text-lg font-bold text-emerald-600">
               ${servicio.precio.toLocaleString("es-AR")}

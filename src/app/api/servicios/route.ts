@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { titulo, descripcion, categoria, precio, precioTexto, ubicacion, disponibilidad } = await req.json()
+    const { titulo, descripcion, categoria, precio, precioTexto, ubicacion, disponibilidad, lat, lng } = await req.json()
 
     if (!titulo || !descripcion || !categoria) {
       return NextResponse.json(
@@ -26,6 +26,8 @@ export async function POST(req: Request) {
         precio: precio ? parseFloat(precio) : null,
         precioTexto,
         ubicacion,
+        lat: lat ? parseFloat(lat) : null,
+        lng: lng ? parseFloat(lng) : null,
         disponibilidad,
         usuarioId: session.user.id,
       },

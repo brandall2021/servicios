@@ -19,7 +19,7 @@ export type ServicioWithRelations = Prisma.ServicioGetPayload<{
     opiniones: { include: { cliente: true; fotos: true }; take: 5 }
     _count: { select: { opiniones: true } }
   }
-}>
+}> & { distance?: number | null }
 
 export type ProviderWithStats = Prisma.UserGetPayload<{
   include: {

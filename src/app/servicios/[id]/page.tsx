@@ -6,7 +6,7 @@ import { Avatar } from "@/components/ui/avatar"
 import { StarRating } from "@/components/shared/star-rating"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
-import { MapPin, Calendar, Shield, ChevronLeft, MessageSquare } from "lucide-react"
+import { MapPin, Calendar, Shield, ChevronLeft, MessageSquare, FileText } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 import { OpinionForm } from "./opinion-form"
 import { ReportButton } from "./report-button"
@@ -205,24 +205,32 @@ export default async function ServicioDetailPage({ params }: Props) {
               {servicio.precio && (
                 <div className="mb-4">
                   <p className="text-xs text-zinc-400 uppercase tracking-wide font-medium">Precio</p>
-                  <p className="text-2xl font-bold text-blue-600">
+                  <p className="text-2xl font-bold text-emerald-600">
                     ${servicio.precio.toLocaleString("es-AR")}
                   </p>
                 </div>
               )}
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {session?.user && session.user.id !== servicio.usuarioId && (
-                  <Link href={`/chat?proveedor=${servicio.usuarioId}&servicio=${servicio.id}`}>
-                    <Button className="w-full">
-                      <MessageSquare className="h-4 w-4" />
-                      Consultar
-                    </Button>
-                  </Link>
+                  <>
+                    <Link href={`/presupuestos/solicitar?servicio=${servicio.id}`}>
+                      <Button className="w-full rounded-xl" variant="outline">
+                        <FileText className="h-4 w-4" />
+                        Solicitar presupuesto
+                      </Button>
+                    </Link>
+                    <Link href={`/chat?proveedor=${servicio.usuarioId}&servicio=${servicio.id}`}>
+                      <Button className="w-full rounded-xl">
+                        <MessageSquare className="h-4 w-4" />
+                        Consultar
+                      </Button>
+                    </Link>
+                  </>
                 )}
                 {!session?.user && (
                   <Link href="/login">
-                    <Button className="w-full">Iniciá sesión para consultar</Button>
+                    <Button className="w-full rounded-xl">Iniciá sesión para consultar</Button>
                   </Link>
                 )}
               </div>
