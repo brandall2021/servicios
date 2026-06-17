@@ -69,8 +69,8 @@ export default function SolicitarPresupuestoPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3 mb-1">
-            <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-              <FileText className="h-5 w-5 text-emerald-600" />
+            <div className="h-10 w-10 rounded-xl bg-blue-100 flex items-center justify-center">
+              <FileText className="h-5 w-5 text-blue-600" />
             </div>
             <div>
               <CardTitle>Solicitar presupuesto</CardTitle>
@@ -117,7 +117,7 @@ export default function SolicitarPresupuestoPage() {
                   </div>
                 ))}
               </div>
-              <button type="button" onClick={addMaterial} className="mt-2 flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+              <button type="button" onClick={addMaterial} className="mt-2 flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
                 <Plus className="h-4 w-4" /> Agregar ítem
               </button>
             </div>

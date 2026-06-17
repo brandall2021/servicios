@@ -58,7 +58,7 @@ export function CategoryGrid() {
         </div>
         <Link
           href="/buscar"
-          className="hidden sm:inline-flex text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
+          className="hidden sm:inline-flex text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
         >
           Ver todas &rarr;
         </Link>
@@ -71,15 +71,15 @@ export function CategoryGrid() {
             <Link
               key={cat.value}
               href={`/buscar?categoria=${cat.value}`}
-              className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-white border border-stone-200/70 hover:border-emerald-200/80 hover:bg-emerald-50/40 transition-all duration-200 hover:shadow-[0_4px_16px_rgba(5,150,105,0.08)] active:scale-[0.98]"
+              className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-white border border-stone-200/70 hover:border-blue-200/80 hover:bg-blue-50/40 transition-all duration-200 hover:shadow-[0_4px_16px_rgba(5,150,105,0.08)] active:scale-[0.98]"
             >
               <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-200 group-hover:bg-emerald-100"
+                className="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-100"
                 style={{ backgroundColor: color.bg }}
               >
-                <Icon className="h-5 w-5 transition-colors duration-200 group-hover:text-emerald-600" style={{ color: color.icon }} />
+                <Icon className="h-5 w-5 transition-colors duration-200 group-hover:text-blue-600" style={{ color: color.icon }} />
               </div>
-              <span className="text-xs sm:text-sm font-medium text-stone-700 group-hover:text-emerald-700 text-center transition-colors duration-200">
+              <span className="text-xs sm:text-sm font-medium text-stone-700 group-hover:text-blue-700 text-center transition-colors duration-200">
                 {cat.label}
               </span>
             </Link>
@@ -87,7 +87,7 @@ export function CategoryGrid() {
         })}
       </div>
       <div className="mt-6 text-center sm:hidden">
-        <Link href="/buscar" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
+        <Link href="/buscar" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
           Ver todas las categorías &rarr;
         </Link>
       </div>

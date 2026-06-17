@@ -116,7 +116,7 @@ export default async function BuscarPage({ searchParams }: Props) {
                   href="/buscar"
                   className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                     !selectedCategoria
-                      ? "bg-emerald-50 text-emerald-700 font-medium"
+                      ? "bg-blue-50 text-blue-700 font-medium"
                       : "text-zinc-600 hover:bg-zinc-50"
                   }`}
                 >
@@ -128,7 +128,7 @@ export default async function BuscarPage({ searchParams }: Props) {
                     href={`/buscar?categoria=${cat.value}`}
                     className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                       selectedCategoria === cat.value
-                        ? "bg-emerald-50 text-emerald-700 font-medium"
+                        ? "bg-blue-50 text-blue-700 font-medium"
                         : "text-zinc-600 hover:bg-zinc-50"
                     }`}
                   >
@@ -155,7 +155,7 @@ export default async function BuscarPage({ searchParams }: Props) {
               <div className="flex items-center gap-2">
                 <label className="text-xs text-zinc-500">Radio:</label>
                 <select
-                  className="h-8 px-2 border border-stone-200 rounded-lg text-xs bg-white text-stone-600 outline-none focus:border-emerald-500"
+                  className="h-8 px-2 border border-stone-200 rounded-lg text-xs bg-white text-stone-600 outline-none focus:border-blue-500"
                   onChange={(e) => {
                     const url = new URL(window.location.href)
                     url.searchParams.set("radio", e.target.value)

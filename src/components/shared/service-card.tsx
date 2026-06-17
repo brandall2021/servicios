@@ -55,7 +55,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
               {catInfo?.icon} {catInfo?.label || servicio.categoria}
             </span>
           </div>
-          <h3 className="font-semibold text-stone-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
+          <h3 className="font-semibold text-stone-900 group-hover:text-blue-600 transition-colors line-clamp-1">
             {servicio.titulo}
           </h3>
           <p className="text-sm text-stone-500 line-clamp-2 mt-1 mb-3">
@@ -74,7 +74,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
             <MapPin className="h-3 w-3" />
             {servicio.ubicacion || "Ubicación no especificada"}
             {servicio.distance !== null && servicio.distance !== undefined && (
-              <span className="ml-auto font-medium text-emerald-600">
+              <span className="ml-auto font-medium text-blue-600">
                 {servicio.distance < 1
                   ? `${Math.round(servicio.distance * 1000)}m`
                   : `${servicio.distance.toFixed(1)}km`}
@@ -82,7 +82,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
             )}
           </div>
           {servicio.precio && (
-            <div className="mt-2 text-lg font-bold text-emerald-600">
+            <div className="mt-2 text-lg font-bold text-blue-600">
               ${servicio.precio.toLocaleString("es-AR")}
             </div>
           )}

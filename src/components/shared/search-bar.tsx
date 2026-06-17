@@ -36,7 +36,7 @@ export function SearchBar() {
         <select
           value={categoria}
           onChange={(e) => setCategoria(e.target.value)}
-          className="h-10 px-3 border border-zinc-200 rounded-lg text-sm bg-white text-zinc-600 outline-none focus:border-emerald-500"
+          className="h-10 px-3 border border-zinc-200 rounded-lg text-sm bg-white text-zinc-600 outline-none focus:border-blue-500"
         >
           <option value="">Todas las categorías</option>
           {CATEGORIAS.map((cat) => (
@@ -57,7 +57,7 @@ export function SearchBar() {
         </div>
         <button
           type="submit"
-          className="h-10 px-6 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
+          className="h-10 px-6 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           Buscar
         </button>

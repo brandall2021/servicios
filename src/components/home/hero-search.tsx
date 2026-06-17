@@ -33,8 +33,8 @@ export function HeroSearch() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/60 to-transparent pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 to-transparent pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
       <div className="absolute top-40 left-0 w-[400px] h-[400px] bg-red-100/20 rounded-full blur-3xl -translate-x-1/2 pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-cyan-100/20 rounded-full blur-3xl translate-y-1/2 pointer-events-none" />
       <div className="absolute top-1/2 left-1/3 w-[200px] h-[200px] bg-purple-100/15 rounded-full blur-3xl pointer-events-none" />
@@ -79,7 +79,7 @@ export function HeroSearch() {
               </div>
               <button
                 type="submit"
-                className="h-11 px-6 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 active:scale-[0.98] transition-all duration-200 shadow-sm flex items-center justify-center gap-2"
+                className="h-11 px-6 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 active:scale-[0.98] transition-all duration-200 shadow-sm flex items-center justify-center gap-2"
               >
                 <Search className="h-4 w-4" />
                 <span className="hidden sm:inline">Buscar</span>
@@ -102,7 +102,7 @@ export function HeroSearch() {
 
           <div className="flex flex-wrap items-center gap-5 text-xs text-stone-500">
             <span className="flex items-center gap-1.5">
-              <BadgeCheck className="h-4 w-4 text-emerald-600" />
+              <BadgeCheck className="h-4 w-4 text-blue-600" />
               Profesionales verificados
             </span>
             <span className="flex items-center gap-1.5">

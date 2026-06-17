@@ -48,7 +48,7 @@ export function AdminServiceList({ servicios }: { servicios: Servicio[] }) {
           {servicios.map((s) => (
             <tr key={s.id} className="border-b border-zinc-100 hover:bg-zinc-50">
               <td className="py-3 px-4">
-                <Link href={`/servicios/${s.id}`} className="font-medium text-zinc-900 hover:text-emerald-600">
+                <Link href={`/servicios/${s.id}`} className="font-medium text-zinc-900 hover:text-blue-600">
                   {s.titulo}
                 </Link>
               </td>
@@ -68,7 +68,7 @@ export function AdminServiceList({ servicios }: { servicios: Servicio[] }) {
                 <button
                   onClick={() => toggleActivo(s.id, s.activo)}
                   disabled={loading === s.id}
-                  className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-500 hover:text-emerald-600"
+                  className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-500 hover:text-blue-600"
                   title={s.activo ? "Desactivar" : "Activar"}
                 >
                   {s.activo ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

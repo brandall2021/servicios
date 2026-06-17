@@ -19,7 +19,7 @@ export default function RootError({
         </p>
         <button
           onClick={reset}
-          className="h-10 px-6 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors"
+          className="h-10 px-6 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           Intentar de nuevo
         </button>

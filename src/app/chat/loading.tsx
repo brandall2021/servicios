@@ -14,7 +14,7 @@ export default function ChatLoading() {
           ))}
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <div className="h-8 w-8 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin" />
+          <div className="h-8 w-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
         </div>
       </div>
     </div>

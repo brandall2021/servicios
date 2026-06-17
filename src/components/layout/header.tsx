@@ -29,7 +29,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Top bar */}
-      <div className="hidden md:flex h-8 bg-emerald-900 text-white/70 text-xs">
+      <div className="hidden md:flex h-8 bg-blue-900 text-white/70 text-xs">
         <div className="max-w-7xl mx-auto px-4 w-full flex items-center justify-between">
           <div className="flex items-center gap-1">
             <MapPin className="h-3 w-3" />
@@ -54,12 +54,12 @@ export function Header() {
       </div>
 
       {/* Main bar */}
-      <div className="bg-emerald-600 shadow-sm">
+      <div className="bg-blue-600 shadow-sm">
         <div className="max-w-7xl mx-auto px-3 sm:px-4">
           <div className="flex items-center gap-2 sm:gap-4 h-14 sm:h-16">
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-2 -ml-2 rounded-lg hover:bg-emerald-500/50 transition-colors"
+              className="md:hidden p-2 -ml-2 rounded-lg hover:bg-blue-500/50 transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             >
@@ -76,7 +76,7 @@ export function Header() {
 
             {/* Search bar */}
             <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-auto">
-              <div className="flex items-center bg-white rounded-lg shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-emerald-300 transition-shadow">
+              <div className="flex items-center bg-white rounded-lg shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-300 transition-shadow">
                 <input
                   type="text"
                   placeholder="Buscá servicios, profesionales, categorías..."
@@ -86,7 +86,7 @@ export function Header() {
                 />
                 <button
                   type="submit"
-                  className="h-9 sm:h-10 px-3 sm:px-5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 transition-colors flex items-center justify-center"
+                  className="h-9 sm:h-10 px-3 sm:px-5 bg-blue-50 hover:bg-blue-100 text-blue-600 transition-colors flex items-center justify-center"
                   aria-label="Buscar"
                 >
                   <Search className="h-4 w-4" />
@@ -100,13 +100,13 @@ export function Header() {
                 <div className="flex items-center gap-2">
                   <Link
                     href="/chat"
-                    className="p-2 text-white/80 hover:text-white hover:bg-emerald-500/50 rounded-lg transition-all"
+                    className="p-2 text-white/80 hover:text-white hover:bg-blue-500/50 rounded-lg transition-all"
                     aria-label="Mensajes"
                   >
                     <MessageSquare className="h-5 w-5" />
                   </Link>
                   <div className="relative group">
-                    <button className="flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-emerald-500/50 rounded-lg transition-all">
+                    <button className="flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white hover:bg-blue-500/50 rounded-lg transition-all">
                       <Avatar src={session.user.image} fallback={session.user.name || "U"} size="sm" />
                       <span className="text-sm font-medium max-w-[100px] truncate">{session.user.name}</span>
                       <ChevronDown className="h-3 w-3" />
@@ -143,12 +143,12 @@ export function Header() {
               ) : (
                 <div className="flex items-center gap-1.5">
                   <Link href="/login">
-                    <button className="h-8 px-3 text-sm text-white/90 hover:text-white font-medium hover:bg-emerald-500/50 rounded-lg transition-all">
+                    <button className="h-8 px-3 text-sm text-white/90 hover:text-white font-medium hover:bg-blue-500/50 rounded-lg transition-all">
                       Ingresar
                     </button>
                   </Link>
                   <Link href="/register">
-                    <button className="h-8 px-4 text-sm font-semibold text-emerald-700 bg-white hover:bg-emerald-50 rounded-lg transition-all shadow-sm">
+                    <button className="h-8 px-4 text-sm font-semibold text-blue-700 bg-white hover:bg-blue-50 rounded-lg transition-all shadow-sm">
                       Registrarse
                     </button>
                   </Link>
@@ -165,7 +165,7 @@ export function Header() {
           <div className="flex items-center gap-1 h-10 overflow-x-auto">
             <Link
               href="/buscar"
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-stone-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors whitespace-nowrap"
+              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-stone-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap"
             >
               <Briefcase className="h-3.5 w-3.5" /> Todas las categorías
             </Link>
@@ -174,14 +174,14 @@ export function Header() {
               <Link
                 key={cat.value}
                 href={`/buscar?categoria=${cat.value}`}
-                className="px-3 py-1.5 text-xs text-stone-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors whitespace-nowrap"
+                className="px-3 py-1.5 text-xs text-stone-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap"
               >
                 {cat.label}
               </Link>
             ))}
             <Link
               href="/buscar"
-              className="px-3 py-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors whitespace-nowrap"
+              className="px-3 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors whitespace-nowrap"
             >
               Ver más &rarr;
             </Link>
@@ -195,7 +195,7 @@ export function Header() {
           <div className="px-4 py-3 space-y-1">
             {/* Search on mobile */}
             <form onSubmit={handleSearch} className="mb-3">
-              <div className="flex items-center bg-stone-100 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-emerald-400">
+              <div className="flex items-center bg-stone-100 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-400">
                 <input
                   type="text"
                   placeholder="Buscá servicios..."
@@ -203,7 +203,7 @@ export function Header() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 h-10 px-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none bg-transparent"
                 />
-                <button type="submit" className="h-10 px-3 text-emerald-600" aria-label="Buscar">
+                <button type="submit" className="h-10 px-3 text-blue-600" aria-label="Buscar">
                   <Search className="h-4 w-4" />
                 </button>
               </div>
@@ -223,7 +223,7 @@ export function Header() {
               ))}
               <Link
                 href="/buscar"
-                className="px-3 py-2 text-sm font-medium text-emerald-600 rounded-lg hover:bg-stone-100 transition-colors"
+                className="px-3 py-2 text-sm font-medium text-blue-600 rounded-lg hover:bg-stone-100 transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 Ver todas &rarr;
@@ -263,7 +263,7 @@ export function Header() {
                 <Link href="/login" className="flex items-center gap-2 px-3 py-2.5 text-sm text-stone-700 rounded-lg hover:bg-stone-100 transition-colors" onClick={() => setMenuOpen(false)}>
                   <User className="h-4 w-4" /> Ingresar
                 </Link>
-                <Link href="/register" className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 text-center justify-center transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/register" className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 text-center justify-center transition-colors" onClick={() => setMenuOpen(false)}>
                   Crear cuenta
                 </Link>
                 <Link href="/register?role=PROVIDER" className="flex items-center gap-2 px-3 py-2.5 text-sm text-stone-700 rounded-lg hover:bg-stone-100 transition-colors" onClick={() => setMenuOpen(false)}>

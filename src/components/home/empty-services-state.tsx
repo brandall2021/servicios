@@ -21,7 +21,7 @@ export function EmptyServicesState() {
           </Button>
         </Link>
         <Link href="/register">
-          <Button className="bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm">
+          <Button className="bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm">
             Publicar servicio
             <ArrowRight className="h-4 w-4 ml-1.5" />
           </Button>

@@ -5,7 +5,7 @@ const steps = [
     icon: Search,
     title: "Buscá",
     description: "Encontrá el servicio que necesitás filtrando por categoría, ubicación y precio.",
-    color: "emerald",
+    color: "blue",
   },
   {
     icon: MessageSquareText,
@@ -28,7 +28,7 @@ const steps = [
 ]
 
 const stepColors: Record<string, { bg: string; icon: string }> = {
-  emerald: { bg: "bg-emerald-100", icon: "text-emerald-600" },
+  blue: { bg: "bg-blue-100", icon: "text-blue-600" },
   cyan: { bg: "bg-cyan-100", icon: "text-cyan-600" },
   amber: { bg: "bg-amber-100", icon: "text-amber-600" },
   purple: { bg: "bg-purple-100", icon: "text-purple-600" },

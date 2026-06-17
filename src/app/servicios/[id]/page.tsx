@@ -205,7 +205,7 @@ export default async function ServicioDetailPage({ params }: Props) {
               {servicio.precio && (
                 <div className="mb-4">
                   <p className="text-xs text-zinc-400 uppercase tracking-wide font-medium">Precio</p>
-                  <p className="text-2xl font-bold text-emerald-600">
+                  <p className="text-2xl font-bold text-blue-600">
                     ${servicio.precio.toLocaleString("es-AR")}
                   </p>
                 </div>

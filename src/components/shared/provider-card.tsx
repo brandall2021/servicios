@@ -26,11 +26,11 @@ export function ProviderCard({ provider }: ProviderCardProps) {
             <Avatar src={provider.image} fallback={provider.name} size="lg" />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-zinc-900 group-hover:text-emerald-600 transition-colors truncate">
+                <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 transition-colors truncate">
                   {provider.name}
                 </h3>
                 {provider.verified && (
-                  <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <ShieldCheck className="h-4 w-4 text-blue-600 shrink-0" />
                 )}
               </div>
               {provider.avgRating > 0 && (
