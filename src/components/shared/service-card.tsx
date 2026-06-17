@@ -36,25 +36,27 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
   return (
     <Link href={`/servicios/${servicio.id}`}>
       <div className="card-service overflow-hidden">
-        {servicio.fotos[0] && (
-          <div className="aspect-[16/9] overflow-hidden bg-stone-100 rounded-t-[18px]">
+        {servicio.fotos[0] ? (
+          <div className="aspect-[4/3] overflow-hidden bg-stone-100">
             <img
               src={servicio.fotos[0].archivo}
               alt={servicio.titulo}
               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           </div>
+        ) : (
+          <div className="aspect-[4/3] bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+            <span className="text-4xl">{catInfo?.icon || "📦"}</span>
+          </div>
         )}
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <span
-              className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
-              style={{ backgroundColor: badgeColor.bg, color: badgeColor.text, border: `1px solid ${badgeColor.border}` }}
-            >
-              {catInfo?.icon} {catInfo?.label || servicio.categoria}
-            </span>
-          </div>
-          <h3 className="font-semibold text-stone-900 transition-colors line-clamp-1">
+          <span
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium mb-2"
+            style={{ backgroundColor: badgeColor.bg, color: badgeColor.text, border: `1px solid ${badgeColor.border}` }}
+          >
+            {catInfo?.icon} {catInfo?.label || servicio.categoria}
+          </span>
+          <h3 className="font-semibold text-stone-900 line-clamp-1">
             {servicio.titulo}
           </h3>
           <p className="text-sm text-stone-500 line-clamp-2 mt-1 mb-3">

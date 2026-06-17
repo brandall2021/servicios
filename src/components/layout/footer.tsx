@@ -37,8 +37,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-stone-200/60 bg-stone-50/80 mt-auto relative">
-      <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: "#FF8A00" }} />
+    <footer className="mt-auto relative" style={{ backgroundColor: "#0B2A55" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="py-12 sm:py-16">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
@@ -47,15 +46,15 @@ export function Footer() {
                 <div className="h-7 w-7 rounded-lg overflow-hidden">
                   <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
                 </div>
-                <span className="font-semibold text-sm text-stone-900 tracking-tight">Servicios</span>
+                <span className="font-semibold text-sm text-white tracking-tight">Servicios</span>
               </Link>
-              <p className="text-xs text-stone-500 leading-relaxed max-w-xs">
+              <p className="text-xs text-white/60 leading-relaxed max-w-xs">
                 La plataforma que conecta clientes con profesionales verificados en Argentina. Encontrá, compará y contratá con confianza.
               </p>
             </div>
             {footerLinks.map((group) => (
               <div key={group.title}>
-                <h3 className="font-semibold text-xs text-stone-900 uppercase tracking-wider mb-3">
+                <h3 className="font-semibold text-xs text-white uppercase tracking-wider mb-3">
                   {group.title}
                 </h3>
                 <ul className="space-y-2">
@@ -63,7 +62,7 @@ export function Footer() {
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-sm text-stone-500 hover:text-[#FF8A00] transition-colors duration-200"
+                        className="text-sm text-white/70 hover:text-[#FFA733] transition-colors duration-200"
                       >
                         {link.label}
                       </Link>
@@ -74,7 +73,7 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="py-6 border-t border-stone-200/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-stone-400">
+        <div className="py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/50">
           <p>&copy; {new Date().getFullYear()} Servicios. Todos los derechos reservados.</p>
           <p>Hecho en Argentina</p>
         </div>

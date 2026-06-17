@@ -19,6 +19,7 @@ interface ProfileFormProps {
     certifications: string | null
     zone: string | null
     availability: string | null
+    whatsapp: string | null
     role: string
   }
 }
@@ -115,6 +116,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
               placeholder="Ej: Lunes a viernes 9-18hs"
             />
           </div>
+          <Input
+            id="whatsapp"
+            name="whatsapp"
+            label="WhatsApp"
+            defaultValue={user.whatsapp || ""}
+            placeholder="Ej: +54 11 2345-6789"
+          />
         </>
       )}
 

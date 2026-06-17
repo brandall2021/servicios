@@ -9,7 +9,7 @@ export async function PUT(req: Request) {
   }
 
   try {
-    const { name, phone, description, experience, certifications, zone, availability } = await req.json()
+    const { name, phone, description, experience, certifications, zone, availability, whatsapp } = await req.json()
 
     const user = await prisma.user.update({
       where: { id: session.user.id },
@@ -21,6 +21,7 @@ export async function PUT(req: Request) {
         ...(certifications !== undefined && { certifications }),
         ...(zone !== undefined && { zone }),
         ...(availability !== undefined && { availability }),
+        ...(whatsapp !== undefined && { whatsapp }),
       },
     })
 

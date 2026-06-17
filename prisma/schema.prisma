@@ -23,6 +23,8 @@ model User {
   certifications String?
   zone          String?
   availability  String?
+  whatsapp      String?
+  trabajosRealizados Int @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -66,7 +68,7 @@ model Servicio {
 model Foto {
   id         String   @id @default(cuid())
   archivo    String
-  tipo       String   @default("SERVICIO") // SERVICIO, PERFIL, OPINION
+  tipo       String   @default("SERVICIO") // SERVICIO, PERFIL, OPINION, TRABAJO
   createdAt  DateTime @default(now())
 
   servicioId String?
