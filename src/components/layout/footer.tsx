@@ -38,7 +38,7 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="border-t border-stone-200/60 bg-stone-50/80 mt-auto relative">
-      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500/60 via-amber-500/60 via-green-500/60 via-cyan-500/60 via-blue-500/60 to-purple-500/60" />
+      <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: "#FF8A00" }} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="py-12 sm:py-16">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
@@ -63,7 +63,7 @@ export function Footer() {
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-sm text-stone-500 hover:text-blue-600 transition-colors duration-200"
+                        className="text-sm text-stone-500 hover:text-[#FF8A00] transition-colors duration-200"
                       >
                         {link.label}
                       </Link>

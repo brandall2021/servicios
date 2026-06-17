@@ -32,8 +32,8 @@ export function NearMeButton() {
       disabled={loading}
       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 w-full ${
         hasCoords
-          ? "bg-blue-50 text-blue-700 border border-blue-200"
-          : "bg-stone-50 text-stone-600 border border-stone-200 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200"
+          ? "bg-orange-50 text-orange-700 border border-orange-200"
+          : "bg-stone-50 text-stone-600 border border-stone-200 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200"
       } disabled:opacity-50`}
     >
       <Navigation className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />

@@ -1,120 +1,34 @@
-"use client"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Search, MapPin, Sparkles, BadgeCheck, Star, Shield } from "lucide-react"
-
-const quickExamples = [
-  { label: "Reparación de aire acondicionado", categoria: "hogar" },
-  { label: "Diseño de logo profesional", categoria: "diseno" },
-  { label: "Clases de inglés online", categoria: "educacion" },
-  { label: "Electricista matriculado", categoria: "hogar" },
-]
+import Link from "next/link"
 
 export function HeroSearch() {
-  const router = useRouter()
-  const [query, setQuery] = useState("")
-  const [ubicacion, setUbicacion] = useState("")
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault()
-    const params = new URLSearchParams()
-    if (query) params.set("q", query)
-    if (ubicacion) params.set("ubicacion", ubicacion)
-    router.push(`/buscar?${params.toString()}`)
-  }
-
-  function handleQuickSearch(term: string, cat: string) {
-    const params = new URLSearchParams()
-    params.set("q", term)
-    if (cat) params.set("categoria", cat)
-    router.push(`/buscar?${params.toString()}`)
-  }
-
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/60 to-transparent pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
-      <div className="absolute top-40 left-0 w-[400px] h-[400px] bg-red-100/20 rounded-full blur-3xl -translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-cyan-100/20 rounded-full blur-3xl translate-y-1/2 pointer-events-none" />
-      <div className="absolute top-1/2 left-1/3 w-[200px] h-[200px] bg-purple-100/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-xs font-medium mb-6 ring-1 ring-stone-200/60 rainbow-text shadow-sm">
-            <Sparkles className="h-3 w-3" style={{ WebkitTextFillColor: "initial", color: "#059669" }} />
-            Conectamos clientes con profesionales verificados en Argentina
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-stone-900 leading-[1.08] mb-5">
-            Encontrá el profesional
-            <br />
-            <span className="rainword">que necesitás</span>
-          </h1>
-
-          <p className="text-base sm:text-lg text-stone-600 leading-relaxed max-w-xl mb-8">
-            Buscá servicios cerca de tu ubicación, compará opiniones reales y contratá con confianza.
-          </p>
-
-          <form onSubmit={handleSearch} className="mb-4 rainbow-border" style={{ borderRadius: "16px" }}>
-            <div className="flex flex-col sm:flex-row gap-2 bg-white rounded-2xl shadow-[0_4px_24px_rgba(28,25,23,0.06)] border border-stone-200/70 p-2">
-              <div className="flex-1 flex items-center gap-2.5 px-4">
-                <Search className="h-5 w-5 text-stone-400 shrink-0" />
-                <input
-                  type="text"
-                  placeholder="¿Qué servicio estás buscando?"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1 h-11 bg-transparent outline-none text-sm text-stone-900 placeholder:text-stone-400"
-                />
-              </div>
-              <div className="flex items-center gap-2 px-3 border-t sm:border-t-0 sm:border-l border-stone-200">
-                <MapPin className="h-5 w-5 text-stone-400 shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Ubicación"
-                  value={ubicacion}
-                  onChange={(e) => setUbicacion(e.target.value)}
-                  className="h-11 bg-transparent outline-none text-sm text-stone-900 placeholder:text-stone-400 w-28 sm:w-24"
-                />
-              </div>
-              <button
-                type="submit"
-                className="h-11 px-6 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 active:scale-[0.98] transition-all duration-200 shadow-sm flex items-center justify-center gap-2"
-              >
-                <Search className="h-4 w-4" />
-                <span className="hidden sm:inline">Buscar</span>
-              </button>
-            </div>
-          </form>
-
-          <div className="flex flex-wrap items-center gap-2 mb-8">
-            <span className="text-xs text-stone-500 font-medium">Popular:</span>
-            {quickExamples.map((ex) => (
-              <button
-                key={ex.label}
-                onClick={() => handleQuickSearch(ex.label, ex.categoria)}
-                className="text-xs text-stone-600 bg-stone-100/80 hover:bg-stone-200/80 hover:text-stone-900 rounded-full px-3 py-1.5 transition-all duration-200 ring-1 ring-stone-200/60"
-              >
-                {ex.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-5 text-xs text-stone-500">
-            <span className="flex items-center gap-1.5">
-              <BadgeCheck className="h-4 w-4 text-blue-600" />
-              Profesionales verificados
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Star className="h-4 w-4 text-amber-500" />
-              Opiniones reales
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Shield className="h-4 w-4 text-accent-cyan" />
-              Contratá seguro
-            </span>
-          </div>
-        </div>
+    <section
+      className="relative overflow-hidden py-20 sm:py-28 lg:py-36"
+      style={{
+        background: "linear-gradient(135deg, #0B2A55, #163B70)",
+      }}
+    >
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-orange-400 blur-[100px]" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-blue-400 blur-[120px]" />
+      </div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-[1.1] mb-4">
+          Encontrá al profesional ideal
+          <br />
+          <span style={{ color: "#FF8A00" }}>para tu hogar</span>
+        </h1>
+        <p className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto mb-8">
+          Plomeros &bull; Electricistas &bull; Albañiles &bull; Diseñadores &bull; Más
+        </p>
+        <Link href="/buscar">
+          <button
+            className="btn-orange h-12 px-8 text-base font-semibold shadow-lg hover:shadow-orange-500/25"
+            style={{ borderRadius: "25px" }}
+          >
+            Buscar ahora
+          </button>
+        </Link>
       </div>
     </section>
   )

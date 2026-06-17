@@ -17,7 +17,7 @@ const steps = [
     icon: Star,
     title: "Elegí",
     description: "Compará opiniones reales de otros clientes y elegí con confianza.",
-    color: "amber",
+    color: "orange",
   },
   {
     icon: ShieldCheck,
@@ -30,7 +30,7 @@ const steps = [
 const stepColors: Record<string, { bg: string; icon: string }> = {
   blue: { bg: "bg-blue-100", icon: "text-blue-600" },
   cyan: { bg: "bg-cyan-100", icon: "text-cyan-600" },
-  amber: { bg: "bg-amber-100", icon: "text-amber-600" },
+  orange: { bg: "bg-orange-100", icon: "text-orange-600" },
   purple: { bg: "bg-purple-100", icon: "text-purple-600" },
 }
 
@@ -39,7 +39,7 @@ export function TrustMetrics() {
     <section className="bg-stone-50/80 border-y border-stone-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <div className="text-center mb-12">
-          <span className="text-xs font-semibold tracking-widest uppercase rainbow-text">
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#FF8A00" }}>
             Cómo funciona
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 mt-1">

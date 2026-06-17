@@ -89,7 +89,7 @@ export default function RegisterPage() {
               </label>
               <select
                 name="role"
-                className="flex h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 defaultValue="CLIENT"
               >
                 <option value="CLIENT">Cliente - Quiero contratar servicios</option>
@@ -148,7 +148,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-sm text-zinc-500 mt-6">
             ¿Ya tenés cuenta?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline font-medium">
+            <Link href="/login" className="text-orange-600 hover:underline font-medium">
               Iniciar sesión
             </Link>
           </p>

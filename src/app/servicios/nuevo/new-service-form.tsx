@@ -153,7 +153,7 @@ export function NewServiceForm() {
                 )
               }}
               disabled={gettingLocation}
-              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50"
+              className="flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-medium disabled:opacity-50"
             >
               <Navigation className="h-4 w-4" />
               {gettingLocation ? "Obteniendo ubicación..." : locationCoords ? "Ubicación obtenida ✓" : "Usar ubicación actual"}
@@ -196,7 +196,7 @@ export function NewServiceForm() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingPhoto}
-              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium disabled:opacity-50"
+              className="flex items-center gap-2 text-sm text-orange-600 hover:text-orange-700 font-medium disabled:opacity-50"
             >
               <Upload className="h-4 w-4" />
               {uploadingPhoto ? "Subiendo..." : "Agregar foto"}

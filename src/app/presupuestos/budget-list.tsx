@@ -35,7 +35,7 @@ export function BudgetList({ requests, rol }: { requests: BudgetRequestItem[]; r
           <Link
             key={r.id}
             href={`/presupuestos/${r.id}`}
-            className="block bg-white rounded-xl border border-stone-200/70 p-4 hover:border-blue-200/80 hover:shadow-[0_4px_16px_rgba(5,150,105,0.06)] transition-all duration-200"
+            className="block bg-white rounded-xl border border-stone-200/70 p-4 hover:border-orange-200/80 hover:shadow-[0_4px_16px_rgba(5,150,105,0.06)] transition-all duration-200"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">

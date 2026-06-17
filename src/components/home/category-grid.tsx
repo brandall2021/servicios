@@ -51,14 +51,14 @@ export function CategoryGrid() {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
       <div className="flex items-end justify-between mb-8">
         <div>
-          <span className="text-xs font-semibold tracking-widest uppercase rainbow-text">Categorías</span>
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#FF8A00" }}>Categorías</span>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 mt-1">
             ¿Qué necesitás?
           </h2>
         </div>
         <Link
           href="/buscar"
-          className="hidden sm:inline-flex text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+          className="hidden sm:inline-flex text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors"
         >
           Ver todas &rarr;
         </Link>
@@ -71,15 +71,15 @@ export function CategoryGrid() {
             <Link
               key={cat.value}
               href={`/buscar?categoria=${cat.value}`}
-              className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-white border border-stone-200/70 hover:border-blue-200/80 hover:bg-blue-50/40 transition-all duration-200 hover:shadow-[0_4px_16px_rgba(5,150,105,0.08)] active:scale-[0.98]"
+              className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-white border border-stone-200/70 hover:border-orange-200/80 hover:bg-orange-50/40 transition-all duration-200 hover:shadow-[0_4px_16px_rgba(255,138,0,0.12)] active:scale-[0.98]"
             >
               <div
-                className="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-200 group-hover:bg-blue-100"
+                className="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-200 group-hover:bg-orange-100"
                 style={{ backgroundColor: color.bg }}
               >
-                <Icon className="h-5 w-5 transition-colors duration-200 group-hover:text-blue-600" style={{ color: color.icon }} />
+                <Icon className="h-5 w-5 transition-colors duration-200 group-hover:text-orange-600" style={{ color: color.icon }} />
               </div>
-              <span className="text-xs sm:text-sm font-medium text-stone-700 group-hover:text-blue-700 text-center transition-colors duration-200">
+              <span className="text-xs sm:text-sm font-medium text-stone-700 group-hover:text-orange-700 text-center transition-colors duration-200">
                 {cat.label}
               </span>
             </Link>
@@ -87,7 +87,7 @@ export function CategoryGrid() {
         })}
       </div>
       <div className="mt-6 text-center sm:hidden">
-        <Link href="/buscar" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+        <Link href="/buscar" className="text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors">
           Ver todas las categorías &rarr;
         </Link>
       </div>

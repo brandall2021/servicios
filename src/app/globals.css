@@ -1,23 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf9;
+  --background: #f5f5f0;
   --foreground: #1c1917;
-  --brand: #2563eb;
-  --brand-dark: #1d4ed8;
-  --brand-light: #dbeafe;
-  --brand-glow: rgba(37, 99, 235, 0.08);
+  --brand: #FF8A00;
+  --brand-dark: #e67a00;
+  --brand-light: #fff3e0;
+  --brand-glow: rgba(255, 138, 0, 0.12);
   --card: #ffffff;
   --card-border: rgba(28, 25, 23, 0.08);
   --muted: #78716c;
   --subtle: #e7e5e4;
 
-  --accent-red: #ff0000;
-  --accent-cyan: #00ffff;
-  --accent-green: #00ff00;
-  --accent-blue: #0000ff;
-  --accent-magenta: #ff00ff;
-  --accent-yellow: #ffff00;
+  --navy: #0B2A55;
+  --navy-light: #163B70;
 }
 
 @theme inline {
@@ -28,12 +24,8 @@
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
   --color-brand-light: var(--brand-light);
-  --color-accent-red: var(--accent-red);
-  --color-accent-cyan: var(--accent-cyan);
-  --color-accent-green: var(--accent-green);
-  --color-accent-blue: var(--accent-blue);
-  --color-accent-magenta: var(--accent-magenta);
-  --color-accent-yellow: var(--accent-yellow);
+  --color-navy: #0B2A55;
+  --color-navy-light: #163B70;
 }
 
 body {
@@ -48,49 +40,31 @@ body {
   color: var(--brand-dark);
 }
 
-.rainbow-text {
-  background: linear-gradient(90deg, var(--accent-red), var(--accent-yellow), var(--accent-green), var(--accent-cyan), var(--accent-blue), var(--accent-magenta));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Card styles */
+.card-service {
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
-.rainbow-border {
-  position: relative;
+.card-service:hover {
+  border-color: #FF8A00;
+  box-shadow: 0 10px 30px rgba(255, 138, 0, 0.15);
 }
 
-.rainbow-border::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--accent-red), var(--accent-yellow), var(--accent-green), var(--accent-cyan), var(--accent-blue), var(--accent-magenta));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+/* Orange button */
+.btn-orange {
+  background: #FF8A00;
+  color: white;
+  border-radius: 25px;
+  transition: all 0.2s ease;
 }
 
-.rainbow-bg-subtle {
-  background: linear-gradient(135deg, rgba(255,0,0,0.08), rgba(255,255,0,0.08), rgba(0,255,0,0.08), rgba(0,255,255,0.08), rgba(0,0,255,0.08), rgba(255,0,255,0.08));
-}
-
-.rainbow-divider {
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-red), var(--accent-yellow), var(--accent-green), var(--accent-cyan), var(--accent-blue), var(--accent-magenta));
-  border-radius: 2px;
-}
-
-.rainbow-glow {
-  background: radial-gradient(ellipse at center, rgba(255,0,0,0.15), rgba(0,255,0,0.15), rgba(0,255,255,0.15), rgba(255,0,255,0.05));
-}
-
-.rainword {
-  background: linear-gradient(135deg, var(--accent-red), var(--accent-yellow), var(--accent-green), var(--accent-cyan), var(--accent-blue), var(--accent-magenta));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.btn-orange:hover {
+  background: #e67a00;
+  transform: translateY(-1px);
 }
 
 @keyframes fade-up {

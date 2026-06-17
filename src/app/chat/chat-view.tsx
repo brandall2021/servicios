@@ -120,7 +120,7 @@ export function ChatView({
                 key={chat.id}
                 onClick={() => setActiveChatId(chat.id)}
                 className={`w-full flex items-center gap-3 p-4 hover:bg-zinc-50 transition-colors text-left ${
-                  activeChatId === chat.id ? "bg-blue-50" : ""
+                  activeChatId === chat.id ? "bg-orange-50" : ""
                 }`}
               >
                 <Avatar src={chat.otherUser.image} fallback={chat.otherUser.name} size="md" />
@@ -181,7 +181,7 @@ export function ChatView({
                   <div
                     className={`max-w-[70%] rounded-2xl px-4 py-2 ${
                       msg.emisorId === currentUserId
-                        ? "bg-blue-600 text-white"
+                        ? "bg-orange-600 text-white"
                         : "bg-zinc-100 text-zinc-900"
                     }`}
                   >
@@ -189,7 +189,7 @@ export function ChatView({
                     <p
                       className={`text-xs mt-1 ${
                         msg.emisorId === currentUserId
-                          ? "text-blue-200"
+                          ? "text-orange-200"
                           : "text-zinc-400"
                       }`}
                     >

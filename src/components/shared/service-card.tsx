@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { StarRating } from "./star-rating"
 import { Avatar } from "../ui/avatar"
-import { Card, CardContent } from "../ui/card"
 import { MapPin } from "lucide-react"
 import type { ServicioWithRelations } from "@/types"
 import { CATEGORIAS } from "@/lib/constants"
@@ -36,9 +35,9 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
 
   return (
     <Link href={`/servicios/${servicio.id}`}>
-      <Card className="group hover:shadow-[0_8px_24px_rgba(28,25,23,0.06)] transition-all duration-200 hover:-translate-y-0.5 overflow-hidden rounded-xl border border-stone-200/70 bg-white">
+      <div className="card-service overflow-hidden">
         {servicio.fotos[0] && (
-          <div className="aspect-[16/9] overflow-hidden bg-stone-100">
+          <div className="aspect-[16/9] overflow-hidden bg-stone-100 rounded-t-[18px]">
             <img
               src={servicio.fotos[0].archivo}
               alt={servicio.titulo}
@@ -46,7 +45,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
             />
           </div>
         )}
-        <CardContent className="p-4">
+        <div className="p-4">
           <div className="flex items-center gap-2 mb-2">
             <span
               className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
@@ -55,7 +54,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
               {catInfo?.icon} {catInfo?.label || servicio.categoria}
             </span>
           </div>
-          <h3 className="font-semibold text-stone-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+          <h3 className="font-semibold text-stone-900 transition-colors line-clamp-1">
             {servicio.titulo}
           </h3>
           <p className="text-sm text-stone-500 line-clamp-2 mt-1 mb-3">
@@ -74,7 +73,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
             <MapPin className="h-3 w-3" />
             {servicio.ubicacion || "Ubicación no especificada"}
             {servicio.distance !== null && servicio.distance !== undefined && (
-              <span className="ml-auto font-medium text-blue-600">
+              <span className="ml-auto font-medium" style={{ color: "#FF8A00" }}>
                 {servicio.distance < 1
                   ? `${Math.round(servicio.distance * 1000)}m`
                   : `${servicio.distance.toFixed(1)}km`}
@@ -82,12 +81,12 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
             )}
           </div>
           {servicio.precio && (
-            <div className="mt-2 text-lg font-bold text-blue-600">
+            <div className="mt-2 text-lg font-bold" style={{ color: "#FF8A00" }}>
               ${servicio.precio.toLocaleString("es-AR")}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </Link>
   )
 }

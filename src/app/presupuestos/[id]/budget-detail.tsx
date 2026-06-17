@@ -111,7 +111,7 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
             <h1 className="text-xl font-bold text-stone-900">Presupuesto</h1>
             <Badge variant={st.variant}>{st.label}</Badge>
           </div>
-          <Link href={`/servicios/${request.servicio.id}`} className="text-sm text-blue-600 hover:underline">
+          <Link href={`/servicios/${request.servicio.id}`} className="text-sm text-orange-600 hover:underline">
             {request.servicio.titulo}
           </Link>
         </div>
@@ -122,7 +122,7 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
           <Card>
             <CardContent className="p-5">
               <h2 className="font-semibold text-stone-900 mb-2 flex items-center gap-2">
-                <FileText className="h-4 w-4 text-blue-600" /> Detalle de la solicitud
+                <FileText className="h-4 w-4 text-orange-600" /> Detalle de la solicitud
               </h2>
               <p className="text-sm text-stone-600 whitespace-pre-wrap">{request.description || "Sin descripción"}</p>
 
@@ -134,7 +134,7 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
                   <ul className="space-y-1">
                     {materiales.map((m, i) => (
                       <li key={i} className="text-sm text-stone-600 flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
                         {m}
                       </li>
                     ))}
@@ -148,16 +148,16 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
             <Card>
               <CardContent className="p-5">
                 <h2 className="font-semibold text-stone-900 mb-3 flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-blue-600" /> Cotizaciones
+                  <DollarSign className="h-4 w-4 text-orange-600" /> Cotizaciones
                 </h2>
                 <div className="space-y-3">
                   {request.cotizaciones.map((q) => (
-                    <div key={q.id} className={`p-4 rounded-xl border ${q.id === bestQuote?.id ? "border-blue-200 bg-blue-50/40" : "border-stone-200/70 bg-white"}`}>
+                    <div key={q.id} className={`p-4 rounded-xl border ${q.id === bestQuote?.id ? "border-orange-200 bg-orange-50/40" : "border-stone-200/70 bg-white"}`}>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-medium text-stone-500 uppercase tracking-wider">
                           Versión {q.version}
                           {q.id === bestQuote?.id && request.cotizaciones.length > 1 && (
-                            <span className="ml-2 text-blue-600 font-semibold">(última)</span>
+                            <span className="ml-2 text-orange-600 font-semibold">(última)</span>
                           )}
                         </span>
                         <span className="text-xs text-stone-400">{new Date(q.createdAt).toLocaleDateString("es-AR")}</span>
@@ -245,9 +245,9 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
           </Card>
 
           {!isProvider && request.status === "COTIZADO" && bestQuote && (
-            <Card className="border-blue-200 bg-blue-50/40">
+            <Card className="border-orange-200 bg-orange-50/40">
               <CardContent className="p-5">
-                <span className="text-xs font-semibold text-blue-700 uppercase tracking-wider">Cotización actual</span>
+                <span className="text-xs font-semibold text-orange-700 uppercase tracking-wider">Cotización actual</span>
                 <p className="text-2xl font-bold text-stone-900 mt-1">${bestQuote.amount.toLocaleString("es-AR")}</p>
               </CardContent>
             </Card>

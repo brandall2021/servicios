@@ -43,7 +43,7 @@ export function StarRating({
           >
             <span
               className={
-                star <= (hover || value) ? "text-yellow-400" : "text-zinc-300"
+                star <= (hover || value) ? "text-[#FF8A00]" : "text-zinc-300"
               }
             >
               &#9733;

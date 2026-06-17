@@ -78,7 +78,7 @@ export function AdminReportList({ reports }: { reports: Report[] }) {
                   <div className="flex flex-wrap gap-3 mt-2 text-xs text-zinc-500">
                     <span>Denunciante: {r.denunciante.name}</span>
                     {r.servicio && (
-                      <Link href={`/servicios/${r.servicio.id}`} className="flex items-center gap-1 text-blue-600 hover:underline">
+                      <Link href={`/servicios/${r.servicio.id}`} className="flex items-center gap-1 text-orange-600 hover:underline">
                         <LinkIcon className="h-3 w-3" /> {r.servicio.titulo}
                       </Link>
                     )}

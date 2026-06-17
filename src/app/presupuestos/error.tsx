@@ -13,7 +13,7 @@ export default function PresupuestosError({
       <p className="text-sm text-stone-500 mb-6">No pudimos cargar los presupuestos. Intentalo de nuevo.</p>
       <button
         onClick={reset}
-        className="h-10 px-6 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
+        className="h-10 px-6 bg-orange-600 text-white rounded-xl text-sm font-medium hover:bg-orange-700 transition-colors"
       >
         Reintentar
       </button>
