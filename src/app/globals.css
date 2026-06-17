@@ -11,6 +11,12 @@
   --card-border: rgba(28, 25, 23, 0.08);
   --muted: #78716c;
   --subtle: #e7e5e4;
+
+  --accent-red: #ef4444;
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-amber: #f59e0b;
+  --accent-purple: #a855f7;
 }
 
 @theme inline {
@@ -21,6 +27,11 @@
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
   --color-brand-light: var(--brand-light);
+  --color-accent-red: var(--accent-red);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-purple: var(--accent-purple);
 }
 
 body {
@@ -33,6 +44,30 @@ body {
 ::selection {
   background: var(--brand-light);
   color: var(--brand-dark);
+}
+
+.rainbow-text {
+  background: linear-gradient(90deg, var(--accent-red), var(--accent-amber), var(--brand), var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rainbow-border {
+  position: relative;
+}
+
+.rainbow-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent-red), var(--accent-amber), var(--brand), var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 @keyframes fade-up {

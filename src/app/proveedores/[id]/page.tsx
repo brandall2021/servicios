@@ -120,7 +120,7 @@ export default async function ProveedorPage({ params }: Props) {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <Award className="h-5 w-5 text-blue-600" />
+                  <Award className="h-5 w-5 text-cyan-600" />
                   <h2 className="text-lg font-semibold text-zinc-900">Experiencia</h2>
                 </div>
                 <p className="text-zinc-600 text-sm whitespace-pre-line">{provider.experience}</p>

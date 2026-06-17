@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { CATEGORIAS, PROVINCIAS_ARGENTINA } from "@/lib/constants"
-import { MapPin, Navigation } from "lucide-react"
+import { Navigation, Upload, X } from "lucide-react"
 
 export function NewServiceForm() {
   const router = useRouter()
@@ -16,6 +16,34 @@ export function NewServiceForm() {
   const [error, setError] = useState("")
   const [gettingLocation, setGettingLocation] = useState(false)
   const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [photos, setPhotos] = useState<string[]>([])
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploadingPhoto(true)
+    const formData = new FormData()
+    formData.append("file", file)
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    })
+
+    if (res.ok) {
+      const data = await res.json()
+      setPhotos((prev) => [...prev, data.archivo])
+    }
+    setUploadingPhoto(false)
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }
+
+  function removePhoto(index: number) {
+    setPhotos((prev) => prev.filter((_, i) => i !== index))
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -30,6 +58,7 @@ export function NewServiceForm() {
     })
 
     if (data.precio) data.precio = parseFloat(data.precio)
+    if (photos.length > 0) data.fotos = photos
 
     const res = await fetch("/api/servicios", {
       method: "POST",
@@ -137,6 +166,42 @@ export function NewServiceForm() {
             label="Disponibilidad"
             placeholder="Ej: Lunes a viernes 9-18hs"
           />
+
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 mb-1.5">
+              Fotos del servicio
+            </label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {photos.map((photo, i) => (
+                <div key={i} className="relative h-20 w-20 rounded-lg overflow-hidden border border-zinc-200">
+                  <img src={photo} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(i)}
+                    className="absolute top-0.5 right-0.5 h-5 w-5 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handlePhotoUpload}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingPhoto}
+              className="flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium disabled:opacity-50"
+            >
+              <Upload className="h-4 w-4" />
+              {uploadingPhoto ? "Subiendo..." : "Agregar foto"}
+            </button>
+          </div>
 
           {error && (
             <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">

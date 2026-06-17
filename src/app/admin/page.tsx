@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, Star, AlertTriangle, Ban } from "lucide-react"
+import { Users, Briefcase, Star, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 
 export default async function AdminPage() {
@@ -101,9 +101,9 @@ export default async function AdminPage() {
           <CardContent className="space-y-3">
             <Link
               href="/admin/usuarios"
-              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-emerald-50 transition-colors"
             >
-              <Users className="h-5 w-5 text-blue-600" />
+              <Users className="h-5 w-5 text-emerald-600" />
               <div>
                 <p className="font-medium text-zinc-900">Usuarios</p>
                 <p className="text-sm text-zinc-500">Verificar, bloquear o eliminar usuarios</p>
@@ -111,9 +111,9 @@ export default async function AdminPage() {
             </Link>
             <Link
               href="/admin/servicios"
-              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-emerald-50 transition-colors"
             >
-              <Briefcase className="h-5 w-5 text-green-600" />
+              <Briefcase className="h-5 w-5 text-emerald-600" />
               <div>
                 <p className="font-medium text-zinc-900">Servicios</p>
                 <p className="text-sm text-zinc-500">Activar o desactivar servicios publicados</p>
@@ -121,9 +121,9 @@ export default async function AdminPage() {
             </Link>
             <Link
               href="/admin/denuncias"
-              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-blue-50 transition-colors"
+              className="flex items-center gap-3 p-3 rounded-lg bg-zinc-50 hover:bg-emerald-50 transition-colors"
             >
-              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
               <div>
                 <p className="font-medium text-zinc-900">Denuncias</p>
                 <p className="text-sm text-zinc-500">

@@ -13,25 +13,25 @@ const footerLinks = [
   {
     title: "Ayuda",
     links: [
-      { label: "Centro de ayuda", href: "#" },
-      { label: "Seguridad", href: "#" },
-      { label: "Términos y condiciones", href: "#" },
+      { label: "Centro de ayuda", href: "/buscar" },
+      { label: "Seguridad", href: "/buscar" },
+      { label: "Términos y condiciones", href: "/buscar" },
     ],
   },
   {
     title: "Compañía",
     links: [
-      { label: "Sobre nosotros", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Contacto", href: "#" },
+      { label: "Sobre nosotros", href: "/buscar" },
+      { label: "Blog", href: "/buscar" },
+      { label: "Contacto", href: "/buscar" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Privacidad", href: "#" },
-      { label: "Términos de uso", href: "#" },
-      { label: "Cookies", href: "#" },
+      { label: "Privacidad", href: "/buscar" },
+      { label: "Términos de uso", href: "/buscar" },
+      { label: "Cookies", href: "/buscar" },
     ],
   },
 ]

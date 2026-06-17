@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { servicioId, puntuacion, comentario, recaptchaToken } = await req.json()
+    const { servicioId, puntuacion, comentario, recaptchaToken, fotos } = await req.json()
 
     if (!recaptchaToken) {
       return NextResponse.json({ error: "reCAPTCHA requerido" }, { status: 400 })
@@ -64,6 +64,9 @@ export async function POST(req: Request) {
         comentario,
         servicioId,
         clienteId: session.user.id,
+        fotos: fotos?.length
+          ? { create: fotos.map((archivo: string) => ({ archivo, tipo: "OPINION" })) }
+          : undefined,
       },
     })
 

@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Search, MapPin, Sparkles, BadgeCheck, Star, Shield } from "lucide-react"
-import { CATEGORIAS } from "@/lib/constants"
 
 const quickExamples = [
   { label: "Reparación de aire acondicionado", categoria: "hogar" },
@@ -15,14 +14,12 @@ const quickExamples = [
 export function HeroSearch() {
   const router = useRouter()
   const [query, setQuery] = useState("")
-  const [categoria, setCategoria] = useState("")
   const [ubicacion, setUbicacion] = useState("")
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     const params = new URLSearchParams()
     if (query) params.set("q", query)
-    if (categoria) params.set("categoria", categoria)
     if (ubicacion) params.set("ubicacion", ubicacion)
     router.push(`/buscar?${params.toString()}`)
   }
@@ -40,8 +37,8 @@ export function HeroSearch() {
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-32">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-xs font-medium text-emerald-800 mb-6 ring-1 ring-emerald-200/50">
-            <Sparkles className="h-3 w-3" />
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-xs font-medium mb-6 ring-1 ring-emerald-200/50 rainbow-text">
+            <Sparkles className="h-3 w-3" style={{ WebkitTextFillColor: "initial" }} />
             Conectamos clientes con profesionales verificados en Argentina
           </div>
 

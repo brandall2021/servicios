@@ -9,7 +9,7 @@ import { Avatar } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, FileText, CheckCircle, XCircle, RefreshCw, DollarSign, Package, User, Calendar } from "lucide-react"
+import { ArrowLeft, FileText, CheckCircle, XCircle, RefreshCw, DollarSign, Package, Calendar } from "lucide-react"
 
 interface BudgetRequestDetail {
   id: string
@@ -44,7 +44,7 @@ const statusStyles: Record<string, { label: string; variant: "warning" | "defaul
   REVISION: { label: "En revisión", variant: "secondary" },
 }
 
-export function BudgetDetail({ request, currentUserId, isProvider }: { request: BudgetRequestDetail; currentUserId: string; isProvider: boolean }) {
+export function BudgetDetail({ request, currentUserId: _currentUserId, isProvider }: { request: BudgetRequestDetail; currentUserId: string; isProvider: boolean }) {
   const router = useRouter()
   const st = statusStyles[request.status] || { label: request.status, variant: "secondary" }
   const materiales = request.materiales ? (JSON.parse(request.materiales) as string[]) : []
@@ -98,8 +98,6 @@ export function BudgetDetail({ request, currentUserId, isProvider }: { request: 
 
   const canQuote = isProvider && (request.status === "PENDIENTE" || request.status === "REVISION")
   const canAccept = !isProvider && request.status === "COTIZADO"
-  const canReject = !isProvider && (request.status === "COTIZADO" || request.status === "COTIZADO")
-  const canRequestRevision = !isProvider && request.status === "COTIZADO"
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">

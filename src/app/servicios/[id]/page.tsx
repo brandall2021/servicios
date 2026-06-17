@@ -122,7 +122,7 @@ export default async function ServicioDetailPage({ params }: Props) {
 
           {servicio.disponibilidad && (
             <div className="flex items-center gap-2 text-sm text-zinc-600 bg-zinc-50 rounded-lg p-4">
-              <Calendar className="h-4 w-4 text-blue-600" />
+              <Calendar className="h-4 w-4 text-cyan-600" />
               <span className="font-medium">Disponibilidad:</span> {servicio.disponibilidad}
             </div>
           )}

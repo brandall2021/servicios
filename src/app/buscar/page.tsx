@@ -68,12 +68,12 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
 
   if (params.q) {
     where.OR = [
-      { titulo: { contains: params.q } },
-      { descripcion: { contains: params.q } },
+      { titulo: { contains: params.q, mode: "insensitive" } },
+      { descripcion: { contains: params.q, mode: "insensitive" } },
     ]
   }
   if (params.categoria) where.categoria = params.categoria
-  if (params.ubicacion) where.ubicacion = { contains: params.ubicacion }
+  if (params.ubicacion) where.ubicacion = { contains: params.ubicacion, mode: "insensitive" }
 
   const servicios = await prisma.servicio.findMany({
     where,
@@ -116,7 +116,7 @@ export default async function BuscarPage({ searchParams }: Props) {
                   href="/buscar"
                   className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                     !selectedCategoria
-                      ? "bg-blue-50 text-blue-700 font-medium"
+                      ? "bg-emerald-50 text-emerald-700 font-medium"
                       : "text-zinc-600 hover:bg-zinc-50"
                   }`}
                 >
@@ -128,7 +128,7 @@ export default async function BuscarPage({ searchParams }: Props) {
                     href={`/buscar?categoria=${cat.value}`}
                     className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                       selectedCategoria === cat.value
-                        ? "bg-blue-50 text-blue-700 font-medium"
+                        ? "bg-emerald-50 text-emerald-700 font-medium"
                         : "text-zinc-600 hover:bg-zinc-50"
                     }`}
                   >

@@ -31,6 +31,21 @@ const iconMap: Record<string, LucideIcon> = {
   otros: Package,
 }
 
+const categoryColors: Record<string, { bg: string; icon: string }> = {
+  hogar: { bg: "#d1fae5", icon: "#059669" },
+  tecnologia: { bg: "#dbeafe", icon: "#2563eb" },
+  educacion: { bg: "#f3e8ff", icon: "#9333ea" },
+  transporte: { bg: "#fef3c7", icon: "#d97706" },
+  salud: { bg: "#fee2e2", icon: "#dc2626" },
+  diseno: { bg: "#cffafe", icon: "#0891b2" },
+  jardineria: { bg: "#d1fae5", icon: "#059669" },
+  limpieza: { bg: "#cffafe", icon: "#0891b2" },
+  mecanica: { bg: "#fef3c7", icon: "#d97706" },
+  fotografia: { bg: "#f3e8ff", icon: "#9333ea" },
+  eventos: { bg: "#fee2e2", icon: "#dc2626" },
+  otros: { bg: "#f5f5f4", icon: "#78716c" },
+}
+
 export function CategoryGrid() {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
@@ -51,14 +66,18 @@ export function CategoryGrid() {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {CATEGORIAS.map((cat) => {
           const Icon = iconMap[cat.value] || Package
+          const color = categoryColors[cat.value] || categoryColors.otros
           return (
             <Link
               key={cat.value}
               href={`/buscar?categoria=${cat.value}`}
               className="group flex flex-col items-center gap-3 p-5 rounded-xl bg-white border border-stone-200/70 hover:border-emerald-200/80 hover:bg-emerald-50/40 transition-all duration-200 hover:shadow-[0_4px_16px_rgba(5,150,105,0.08)] active:scale-[0.98]"
             >
-              <div className="h-10 w-10 rounded-xl bg-stone-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors duration-200">
-                <Icon className="h-5 w-5 text-stone-500 group-hover:text-emerald-600 transition-colors duration-200" />
+              <div
+                className="h-10 w-10 rounded-xl flex items-center justify-center transition-colors duration-200 group-hover:bg-emerald-100"
+                style={{ backgroundColor: color.bg }}
+              >
+                <Icon className="h-5 w-5 transition-colors duration-200 group-hover:text-emerald-600" style={{ color: color.icon }} />
               </div>
               <span className="text-xs sm:text-sm font-medium text-stone-700 group-hover:text-emerald-700 text-center transition-colors duration-200">
                 {cat.label}
