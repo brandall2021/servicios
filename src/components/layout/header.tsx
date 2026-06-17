@@ -67,11 +67,11 @@ export function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 shrink-0 group">
-              <div className="h-8 w-8 rounded-lg overflow-hidden ring-2 ring-white/30 group-hover:ring-white/60 transition-all">
+            <Link href="/" className="flex items-center gap-3 shrink-0 group">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden ring-2 ring-white/30 group-hover:ring-white/60 transition-all">
                 <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
               </div>
-              <span className="font-bold text-lg text-white tracking-tight hidden sm:block">Servicios</span>
+              <span className="font-bold text-xl sm:text-2xl text-white tracking-tight">Servicios</span>
             </Link>
 
             {/* Search bar */}
