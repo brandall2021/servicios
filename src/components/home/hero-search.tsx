@@ -89,12 +89,11 @@ export function HeroSearch() {
 
           <div className="flex flex-wrap items-center gap-2 mb-8">
             <span className="text-xs text-stone-500 font-medium">Popular:</span>
-            {quickExamples.map((ex, i) => (
+            {quickExamples.map((ex) => (
               <button
                 key={ex.label}
                 onClick={() => handleQuickSearch(ex.label, ex.categoria)}
                 className="text-xs text-stone-600 bg-stone-100/80 hover:bg-stone-200/80 hover:text-stone-900 rounded-full px-3 py-1.5 transition-all duration-200 ring-1 ring-stone-200/60"
-                style={i === 0 ? { ringColor: "var(--accent-red)" } : undefined}
               >
                 {ex.label}
               </button>
