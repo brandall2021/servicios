@@ -13,7 +13,7 @@ export function FeaturedServices({ servicios }: FeaturedServicesProps) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
       <div className="flex items-end justify-between mb-8">
         <div>
-          <span className="text-xs font-semibold tracking-widest text-emerald-600 uppercase">
+          <span className="text-xs font-semibold tracking-widest uppercase rainbow-text">
             Destacados
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 mt-1">

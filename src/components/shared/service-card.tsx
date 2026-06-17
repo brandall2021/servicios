@@ -1,11 +1,25 @@
 import Link from "next/link"
 import { StarRating } from "./star-rating"
 import { Avatar } from "../ui/avatar"
-import { Badge } from "../ui/badge"
 import { Card, CardContent } from "../ui/card"
 import { MapPin } from "lucide-react"
 import type { ServicioWithRelations } from "@/types"
 import { CATEGORIAS } from "@/lib/constants"
+
+const catBadgeColors: Record<string, { bg: string; text: string; border: string }> = {
+  hogar: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
+  tecnologia: { bg: "#dbeafe", text: "#1e40af", border: "#bfdbfe" },
+  educacion: { bg: "#f3e8ff", text: "#6b21a8", border: "#e9d5ff" },
+  transporte: { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
+  salud: { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" },
+  diseno: { bg: "#cffafe", text: "#155e75", border: "#a5f3fc" },
+  jardineria: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
+  limpieza: { bg: "#cffafe", text: "#155e75", border: "#a5f3fc" },
+  mecanica: { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
+  fotografia: { bg: "#f3e8ff", text: "#6b21a8", border: "#e9d5ff" },
+  eventos: { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" },
+  otros: { bg: "#f5f5f4", text: "#44403c", border: "#e7e5e4" },
+}
 
 interface ServiceCardProps {
   servicio: ServicioWithRelations
@@ -17,6 +31,8 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
     servicio.opiniones.length > 0
       ? servicio.opiniones.reduce((a, o) => a + o.puntuacion, 0) / servicio.opiniones.length
       : 0
+
+  const badgeColor = catBadgeColors[servicio.categoria] || catBadgeColors.otros
 
   return (
     <Link href={`/servicios/${servicio.id}`}>
@@ -32,7 +48,12 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
         )}
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="secondary">{catInfo?.icon} {catInfo?.label || servicio.categoria}</Badge>
+            <span
+              className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium"
+              style={{ backgroundColor: badgeColor.bg, color: badgeColor.text, border: `1px solid ${badgeColor.border}` }}
+            >
+              {catInfo?.icon} {catInfo?.label || servicio.categoria}
+            </span>
           </div>
           <h3 className="font-semibold text-stone-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
             {servicio.titulo}

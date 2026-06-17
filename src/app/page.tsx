@@ -31,8 +31,15 @@ export default async function HomePage() {
   return (
     <div>
       <HeroSearch />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="rainbow-divider" />
+      </div>
       <CategoryGrid />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="rainbow-divider" />
+      </div>
       <FeaturedServices servicios={servicios} />
+      <div className="rainbow-divider max-w-7xl mx-auto px-4 sm:px-6" />
       <TrustMetrics />
     </div>
   )

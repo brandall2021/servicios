@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
 import { Button } from "../ui/button"
 import { Avatar } from "../ui/avatar"
-import { Sparkles, PlusCircle, LayoutDashboard, MessageSquare, FileText, Menu, X } from "lucide-react"
+import { PlusCircle, LayoutDashboard, MessageSquare, FileText, Menu, X } from "lucide-react"
 import { useState } from "react"
 
 export function Header() {
@@ -13,10 +13,11 @@ export function Header() {
 
   return (
     <header className="relative z-50 pt-4 sm:pt-6">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-amber-500 via-emerald-500 via-cyan-500 via-blue-500 to-purple-500" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16 bg-white/90 backdrop-blur-xl border border-stone-200/80 rounded-2xl px-4 sm:px-6 shadow-[0_1px_2px_rgba(28,25,23,0.04)]">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="h-8 w-8 rounded-xl overflow-hidden">
+            <div className="h-8 w-8 rounded-xl overflow-hidden ring-2 ring-emerald-200/60 group-hover:ring-emerald-400/80 transition-all duration-300">
               <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
             </div>
             <span className="font-semibold text-base text-stone-900 tracking-tight">Servicios</span>
