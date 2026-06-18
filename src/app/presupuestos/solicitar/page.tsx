@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { ArrowLeft, FileText, Plus, X } from "lucide-react"
+import { ArrowLeft, FileText, Plus, X, Upload, File, Image, Loader2 } from "lucide-react"
+
+interface ArchivoSubido {
+  nombre: string
+  url: string
+  tipo: string
+}
 
 export default function SolicitarPresupuestoPage() {
   const router = useRouter()
@@ -16,6 +22,8 @@ export default function SolicitarPresupuestoPage() {
 
   const [description, setDescription] = useState("")
   const [materiales, setMateriales] = useState<string[]>([""])
+  const [archivos, setArchivos] = useState<ArchivoSubido[]>([])
+  const [subiendo, setSubiendo] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -33,6 +41,51 @@ export default function SolicitarPresupuestoPage() {
     setMateriales(copy)
   }
 
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files
+    if (!files?.length) return
+
+    for (const file of Array.from(files)) {
+      if (archivos.length >= 5) {
+        setError("Máximo 5 archivos")
+        break
+      }
+      setSubiendo(true)
+      const formData = new FormData()
+      formData.append("file", file)
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+        if (!res.ok) {
+          const err = await res.json()
+          setError(err.error || "Error al subir archivo")
+          continue
+        }
+        const data = await res.json()
+        setArchivos((prev) => [...prev, { nombre: file.name, url: data.archivo, tipo: file.type }])
+      } catch {
+        setError("Error al subir archivo")
+      } finally {
+        setSubiendo(false)
+      }
+    }
+    e.target.value = ""
+  }
+
+  function removeArchivo(i: number) {
+    setArchivos(archivos.filter((_, idx) => idx !== i))
+  }
+
+  function isImage(tipo: string) {
+    return tipo.startsWith("image/")
+  }
+
+  function fileName(nombre: string) {
+    return nombre.length > 30 ? nombre.slice(0, 27) + "..." : nombre
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!servicioId) return
@@ -47,6 +100,7 @@ export default function SolicitarPresupuestoPage() {
         servicioId,
         description,
         materiales: filtered.length > 0 ? JSON.stringify(filtered) : null,
+        archivos: archivos.length > 0 ? JSON.stringify(archivos) : null,
       }),
     })
 
@@ -122,13 +176,66 @@ export default function SolicitarPresupuestoPage() {
               </button>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1.5">
+                Archivos adjuntos
+              </label>
+              <p className="text-xs text-stone-400 mb-3">
+                Opcional. Adjuntá imágenes, planos, presupuestos previos o documentos relevantes (máx. 5 archivos, 10MB c/u).
+              </p>
+
+              {archivos.length > 0 && (
+                <div className="space-y-2 mb-3">
+                  {archivos.map((a, i) => (
+                    <div key={i} className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 p-2.5">
+                      {isImage(a.tipo) ? (
+                        <div className="h-10 w-10 rounded-lg overflow-hidden shrink-0 bg-stone-100">
+                          <img src={a.url} alt={a.nombre} className="h-full w-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                          <File className="h-5 w-5 text-blue-600" />
+                        </div>
+                      )}
+                      <span className="text-sm text-stone-600 flex-1 truncate">{fileName(a.nombre)}</span>
+                      <button type="button" onClick={() => removeArchivo(i)} className="p-1 rounded-lg hover:bg-red-50 text-stone-400 hover:text-red-600 transition-colors">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <label className={`flex items-center justify-center gap-2 p-4 rounded-lg border-2 border-dashed border-stone-300 cursor-pointer hover:border-orange-400 hover:bg-orange-50/50 transition-colors ${subiendo ? "opacity-50 pointer-events-none" : ""}`}>
+                {subiendo ? (
+                  <Loader2 className="h-5 w-5 text-stone-400 animate-spin" />
+                ) : (
+                  <Upload className="h-5 w-5 text-stone-400" />
+                )}
+                <span className="text-sm text-stone-500 font-medium">
+                  {subiendo ? "Subiendo..." : "Hacé clic para adjuntar archivos"}
+                </span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  disabled={subiendo || archivos.length >= 5}
+                />
+              </label>
+              {archivos.length >= 5 && (
+                <p className="text-xs text-amber-600 mt-1">Máximo 5 archivos alcanzado</p>
+              )}
+            </div>
+
             {error && (
               <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
                 {error}
               </div>
             )}
 
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading || subiendo} className="w-full">
               {loading ? "Enviando..." : "Enviar solicitud de presupuesto"}
             </Button>
           </form>

@@ -9,12 +9,19 @@ import { Avatar } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, FileText, CheckCircle, XCircle, RefreshCw, DollarSign, Package, Calendar } from "lucide-react"
+import { ArrowLeft, FileText, CheckCircle, XCircle, RefreshCw, DollarSign, Package, Calendar, Paperclip, File, Image } from "lucide-react"
+
+interface ArchivoAdjunto {
+  nombre: string
+  url: string
+  tipo: string
+}
 
 interface BudgetRequestDetail {
   id: string
   description: string | null
   materiales: string | null
+  archivos: string | null
   status: string
   createdAt: string
   servicio: {
@@ -48,6 +55,7 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
   const router = useRouter()
   const st = statusStyles[request.status] || { label: request.status, variant: "secondary" }
   const materiales = request.materiales ? (JSON.parse(request.materiales) as string[]) : []
+  const archivos: ArchivoAdjunto[] = request.archivos ? (JSON.parse(request.archivos) as ArchivoAdjunto[]) : []
   const bestQuote = request.cotizaciones[0]
 
   const [showQuoteForm, setShowQuoteForm] = useState(false)
@@ -139,6 +147,32 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {archivos.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="text-sm font-medium text-stone-800 mb-2 flex items-center gap-1.5">
+                    <Paperclip className="h-4 w-4 text-stone-500" /> Archivos adjuntos ({archivos.length})
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {archivos.map((a, i) => (
+                      <a
+                        key={i}
+                        href={a.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 hover:bg-stone-100 hover:border-stone-300 transition-colors"
+                      >
+                        {a.tipo.startsWith("image/") ? (
+                          <Image className="h-4 w-4 text-orange-600" />
+                        ) : (
+                          <File className="h-4 w-4 text-blue-600" />
+                        )}
+                        <span className="truncate max-w-[200px]">{a.nombre}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>

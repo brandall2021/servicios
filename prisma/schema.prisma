@@ -147,6 +147,7 @@ model BudgetRequest {
   id          String   @id @default(cuid())
   description String?
   materiales  String?
+  archivos    String?  // JSON array de {nombre, url, tipo}
   status      String   @default("PENDIENTE") // PENDIENTE, COTIZADO, ACEPTADO, RECHAZADO, REVISION
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

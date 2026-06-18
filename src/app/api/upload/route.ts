@@ -1,6 +1,19 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 
+const MAX_SIZE = 10 * 1024 * 1024 // 10MB
+
+const VALID_TYPES: Record<string, string[]> = {
+  image: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+  document: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ],
+}
+
 export async function POST(req: Request) {
   const session = await auth()
   if (!session?.user) {
@@ -14,13 +27,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No se envió ningún archivo" }, { status: 400 })
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: "La imagen no puede superar los 5MB" }, { status: 400 })
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: "El archivo no puede superar los 10MB" }, { status: 400 })
     }
 
-    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"]
-    if (!validTypes.includes(file.type)) {
-      return NextResponse.json({ error: "Formato no válido. Usá JPG, PNG, WebP o GIF" }, { status: 400 })
+    const allValid = [...VALID_TYPES.image, ...VALID_TYPES.document]
+    if (!allValid.includes(file.type)) {
+      return NextResponse.json({
+        error: "Formato no válido. Usá JPG, PNG, WebP, GIF, PDF, Word o Excel",
+      }, { status: 400 })
     }
 
     const bytes = await file.arrayBuffer()
@@ -29,6 +44,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ archivo: base64 })
   } catch {
-    return NextResponse.json({ error: "Error al procesar la imagen" }, { status: 500 })
+    return NextResponse.json({ error: "Error al procesar el archivo" }, { status: 500 })
   }
 }

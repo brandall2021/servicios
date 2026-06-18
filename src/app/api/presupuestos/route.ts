@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { servicioId, description, materiales } = await req.json()
+    const { servicioId, description, materiales, archivos } = await req.json()
     if (!servicioId) {
       return NextResponse.json({ error: "Falta el servicio" }, { status: 400 })
     }
@@ -26,6 +26,7 @@ export async function POST(req: Request) {
       data: {
         description,
         materiales,
+        archivos: archivos || null,
         servicioId,
         clienteId: session.user.id,
       },

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { FileText, Eye } from "lucide-react"
+import { FileText, Eye, Paperclip } from "lucide-react"
 import Link from "next/link"
 
 interface BudgetQuote {
@@ -21,6 +21,7 @@ interface BudgetRequest {
   id: string
   description: string | null
   materiales: string | null
+  archivos: string | null
   status: string
   createdAt: Date
   cliente: { id: string; name: string; email: string }
@@ -84,6 +85,13 @@ export function AdminPresupuestosList({ requests }: { requests: BudgetRequest[] 
                   {r.materiales && (
                     <p className="text-xs text-zinc-500 mt-1">
                       <span className="font-medium">Materiales:</span> {r.materiales}
+                    </p>
+                  )}
+
+                  {r.archivos && JSON.parse(r.archivos).length > 0 && (
+                    <p className="text-xs text-zinc-500 mt-1 flex items-center gap-1">
+                      <Paperclip className="h-3 w-3" />
+                      <span className="font-medium">{JSON.parse(r.archivos).length} archivo(s) adjunto(s)</span>
                     </p>
                   )}
 
