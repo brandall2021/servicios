@@ -126,17 +126,19 @@ export default async function AdminPage() {
           </Card>
         </Link>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-zinc-500">Opiniones</p>
-                <p className="text-2xl font-bold text-zinc-900">{totalOpiniones.toLocaleString()}</p>
-              </div>
-              <Star className="h-8 w-8 text-yellow-500" />
-            </div>
-          </CardContent>
-        </Card>
+          <Link href="/admin/opiniones">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-zinc-500">Opiniones</p>
+                    <p className="text-2xl font-bold text-zinc-900">{totalOpiniones.toLocaleString()}</p>
+                  </div>
+                  <Star className="h-8 w-8 text-yellow-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

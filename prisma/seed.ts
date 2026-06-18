@@ -18,6 +18,18 @@ async function main() {
     },
   })
 
+  const admin2 = await prisma.user.upsert({
+    where: { email: "admin@servicios.com" },
+    update: {},
+    create: {
+      name: "Admin Servicios",
+      email: "admin@servicios.com",
+      password,
+      role: "ADMIN",
+      verified: true,
+    },
+  })
+
   const proveedor1 = await prisma.user.upsert({
     where: { email: "juan@example.com" },
     update: {},
@@ -158,6 +170,7 @@ async function main() {
   console.log("Seed completado exitosamente!")
   console.log("Usuarios creados:")
   console.log("- Admin: cpereyra@face.unt.edu.ar / 123456")
+  console.log("- Admin Servicios: admin@servicios.com / 123456")
   console.log("- Proveedor Juan: juan@example.com / 123456")
   console.log("- Proveedor María: maria@example.com / 123456")
   console.log("- Proveedor Carlos: carlos@example.com / 123456")
