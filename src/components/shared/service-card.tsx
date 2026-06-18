@@ -6,17 +6,17 @@ import type { ServicioWithRelations } from "@/types"
 import { CATEGORIAS } from "@/lib/constants"
 
 const catBadgeColors: Record<string, { bg: string; text: string; border: string }> = {
-  hogar: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
-  tecnologia: { bg: "#dbeafe", text: "#1e40af", border: "#bfdbfe" },
-  educacion: { bg: "#f3e8ff", text: "#6b21a8", border: "#e9d5ff" },
-  transporte: { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
-  salud: { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" },
-  diseno: { bg: "#cffafe", text: "#155e75", border: "#a5f3fc" },
+  materiales: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
+  iluminacion: { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
+  sanitarios: { bg: "#dbeafe", text: "#1e40af", border: "#bfdbfe" },
+  pintura: { bg: "#f3e8ff", text: "#6b21a8", border: "#e9d5ff" },
+  herramientas: { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" },
+  pisos: { bg: "#cffafe", text: "#155e75", border: "#a5f3fc" },
+  techos: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
+  hierro: { bg: "#f5f5f4", text: "#44403c", border: "#e7e5e4" },
+  electricidad: { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
   jardineria: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
-  limpieza: { bg: "#cffafe", text: "#155e75", border: "#a5f3fc" },
-  mecanica: { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
-  fotografia: { bg: "#f3e8ff", text: "#6b21a8", border: "#e9d5ff" },
-  eventos: { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" },
+  ferreteria: { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" },
   otros: { bg: "#f5f5f4", text: "#44403c", border: "#e7e5e4" },
 }
 
