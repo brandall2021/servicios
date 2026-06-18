@@ -6,7 +6,7 @@ import { Avatar } from "../ui/avatar"
 import {
   MessageSquare, FileText,
   Menu, X, ChevronDown, User, LogOut,
-  Search, Sun, Moon,
+  Search, Sun, Moon, Shield,
 } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/components/shared/theme-provider"
@@ -81,6 +81,11 @@ export function Header() {
                       <Link href="/chat" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
                         <MessageSquare className="h-4 w-4" /> Mensajes
                       </Link>
+                      {session.user.role === "ADMIN" && (
+                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
+                          <Shield className="h-4 w-4 text-orange-600" /> Administración
+                        </Link>
+                      )}
                       <hr className="my-1 dark:border-zinc-700 border-stone-100" />
                       <button onClick={() => signOut()} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         <LogOut className="h-4 w-4" /> Cerrar sesión
@@ -146,6 +151,11 @@ export function Header() {
                 <Link href="/chat" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
                   Mensajes
                 </Link>
+                {session.user.role === "ADMIN" && (
+                  <Link href="/admin" className="block px-3 py-2.5 text-sm text-orange-300 font-medium rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                    Administración
+                  </Link>
+                )}
                 <button onClick={() => { signOut(); setMenuOpen(false); }} className="block w-full text-left px-3 py-2.5 text-sm text-red-300 rounded-lg hover:bg-white/10 transition-colors">
                   Cerrar sesión
                 </button>

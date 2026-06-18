@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, Star, AlertTriangle } from "lucide-react"
+import { Users, Briefcase, Star, AlertTriangle, FileText } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 import Link from "next/link"
 import { AdminDashboardChart } from "./dashboard-chart"
@@ -24,6 +24,7 @@ export default async function AdminPage() {
     totalReports,
     reportsPendientes,
     totalBaneados,
+    totalPresupuestos,
     monthlyRegistrations,
     servicesByCategory,
     recentReports,
@@ -38,6 +39,7 @@ export default async function AdminPage() {
     prisma.report.count(),
     prisma.report.count({ where: { estado: "PENDIENTE" } }),
     prisma.user.count({ where: { baneado: true } }),
+    prisma.budgetRequest.count(),
     prisma.user.groupBy({
       by: ["createdAt"],
       where: { createdAt: { gte: sixMonthsAgo } },
@@ -135,6 +137,20 @@ export default async function AdminPage() {
                     <p className="text-2xl font-bold text-zinc-900">{totalOpiniones.toLocaleString()}</p>
                   </div>
                   <Star className="h-8 w-8 text-yellow-500" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/presupuestos">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-zinc-500">Presupuestos</p>
+                    <p className="text-2xl font-bold text-zinc-900">{totalPresupuestos.toLocaleString()}</p>
+                  </div>
+                  <FileText className="h-8 w-8 text-blue-600" />
                 </div>
               </CardContent>
             </Card>
