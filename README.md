@@ -1,28 +1,52 @@
-# Servicios - Plataforma de Publicación y Evaluación de Servicios
+# Servicios — Plataforma de Servicios Profesionales
 
-Plataforma digital donde personas o empresas pueden ofrecer sus servicios, recibir valoraciones de clientes, mostrar evidencias del trabajo realizado y construir una reputación basada en experiencias reales.
+Plataforma digital que conecta clientes con profesionales verificados en Argentina. Permite publicar servicios, solicitar presupuestos, chatear, calificar y gestionar todo desde un panel administrativo.
 
 ## Stack
 
-- **Framework:** Next.js 16 (App Router, Standalone output)
-- **Lenguaje:** TypeScript
-- **Estilos:** Tailwind CSS v4
-- **Base de datos:** PostgreSQL + Prisma ORM
-- **Autenticación:** NextAuth v5 (Credentials, Google OAuth)
-- **UI:** Componentes personalizados (Lucide icons)
+| Capa | Tecnología |
+|------|-----------|
+| **Framework** | Next.js 16 (App Router) |
+| **Lenguaje** | TypeScript |
+| **Estilos** | Tailwind CSS v4 + Modo oscuro |
+| **Base de datos** | PostgreSQL + Prisma ORM |
+| **Autenticación** | NextAuth v5 (Credentials, Google OAuth) |
+| **UI** | Componentes personalizados + Lucide icons |
 
 ## Funcionalidades
 
-- Registro con roles: Cliente, Proveedor, Administrador (incluye Google OAuth)
-- Perfil de proveedor con descripción, experiencia, certificaciones y zona de trabajo
-- Publicación de servicios con categorías, precio, ubicación y coordenadas GPS
-- Búsqueda avanzada con filtros por categoría, ubicación, texto y cercanía GPS
-- Búsqueda "Cerca de mí" con geolocalización y radio ajustable (10-200km)
-- Sistema de calificaciones 1-5 estrellas con comentarios, fotos y reCAPTCHA
-- Chat interno cliente ↔ proveedor
-- Sistema de presupuestos: solicitud, cotización y seguimiento
-- Panel administrativo con dashboard y gestión de usuarios
-- Migraciones automáticas al deploy
+### Para clientes
+- Buscar servicios por categoría, texto, ubicación y cercanía GPS ("Cerca de mí")
+- Ver perfiles de proveedores con reputación, fotos y opiniones
+- Solicitar presupuestos personalizados con descripción, materiales y **archivos adjuntos** (imágenes, PDF, Word, Excel)
+- Chatear en tiempo real con el proveedor
+- Calificar servicios con 1-5 estrellas, comentarios y fotos
+- Aceptar, rechazar o solicitar revisión de cotizaciones
+
+### Para proveedores
+- Perfil público con descripción, experiencia, certificaciones y zona de trabajo
+- Publicar servicios con fotos, precio, ubicación y disponibilidad
+- Recibir y gestionar solicitudes de presupuesto
+- Cotizar con montos, desglose de costos y fechas de validez
+- Chat interno con clientes
+- Ver y responder opiniones
+
+### Para administradores
+- **Dashboard** con estadísticas de uso: usuarios, servicios, opiniones, denuncias, presupuestos
+- **Gráfico de registros** por mes (últimos 6 meses)
+- **Servicios por categoría** con conteo
+- **Gestión de usuarios**: crear, editar, cambiar rol (Cliente/Proveedor/Admin), verificar, bloquear con motivo, eliminar
+- **Gestión de servicios**: activar/desactivar servicios publicados
+- **Gestión de opiniones**: editar puntuación y comentario, eliminar opiniones
+- **Gestión de denuncias**: revisar y resolver reportes de usuarios
+- **Gestión de presupuestos**: visualizar todas las solicitudes con sus cotizaciones
+- **Panel de categorías**: distribución de servicios por categoría
+
+### Generales
+- **Modo oscuro** con persistencia en localStorage y detección de preferencia del sistema
+- Autenticación con email/contraseña y Google OAuth
+- Diseño responsive (mobile-first)
+- Protección reCAPTCHA en formularios
 
 ## Requisitos
 
@@ -60,10 +84,79 @@ npm run dev
 | Email | Contraseña | Rol |
 |---|---|---|
 | admin@servicios.com | 123456 | Admin |
+| cpereyra@face.unt.edu.ar | 123456 | Admin |
 | juan@example.com | 123456 | Proveedor |
 | maria@example.com | 123456 | Proveedor |
 | carlos@example.com | 123456 | Proveedor |
 | cliente@example.com | 123456 | Cliente |
+
+## Scripts disponibles
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción |
+| `npm run start` | Servir build de producción |
+| `npm run lint` | ESLint |
+| `npm run seed` | Poblar base de datos |
+
+## Estructura del proyecto
+
+```
+src/
+├── app/
+│   ├── page.tsx                    # Landing page
+│   ├── layout.tsx                  # Layout principal con ThemeProvider
+│   ├── globals.css                 # Estilos globales + modo oscuro
+│   ├── login/                      # Inicio de sesión
+│   ├── register/                   # Registro
+│   ├── buscar/                     # Buscador de servicios
+│   ├── perfil/                     # Perfil de usuario
+│   ├── proveedores/[id]/           # Perfil público del proveedor
+│   ├── servicios/
+│   │   ├── nuevo/                  # Crear servicio
+│   │   └── [id]/                   # Detalle del servicio + opiniones
+│   ├── chat/                       # Mensajería interna
+│   ├── presupuestos/               # Solicitudes de presupuesto
+│   │   ├── solicitar/              # Formulario con carga de archivos
+│   │   └── [id]/                   # Detalle con cotizaciones
+│   ├── admin/                      # Panel administrativo
+│   │   ├── page.tsx                # Dashboard con estadísticas y gráficos
+│   │   ├── dashboard-chart.tsx     # Gráfico de registros mensuales
+│   │   ├── usuarios/               # CRUD de usuarios + roles
+│   │   ├── servicios/              # Activar/desactivar servicios
+│   │   ├── opiniones/              # Editar/eliminar opiniones
+│   │   ├── denuncias/              # Gestionar reportes
+│   │   ├── presupuestos/           # Ver todas las solicitudes
+│   │   └── categorias/             # Distribución por categoría
+│   └── api/                        # API routes
+├── components/
+│   ├── ui/                         # Componentes base (Button, Input, Card, Modal, Select...)
+│   ├── layout/                     # Header, Footer
+│   └── shared/                     # ThemeProvider, ServiceCard, StarRating...
+├── lib/
+│   ├── auth.ts                     # Configuración NextAuth
+│   ├── prisma.ts                   # Cliente Prisma singleton
+│   ├── constants.ts                # Categorías, provincias
+│   └── utils.ts                    # cn(), formatDate(), formatPrice()
+└── types/                          # Tipos TypeScript (Session, ServicioWithRelations...)
+prisma/
+├── schema.prisma                   # Modelos: User, Servicio, Foto, Opinion, Report,
+│                                   # Chat, Mensaje, BudgetRequest, BudgetQuote
+├── seed.ts                         # Datos de prueba
+└── migrations/                     # Migraciones automáticas
+```
+
+## Modelo de datos
+
+- **User** — Cliente, Proveedor o Admin con perfil completo, verificación y bloqueo
+- **Servicio** — Publicación con categoría, precio, ubicación GPS y disponibilidad
+- **Foto** — Imágenes asociadas a servicios, opiniones y perfiles
+- **Opinion** — Calificación 1-5 estrellas con comentario opcional
+- **Report** — Denuncias con motivo y estado (Pendiente/Revisado/Resuelto)
+- **Chat / Mensaje** — Mensajería interna entre cliente y proveedor
+- **BudgetRequest** — Solicitud de presupuesto con descripción, materiales y archivos
+- **BudgetQuote** — Cotización con monto, desglose y versión
 
 ## Deploy en Dokploy
 
@@ -83,72 +176,22 @@ npm run dev
 
 ### 3. Configurar variables de entorno
 
-En la sección **"Environment"** de Dokploy, agregá estas variables:
-
 | Variable | Descripción | Ejemplo |
-|---|---|---|---|
+|---|---|---|
 | `DATABASE_URL` | Conexión a PostgreSQL | `postgresql://usuario:password@host:5432/servicios?schema=public` |
 | `NEXTAUTH_URL` | URL pública del sitio | `https://tudominio.com` |
-| `NEXTAUTH_SECRET` | Secreto para NextAuth (generar con `openssl rand -base64 32`) | `tu-secreto-aqui` |
-| `GOOGLE_CLIENT_ID` | (opcional) ID de Google OAuth | `tu-client-id.apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET` | (opcional) Secret de Google OAuth | `tu-client-secret` |
+| `NEXTAUTH_SECRET` | Secreto para NextAuth | `openssl rand -base64 32` |
+| `GOOGLE_CLIENT_ID` | (opcional) ID de Google OAuth | — |
+| `GOOGLE_CLIENT_SECRET` | (opcional) Secret de Google OAuth | — |
 | `ADMIN_EMAIL` | Email del administrador | `admin@ejemplo.com` |
 
 ### 4. Configurar puerto
 
-En **"Ports"**, configurá:
-- **Puerto interno:** `3000` (el EXPOSE del Dockerfile)
+- **Puerto interno:** `3000`
 - **Puerto público:** `3000` (o el que quieras)
 
-### 5. Configurar dominio
+### 5. Hacer deploy
 
-1. En **"Domains"**, agregá el dominio donde querés que responda el sitio
-2. Dokploy va a configurar automáticamente el SSL/HTTPS
-
-### 6. Hacer deploy
-
-1. Hacé clic en **"Deploy"**
-2. Dokploy va a clonar el repo, construir la imagen Docker y levantar el contenedor
-3. Al iniciar, el contenedor corre automáticamente `prisma migrate deploy` para crear las tablas en la base de datos
-
-### Notas importantes
-
-- La base de datos PostgreSQL debe estar accesible desde el servidor donde corre Dokploy
-- Si usás la misma base que tus otros proyectos, asegurate de crear la base `servicios` primero:
-  ```sql
-  CREATE DATABASE servicios;
-  ```
-- El puerto interno **3000** debe coincidir con el EXPOSE del Dockerfile
-- Usá los mismos valores de `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` que ya usan tus otros proyectos
-
-## Estructura del proyecto
-
-```
-src/
-├── app/
-│   ├── page.tsx                 # Landing page
-│   ├── layout.tsx               # Layout principal
-│   ├── login/                   # Inicio de sesión
-│   ├── register/                # Registro
-│   ├── buscar/                  # Buscador de servicios
-│   ├── perfil/                  # Perfil de usuario
-│   ├── proveedores/[id]/        # Perfil público del proveedor
-│   ├── servicios/
-│   │   ├── nuevo/               # Crear servicio
-│   │   └── [id]/                # Detalle del servicio + opiniones
-│   ├── chat/                    # Mensajería interna
-│   ├── admin/                   # Panel administrativo
-│   └── api/                     # API routes
-├── components/
-│   ├── ui/                      # Componentes base (Button, Input, Card...)
-│   ├── layout/                  # Header, Footer
-│   └── shared/                  # StarRating, SearchBar, ServiceCard...
-├── lib/
-│   ├── auth.ts                  # Configuración NextAuth
-│   ├── prisma.ts                # Cliente Prisma
-│   └── utils.ts                 # Utilidades
-└── types/                       # Tipos TypeScript
-prisma/
-├── schema.prisma                # Modelos de base de datos
-└── seed.ts                      # Datos de prueba
-```
+1. Configurá el dominio en **"Domains"** (SSL automático)
+2. Hacé clic en **"Deploy"**
+3. El contenedor corre `prisma migrate deploy` automáticamente al iniciar
