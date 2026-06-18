@@ -17,7 +17,7 @@ export default async function AdminCategoriasPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold text-zinc-900 mb-6">Categorías</h1>
+      <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">Categorías</h1>
 
       <Card>
         <CardHeader>
@@ -28,13 +28,13 @@ export default async function AdminCategoriasPage() {
             {counts.map((cat) => (
               <div
                 key={cat.value}
-                className="flex items-center justify-between p-3 rounded-lg bg-zinc-50"
+                className="flex items-center justify-between p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{cat.icon}</span>
-                  <span className="font-medium text-zinc-900">{cat.label}</span>
+                  <span className="font-medium text-zinc-900 dark:text-zinc-100">{cat.label}</span>
                 </div>
-                <span className="text-sm text-zinc-500">
+                <span className="text-sm text-zinc-500 dark:text-zinc-400">
                   {cat.count} {cat.count === 1 ? "servicio" : "servicios"}
                 </span>
               </div>

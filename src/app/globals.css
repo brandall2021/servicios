@@ -1,24 +1,39 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --primary: #0B2A55;
   --secondary: #163B70;
   --accent: #FF8A00;
   --accent-light: #FFA733;
   --background: #FFFFFF;
-  --text: #222;
-
-  --brand: #FF8A00;
-  --brand-dark: #e67a00;
-  --brand-light: #fff3e0;
-  --brand-glow: rgba(255, 138, 0, 0.12);
+  --foreground: #222;
   --card: #ffffff;
   --card-border: rgba(28, 25, 23, 0.08);
   --muted: #78716c;
   --subtle: #e7e5e4;
-
   --navy: #0B2A55;
   --navy-light: #163B70;
+  --bg-page: #ffffff;
+  --bg-muted: #f5f4f2;
+  --text-primary: #1c1917;
+  --text-secondary: #78716c;
+  --border: #e7e5e4;
+}
+
+.dark {
+  --background: #0f0f0f;
+  --foreground: #e5e5e5;
+  --card: #1a1a1a;
+  --card-border: rgba(255, 255, 255, 0.08);
+  --muted: #a09a96;
+  --subtle: #2a2a2a;
+  --bg-page: #0f0f0f;
+  --bg-muted: #1a1a1a;
+  --text-primary: #e5e5e5;
+  --text-secondary: #a09a96;
+  --border: #2a2a2a;
 }
 
 @theme inline {
@@ -26,29 +41,28 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-brand: var(--brand);
-  --color-brand-dark: var(--brand-dark);
-  --color-brand-light: var(--brand-light);
+  --color-brand: var(--accent);
+  --color-brand-dark: #e67a00;
+  --color-brand-light: #fff3e0;
   --color-navy: #0B2A55;
   --color-navy-light: #163B70;
 }
 
 body {
-  background: var(--background);
+  background: var(--bg-page);
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: var(--brand-light);
-  color: var(--brand-dark);
+  background: var(--accent);
+  color: white;
 }
 
-/* Card styles */
 .card-service {
   border-radius: 20px;
-  background: white;
+  background: var(--card);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   border: 2px solid transparent;
@@ -59,7 +73,6 @@ body {
   box-shadow: 0 10px 30px rgba(255, 138, 0, 0.15);
 }
 
-/* Orange button */
 .btn-orange {
   background: #FF8A00;
   color: white;

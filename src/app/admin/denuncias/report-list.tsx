@@ -57,7 +57,7 @@ export function AdminReportList({ reports }: { reports: Report[] }) {
         </div>
       ) : (
         reports.map((r) => (
-          <Card key={r.id} className={r.estado === "PENDIENTE" ? "border-yellow-300 bg-yellow-50/50" : ""}>
+          <Card key={r.id} className={r.estado === "PENDIENTE" ? "border-yellow-300 dark:border-yellow-700 bg-yellow-50/50 dark:bg-yellow-900/20" : ""}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
@@ -66,16 +66,16 @@ export function AdminReportList({ reports }: { reports: Report[] }) {
                       {r.estado === "PENDIENTE" ? "Pendiente" : r.estado === "REVISADO" ? "Revisado" : "Resuelto"}
                     </Badge>
                     <Badge variant="outline">{motivos[r.motivo] || r.motivo}</Badge>
-                    <span className="text-xs text-zinc-400">
+                    <span className="text-xs text-zinc-400 dark:text-zinc-500">
                       {new Date(r.createdAt).toLocaleDateString("es-AR")}
                     </span>
                   </div>
 
                   {r.descripcion && (
-                    <p className="text-sm text-zinc-600 mt-1">{r.descripcion}</p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{r.descripcion}</p>
                   )}
 
-                  <div className="flex flex-wrap gap-3 mt-2 text-xs text-zinc-500">
+                  <div className="flex flex-wrap gap-3 mt-2 text-xs text-zinc-500 dark:text-zinc-400">
                     <span>Denunciante: {r.denunciante.name}</span>
                     {r.servicio && (
                       <Link href={`/servicios/${r.servicio.id}`} className="flex items-center gap-1 text-orange-600 hover:underline">

@@ -6,6 +6,7 @@ import "./globals.css"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { SessionProvider } from "@/components/shared/session-provider"
+import { ThemeProvider } from "@/components/shared/theme-provider"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +38,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white">
-        <SessionProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </SessionProvider>
+        <ThemeProvider>
+          <SessionProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

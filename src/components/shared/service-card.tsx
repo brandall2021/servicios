@@ -45,7 +45,7 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
             />
           </div>
         ) : (
-          <div className="aspect-[4/3] bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center">
+          <div className="aspect-[4/3] bg-gradient-to-br from-stone-100 to-stone-200 dark:from-zinc-700 dark:to-zinc-800 flex items-center justify-center">
             <span className="text-4xl">{catInfo?.icon || "📦"}</span>
           </div>
         )}
@@ -56,22 +56,22 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
           >
             {catInfo?.icon} {catInfo?.label || servicio.categoria}
           </span>
-          <h3 className="font-semibold text-stone-900 line-clamp-1">
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1">
             {servicio.titulo}
           </h3>
-          <p className="text-sm text-stone-500 line-clamp-2 mt-1 mb-3">
+          <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2 mt-1 mb-3">
             {servicio.descripcion}
           </p>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar src={servicio.usuario.image} fallback={servicio.usuario.name} size="sm" />
-              <span className="text-sm text-stone-600">{servicio.usuario.name}</span>
+              <span className="text-sm text-stone-600 dark:text-stone-400">{servicio.usuario.name}</span>
             </div>
             {avgRating > 0 && (
               <StarRating value={avgRating} size="sm" showValue count={servicio.opiniones.length} readonly />
             )}
           </div>
-          <div className="flex items-center gap-1 mt-2 text-xs text-stone-400">
+          <div className="flex items-center gap-1 mt-2 text-xs text-stone-400 dark:text-stone-500">
             <MapPin className="h-3 w-3" />
             {servicio.ubicacion || "Ubicación no especificada"}
             {servicio.distance !== null && servicio.distance !== undefined && (

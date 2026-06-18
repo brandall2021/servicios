@@ -16,10 +16,10 @@ export function FeaturedServices({ servicios }: FeaturedServicesProps) {
           <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: "#FF8A00" }}>
             Destacados
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 mt-1">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mt-1">
             Servicios destacados
           </h2>
-          <p className="text-sm text-stone-500 mt-1">Los mejores servicios cerca de vos</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">Los mejores servicios cerca de vos</p>
         </div>
         {servicios.length > 0 && (
           <Link href="/buscar">

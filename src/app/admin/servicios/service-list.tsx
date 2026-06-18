@@ -35,28 +35,28 @@ export function AdminServiceList({ servicios }: { servicios: Servicio[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-zinc-200">
-            <th className="text-left py-3 px-4 font-medium text-zinc-500">Servicio</th>
-            <th className="text-left py-3 px-4 font-medium text-zinc-500">Proveedor</th>
-            <th className="text-left py-3 px-4 font-medium text-zinc-500">Categoría</th>
-            <th className="text-center py-3 px-4 font-medium text-zinc-500">Opiniones</th>
-            <th className="text-center py-3 px-4 font-medium text-zinc-500">Estado</th>
-            <th className="text-right py-3 px-4 font-medium text-zinc-500">Acciones</th>
+          <tr className="border-b border-zinc-200 dark:border-zinc-700">
+            <th className="text-left py-3 px-4 font-medium text-zinc-500 dark:text-zinc-400">Servicio</th>
+            <th className="text-left py-3 px-4 font-medium text-zinc-500 dark:text-zinc-400">Proveedor</th>
+            <th className="text-left py-3 px-4 font-medium text-zinc-500 dark:text-zinc-400">Categoría</th>
+            <th className="text-center py-3 px-4 font-medium text-zinc-500 dark:text-zinc-400">Opiniones</th>
+            <th className="text-center py-3 px-4 font-medium text-zinc-500 dark:text-zinc-400">Estado</th>
+            <th className="text-right py-3 px-4 font-medium text-zinc-500 dark:text-zinc-400">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {servicios.map((s) => (
-            <tr key={s.id} className="border-b border-zinc-100 hover:bg-zinc-50">
+            <tr key={s.id} className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
               <td className="py-3 px-4">
-                <Link href={`/servicios/${s.id}`} className="font-medium text-zinc-900 hover:text-orange-600">
+                <Link href={`/servicios/${s.id}`} className="font-medium text-zinc-900 dark:text-zinc-100 hover:text-orange-600">
                   {s.titulo}
                 </Link>
               </td>
-              <td className="py-3 px-4 text-zinc-500">{s.usuario.name}</td>
+              <td className="py-3 px-4 text-zinc-500 dark:text-zinc-400">{s.usuario.name}</td>
               <td className="py-3 px-4">
                 <Badge variant="secondary">{s.categoria}</Badge>
               </td>
-              <td className="py-3 px-4 text-center text-zinc-500">{s._count.opiniones}</td>
+              <td className="py-3 px-4 text-center text-zinc-500 dark:text-zinc-400">{s._count.opiniones}</td>
               <td className="py-3 px-4 text-center">
                 {s.activo ? (
                   <Badge variant="success">Activo</Badge>

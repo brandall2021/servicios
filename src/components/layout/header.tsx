@@ -6,12 +6,14 @@ import { Avatar } from "../ui/avatar"
 import {
   MessageSquare, FileText,
   Menu, X, ChevronDown, User, LogOut,
-  Search,
+  Search, Sun, Moon,
 } from "lucide-react"
 import { useState } from "react"
+import { useTheme } from "@/components/shared/theme-provider"
 
 export function Header() {
   const { data: session } = useSession()
+  const { theme, toggleTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -44,6 +46,15 @@ export function Header() {
 
           {/* Right section */}
           <div className="flex items-center gap-3">
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              aria-label={theme === "dark" ? "Modo claro" : "Modo oscuro"}
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+
             {session?.user ? (
               <div className="hidden md:flex items-center gap-2">
                 <Link
@@ -60,18 +71,18 @@ export function Header() {
                     <ChevronDown className="h-3 w-3 text-white/60" />
                   </button>
                   <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div className="bg-white rounded-xl shadow-xl border border-stone-200 py-2 min-w-[180px]">
-                      <Link href="/perfil" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 transition-colors">
+                    <div className="dark:bg-zinc-800 bg-white rounded-xl shadow-xl border dark:border-zinc-700 border-stone-200 py-2 min-w-[180px]">
+                      <Link href="/perfil" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
                         <User className="h-4 w-4" /> Mi perfil
                       </Link>
-                      <Link href="/presupuestos" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 transition-colors">
+                      <Link href="/presupuestos" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
                         <FileText className="h-4 w-4" /> Presupuestos
                       </Link>
-                      <Link href="/chat" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 transition-colors">
+                      <Link href="/chat" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
                         <MessageSquare className="h-4 w-4" /> Mensajes
                       </Link>
-                      <hr className="my-1 border-stone-100" />
-                      <button onClick={() => signOut()} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                      <hr className="my-1 dark:border-zinc-700 border-stone-100" />
+                      <button onClick={() => signOut()} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         <LogOut className="h-4 w-4" /> Cerrar sesión
                       </button>
                     </div>
@@ -79,12 +90,20 @@ export function Header() {
                 </div>
               </div>
             ) : (
-              <Link href="/buscar">
-                <button className="btn-orange h-10 px-5 text-sm font-semibold shadow-md flex items-center gap-2">
-                  <Search className="h-4 w-4" />
-                  Buscar profesional
-                </button>
-              </Link>
+              <div className="hidden md:flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="text-sm text-white/80 hover:text-white font-medium transition-colors px-3 py-2"
+                >
+                  Iniciar sesión
+                </Link>
+                <Link
+                  href="/register"
+                  className="btn-orange h-9 px-4 text-sm font-semibold shadow-md"
+                >
+                  Crear cuenta
+                </Link>
+              </div>
             )}
 
             {/* Mobile hamburger */}

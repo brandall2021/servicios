@@ -84,12 +84,12 @@ export default function RegisterPage() {
               placeholder="+54 381 1234567"
             />
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1.5">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
                 Tipo de usuario
               </label>
               <select
                 name="role"
-                className="flex h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="flex h-10 w-full rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 defaultValue="CLIENT"
               >
                 <option value="CLIENT">Cliente - Quiero contratar servicios</option>
@@ -113,7 +113,7 @@ export default function RegisterPage() {
               required
             />
             {error && (
-              <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
+              <div className="rounded-lg bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3 text-sm text-red-700 dark:text-red-400">
                 {error}
               </div>
             )}
@@ -124,10 +124,10 @@ export default function RegisterPage() {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-200" />
+              <div className="w-full border-t border-zinc-200 dark:border-zinc-700" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-zinc-400">O registrate con</span>
+              <span className="bg-white dark:bg-zinc-900 px-2 text-zinc-400">O registrate con</span>
             </div>
           </div>
 
@@ -146,7 +146,7 @@ export default function RegisterPage() {
             Google
           </Button>
 
-          <p className="text-center text-sm text-zinc-500 mt-6">
+          <p className="text-center text-sm text-zinc-500 dark:text-zinc-400 mt-6">
             ¿Ya tenés cuenta?{" "}
             <Link href="/login" className="text-orange-600 hover:underline font-medium">
               Iniciar sesión
