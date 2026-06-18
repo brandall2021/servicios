@@ -60,6 +60,18 @@ body {
   color: white;
 }
 
+.dark .text-zinc-500 { color: #a1a1aa; }
+.dark .text-zinc-400 { color: #d4d4d8; }
+.dark .text-zinc-300 { color: #e4e4e7; }
+.dark .text-stone-500 { color: #a8a29e; }
+.dark .text-stone-400 { color: #d6d3d1; }
+.dark .text-stone-600 { color: #a8a29e; }
+.dark .text-stone-700 { color: #d6d3d1; }
+.dark .text-stone-900 { color: #e5e5e5; }
+.dark .text-stone-800 { color: #e5e5e5; }
+.dark .text-neutral-500 { color: #a1a1aa; }
+.dark .text-neutral-400 { color: #d4d4d8; }
+
 .card-service {
   border-radius: 20px;
   background: var(--card);
