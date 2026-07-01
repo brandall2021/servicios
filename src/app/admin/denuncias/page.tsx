@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { AdminReportList } from "./report-list"
 import type { AdminReportWithRelations } from "@/types"
+import { PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 
 export default async function AdminDenunciasPage() {
   const session = await auth()
@@ -10,10 +11,10 @@ export default async function AdminDenunciasPage() {
 
   const reports: AdminReportWithRelations[] = await prisma.report.findMany({
     include: {
-      denunciante: { select: { id: true, name: true } },
+      denunciante: { select: PUBLIC_USER_SELECT },
       servicio: { select: { id: true, titulo: true, activo: true } },
       opinion: { select: { id: true, comentario: true, puntuacion: true } },
-      usuario: { select: { id: true, name: true, email: true } },
+      usuario: { select: PUBLIC_USER_SELECT },
     },
     orderBy: { createdAt: "desc" },
   })

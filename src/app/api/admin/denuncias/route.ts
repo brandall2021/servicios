@@ -3,9 +3,10 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { requireAdmin, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
+import { ReportMotivo } from "@prisma/client"
 
 const createReportSchema = z.object({
-  motivo: z.string().min(1).max(500),
+  motivo: z.nativeEnum(ReportMotivo),
   descripcion: z.string().max(2000).optional(),
   servicioId: z.string().optional(),
   opinionId: z.string().optional(),

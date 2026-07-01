@@ -14,10 +14,10 @@ interface Report {
   descripcion: string | null
   estado: string
   createdAt: Date
-  denunciante: { id: string; name: string }
+  denunciante: { id: string; name: string; image?: string | null; verified?: boolean; zone?: string | null; trabajosRealizados?: number }
   servicio: { id: string; titulo: string; activo: boolean } | null
   opinion: { id: string; comentario: string | null; puntuacion: number } | null
-  usuario: { id: string; name: string; email: string } | null
+  usuario: { id: string; name: string; image?: string | null; verified?: boolean; zone?: string | null; trabajosRealizados?: number } | null
 }
 
 const estadoColors: Record<string, "warning" | "success" | "secondary"> = {

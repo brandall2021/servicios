@@ -50,6 +50,7 @@ export default async function ServicioDetailPage({ params }: Props) {
           puntuacion: true,
           comentario: true,
           createdAt: true,
+          clienteId: true,
           cliente: { select: PUBLIC_USER_SELECT },
           fotos: { select: { id: true, archivo: true, tipo: true } },
         },

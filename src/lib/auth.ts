@@ -71,8 +71,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
-        token.id = user.id
+        token.role = (user as any).role
+        token.id = (user as any).id
       }
       if (token.email) {
         const baneado = await checkBaneado(token.email as string)

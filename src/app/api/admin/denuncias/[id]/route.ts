@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-guard"
 
 const estadoSchema = z.object({
-  estado: z.enum(["PENDIENTE", "REVISADO", "RECHAZADO"]),
+  estado: z.enum(["PENDIENTE", "REVISADO", "RESUELTO"]),
 })
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
