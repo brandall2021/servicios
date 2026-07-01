@@ -32,25 +32,16 @@ export function forbidden() {
   return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
 }
 
-export async function requireAuth() {
+export async function requireAdmin(): Promise<NextResponse | null> {
   const session = await auth()
-  if (!session?.user?.id) throw unauthorized()
-  return session
-}
-
-export async function requireRole(role: string) {
-  const session = await requireAuth()
-  if (session.user.role !== role) throw forbidden()
-  return session
+  if (!session?.user?.id) return unauthorized()
+  if (session.user.role !== "ADMIN") return forbidden()
+  return null
 }
 
 export async function isAdmin() {
   const session = await auth()
   return session?.user?.role === "ADMIN"
-}
-
-export async function requireAdmin() {
-  return requireRole("ADMIN")
 }
 
 export async function isOwner(ownerId: string) {
