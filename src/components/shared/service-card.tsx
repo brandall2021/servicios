@@ -21,9 +21,10 @@ const catBadgeColors: Record<string, { bg: string; text: string; border: string 
 
 interface ServiceCardProps {
   servicio: ServicioWithRelations
+  index?: number
 }
 
-export function ServiceCard({ servicio }: ServiceCardProps) {
+export function ServiceCard({ servicio, index = 0 }: ServiceCardProps) {
   const catInfo = CATEGORIAS.find((c) => c.value === servicio.categoria)
   const avgRating =
     servicio.opiniones.length > 0
@@ -33,14 +34,14 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
   const badgeColor = catBadgeColors[servicio.categoria] || catBadgeColors.otros
 
   return (
-    <Link href={`/servicios/${servicio.id}`}>
-      <div className="card-service overflow-hidden">
+    <Link href={`/servicios/${servicio.id}`} className={`block animate-fade-up animate-fade-up-delay-${Math.min(index + 1, 6)}`}>
+      <div className="card-service">
         {servicio.fotos[0] ? (
           <div className="aspect-[4/3] overflow-hidden bg-stone-100">
             <img
               src={servicio.fotos[0].archivo}
               alt={servicio.titulo}
-              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             />
           </div>
         ) : (
@@ -58,7 +59,6 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
           <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1 text-base">
             {servicio.titulo}
           </h3>
-
           <div className="flex items-baseline gap-2 mt-1.5">
             {servicio.precio ? (
               <span className="text-lg font-bold" style={{ color: "#FF8A00" }}>
@@ -79,13 +79,11 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
               )}
             </div>
           </div>
-
           <div className="flex items-center gap-2 mt-2">
             {avgRating > 0 && (
               <StarRating value={avgRating} size="sm" showValue count={servicio.opiniones.length} readonly />
             )}
           </div>
-
           <div className="flex items-center gap-1.5 mt-2 text-sm text-stone-500 dark:text-stone-400">
             <span>{servicio.usuario.name}</span>
             {servicio.usuario.verified && (
