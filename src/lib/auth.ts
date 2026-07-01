@@ -5,6 +5,18 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import bcrypt from "bcryptjs"
 import { prisma } from "./prisma"
 
+async function checkBaneado(email: string): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { baneado: true, motivoBaneo: true },
+    })
+    return user?.baneado === true
+  } catch {
+    return false
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
@@ -21,8 +33,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
+        const email = credentials.email as string
+        const baneado = await checkBaneado(email)
+        if (baneado) return null
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
+          where: { email },
         })
 
         if (!user || !user.password) return null
@@ -46,17 +62,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const baneado = await checkBaneado(user.email)
+        if (baneado) return false
+      }
+      return true
+    },
     async jwt({ token, user }) {
       if (user) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        token.role = (user as any).role
+        token.role = user.role
         token.id = user.id
+      }
+      if (token.email) {
+        const baneado = await checkBaneado(token.email as string)
+        if (baneado) {
+          token.role = "BANEADO"
+        }
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.role = token.role as string
+        if (token.role === "BANEADO") {
+          session.user.role = "BANEADO"
+        } else {
+          session.user.role = token.role as string
+        }
         session.user.id = token.id as string
       }
       return session

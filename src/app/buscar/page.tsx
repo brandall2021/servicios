@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
+import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 import { ServiceCard } from "@/components/shared/service-card"
 import { SearchBar } from "@/components/shared/search-bar"
 import { NearMeButton } from "@/components/shared/near-me-button"
@@ -48,10 +49,17 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
     const servicios = await prisma.servicio.findMany({
       where: { id: { in: ids } },
       include: {
-        usuario: true,
+        usuario: { select: PUBLIC_PROVIDER_SELECT },
         fotos: { take: 1 },
         opiniones: {
-          include: { cliente: true, fotos: true },
+          select: {
+            id: true,
+            puntuacion: true,
+            comentario: true,
+            createdAt: true,
+            cliente: { select: PUBLIC_USER_SELECT },
+            fotos: { select: { id: true, archivo: true, tipo: true } },
+          },
           take: 5,
         },
         _count: { select: { opiniones: true } },
@@ -78,10 +86,17 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
   const servicios = await prisma.servicio.findMany({
     where,
     include: {
-      usuario: true,
+      usuario: { select: PUBLIC_PROVIDER_SELECT },
       fotos: { take: 1 },
       opiniones: {
-        include: { cliente: true, fotos: true },
+        select: {
+          id: true,
+          puntuacion: true,
+          comentario: true,
+          createdAt: true,
+          cliente: { select: PUBLIC_USER_SELECT },
+          fotos: { select: { id: true, archivo: true, tipo: true } },
+        },
         take: 5,
       },
       _count: { select: { opiniones: true } },

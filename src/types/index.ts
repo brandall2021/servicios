@@ -1,5 +1,6 @@
 import type { DefaultSession } from "next-auth"
 import type { Prisma } from "@prisma/client"
+import type { PUBLIC_USER_SELECT, PUBLIC_PROVIDER_SELECT } from "@/lib/auth-guard"
 
 declare module "next-auth" {
   interface Session {
@@ -12,11 +13,24 @@ declare module "next-auth" {
 
 export type UserRole = "CLIENT" | "PROVIDER" | "ADMIN"
 
+export type PublicUser = Prisma.UserGetPayload<{ select: typeof PUBLIC_USER_SELECT }>
+export type PublicProvider = Prisma.UserGetPayload<{ select: typeof PUBLIC_PROVIDER_SELECT }>
+
 export type ServicioWithRelations = Prisma.ServicioGetPayload<{
   include: {
-    usuario: true
+    usuario: { select: typeof PUBLIC_PROVIDER_SELECT }
     fotos: { take: 1 }
-    opiniones: { include: { cliente: true; fotos: true }; take: 5 }
+    opiniones: {
+      select: {
+        id: true
+        puntuacion: true
+        comentario: true
+        createdAt: true
+        cliente: { select: typeof PUBLIC_USER_SELECT }
+        fotos: { select: { id: true; archivo: true; tipo: true } }
+      }
+      take: 5
+    }
     _count: { select: { opiniones: true } }
   }
 }> & { distance?: number | null }
@@ -28,7 +42,16 @@ export type ProviderWithStats = Prisma.UserGetPayload<{
       where: { activo: true }
       include: {
         fotos: { take: 1 }
-        opiniones: { include: { cliente: true; fotos: true } }
+        opiniones: {
+          select: {
+            id: true
+            puntuacion: true
+            comentario: true
+            createdAt: true
+            cliente: { select: typeof PUBLIC_USER_SELECT }
+            fotos: { select: { id: true; archivo: true; tipo: true } }
+          }
+        }
       }
       take: 3
     }
@@ -48,9 +71,9 @@ export type AdminServicioWithUser = Prisma.ServicioGetPayload<{
 
 export type AdminReportWithRelations = Prisma.ReportGetPayload<{
   include: {
-    denunciante: { select: { id: true; name: true } }
+    denunciante: { select: typeof PUBLIC_USER_SELECT }
     servicio: { select: { id: true; titulo: true; activo: true } }
     opinion: { select: { id: true; comentario: true; puntuacion: true } }
-    usuario: { select: { id: true; name: true; email: true } }
+    usuario: { select: typeof PUBLIC_USER_SELECT }
   }
 }>

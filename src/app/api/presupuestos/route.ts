@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { PUBLIC_USER_SELECT } from "@/lib/auth-guard"
+import { notifyNewBudgetRequest } from "@/lib/notifications"
+
+const createPresupuestoSchema = z.object({
+  servicioId: z.string().min(1),
+  description: z.string().max(5000).optional(),
+  materiales: z.string().max(5000).optional(),
+  archivos: z.string().optional(),
+})
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -9,10 +19,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { servicioId, description, materiales, archivos } = await req.json()
-    if (!servicioId) {
+    const body = await req.json()
+    const parsed = createPresupuestoSchema.safeParse(body)
+    if (!parsed.success) {
       return NextResponse.json({ error: "Falta el servicio" }, { status: 400 })
     }
+
+    const { servicioId, description, materiales, archivos } = parsed.data
 
     const servicio = await prisma.servicio.findUnique({ where: { id: servicioId } })
     if (!servicio) {
@@ -31,9 +44,11 @@ export async function POST(req: Request) {
         clienteId: session.user.id,
       },
       include: {
-        servicio: { include: { usuario: { select: { id: true, name: true, image: true } } } },
+        servicio: { include: { usuario: { select: PUBLIC_USER_SELECT } } },
       },
     })
+
+    await notifyNewBudgetRequest(servicioId, servicio.titulo, servicio.usuarioId)
 
     return NextResponse.json(request, { status: 201 })
   } catch {
@@ -61,11 +76,11 @@ export async function GET(req: Request) {
         servicio: {
           select: { id: true, titulo: true, categoria: true },
         },
-        cliente: { select: { id: true, name: true, image: true } },
+        cliente: { select: PUBLIC_USER_SELECT },
         cotizaciones: {
           orderBy: { version: "desc" },
           take: 1,
-          include: { proveedor: { select: { id: true, name: true } } },
+          include: { proveedor: { select: PUBLIC_USER_SELECT } },
         },
       },
       orderBy: { updatedAt: "desc" },

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server"
+import { writeFile, mkdir } from "fs/promises"
+import { join } from "path"
 import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
 
 const MAX_SIZE = 10 * 1024 * 1024 // 10MB
 
@@ -38,11 +41,28 @@ export async function POST(req: Request) {
       }, { status: 400 })
     }
 
+    const ext = file.name.split(".").pop() || "bin"
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    const uploadDir = join(process.cwd(), "public", "uploads")
+    await mkdir(uploadDir, { recursive: true })
+    const filePath = join(uploadDir, fileName)
+
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const base64 = `data:${file.type};base64,${buffer.toString("base64")}`
+    await writeFile(filePath, buffer)
 
-    return NextResponse.json({ archivo: base64 })
+    const url = `/uploads/${fileName}`
+
+    const foto = await prisma.foto.create({
+      data: {
+        archivo: url,
+        tipo: "SERVICIO",
+        size: file.size,
+        mimeType: file.type,
+      },
+    })
+
+    return NextResponse.json(foto)
   } catch {
     return NextResponse.json({ error: "Error al procesar el archivo" }, { status: 500 })
   }

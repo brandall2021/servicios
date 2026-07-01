@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
@@ -15,12 +17,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       where: { id },
       include: {
         servicio: {
-          include: { usuario: { select: { id: true, name: true, image: true, phone: true } } },
+          include: { usuario: { select: PUBLIC_USER_SELECT } },
         },
-        cliente: { select: { id: true, name: true, image: true } },
+        cliente: { select: PUBLIC_USER_SELECT },
         cotizaciones: {
           orderBy: { version: "desc" },
-          include: { proveedor: { select: { id: true, name: true, image: true } } },
+          include: { proveedor: { select: PUBLIC_USER_SELECT } },
         },
       },
     })
@@ -41,6 +43,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   }
 }
 
+const statusSchema = z.object({
+  status: z.enum(["PENDIENTE", "COTIZADO", "ACEPTADO", "RECHAZADO", "REVISION"]),
+})
+
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   if (!session?.user) {
@@ -48,10 +54,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 
   const { id } = await params
-  const { status } = await req.json()
-
-  const validStatuses = ["PENDIENTE", "COTIZADO", "ACEPTADO", "RECHAZADO", "REVISION"]
-  if (!validStatuses.includes(status)) {
+  const body = await req.json()
+  const parsed = statusSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json({ error: "Estado inválido" }, { status: 400 })
   }
 
@@ -69,7 +74,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
     const updated = await prisma.budgetRequest.update({
       where: { id },
-      data: { status },
+      data: { status: parsed.data.status },
     })
 
     return NextResponse.json(updated)

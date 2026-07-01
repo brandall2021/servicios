@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
+import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 import { Avatar } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,6 +15,23 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { name: true, description: true, zone: true },
+  })
+  if (!user) return { title: "Proveedor no encontrado" }
+  return {
+    title: `${user.name} | Servicios`,
+    description: user.description?.slice(0, 160) || `Perfil de ${user.name} - ${user.zone || "Proveedor verificad@"}`,
+    openGraph: {
+      title: user.name,
+      description: user.description?.slice(0, 160),
+    },
+  }
+}
+
 export default async function ProveedorPage({ params }: Props) {
   const { id } = await params
   const session = await auth()
@@ -24,10 +43,17 @@ export default async function ProveedorPage({ params }: Props) {
       servicios: {
         where: { activo: true },
         include: {
-          usuario: true,
+          usuario: { select: PUBLIC_PROVIDER_SELECT },
           fotos: { take: 1 },
           opiniones: {
-            include: { cliente: true, fotos: true },
+            select: {
+              id: true,
+              puntuacion: true,
+              comentario: true,
+              createdAt: true,
+              cliente: { select: PUBLIC_USER_SELECT },
+              fotos: { select: { id: true, archivo: true, tipo: true } },
+            },
             take: 5,
           },
           _count: { select: { opiniones: true } },

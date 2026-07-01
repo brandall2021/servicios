@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { notifyBudgetQuote } from "@/lib/notifications"
+
+const cotizarSchema = z.object({
+  amount: z.number().positive(),
+  breakdown: z.string().max(5000).optional(),
+  notes: z.string().max(2000).optional(),
+  validUntil: z.string().optional(),
+})
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
@@ -9,9 +18,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   const { id } = await params
-  const { amount, breakdown, notes, validUntil } = await req.json()
-
-  if (!amount || amount <= 0) {
+  const body = await req.json()
+  const parsed = cotizarSchema.safeParse(body)
+  if (!parsed.success) {
     return NextResponse.json({ error: "Monto inválido" }, { status: 400 })
   }
 
@@ -33,6 +42,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       select: { version: true },
     })
 
+    const { amount, breakdown, notes, validUntil } = parsed.data
+
     const quote = await prisma.budgetQuote.create({
       data: {
         amount,
@@ -49,6 +60,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       where: { id },
       data: { status: "COTIZADO" },
     })
+
+    await notifyBudgetQuote(id, request.servicio.titulo, request.clienteId)
 
     return NextResponse.json(quote, { status: 201 })
   } catch {

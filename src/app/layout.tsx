@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic"
 import "./globals.css"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { BackToTop } from "@/components/shared/back-to-top"
 import { SessionProvider } from "@/components/shared/session-provider"
 import { ThemeProvider } from "@/components/shared/theme-provider"
 
@@ -42,6 +43,7 @@ export default function RootLayout({
           <SessionProvider>
             <Header />
             <main className="flex-1">{children}</main>
+            <BackToTop />
             <Footer />
           </SessionProvider>
         </ThemeProvider>

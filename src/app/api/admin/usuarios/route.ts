@@ -1,27 +1,29 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
 import bcrypt from "bcryptjs"
+import { requireAdmin } from "@/lib/auth-guard"
 
-async function checkAdmin() {
-  const session = await auth()
-  if (!session?.user || session.user.role !== "ADMIN") {
-    return false
-  }
-  return true
-}
+const createUserSchema = z.object({
+  name: z.string().min(1).max(100),
+  email: z.string().email(),
+  password: z.string().min(6).max(100),
+  role: z.enum(["CLIENT", "PROVIDER", "ADMIN"]).optional().default("CLIENT"),
+  phone: z.string().max(30).nullable().optional(),
+  verified: z.boolean().optional().default(false),
+})
 
 export async function POST(req: Request) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
+  const adminCheck = await requireAdmin()
+  if (adminCheck) return adminCheck
 
   const body = await req.json()
-  const { name, email, password, role, phone, verified } = body
-
-  if (!name || !email || !password) {
-    return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 })
+  const parsed = createUserSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Datos inválidos" }, { status: 400 })
   }
+
+  const { name, email, password, role, phone, verified } = parsed.data
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) {
@@ -35,9 +37,9 @@ export async function POST(req: Request) {
       name,
       email,
       password: hashedPassword,
-      role: role || "CLIENT",
+      role,
       phone: phone || null,
-      verified: verified || false,
+      verified,
     },
     select: {
       id: true,

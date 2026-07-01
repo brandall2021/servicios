@@ -3,16 +3,24 @@ import { HeroSearch } from "@/components/home/hero-search"
 import { CategoryGrid } from "@/components/home/category-grid"
 import { FeaturedServices } from "@/components/home/featured-services"
 import { TrustMetrics } from "@/components/home/trust-metrics"
+import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 import type { ServicioWithRelations } from "@/types"
 
 async function getDestacados(): Promise<ServicioWithRelations[]> {
   const servicios = await prisma.servicio.findMany({
     where: { activo: true },
     include: {
-      usuario: true,
+      usuario: { select: PUBLIC_PROVIDER_SELECT },
       fotos: { take: 1 },
       opiniones: {
-        include: { cliente: true, fotos: true },
+        select: {
+          id: true,
+          puntuacion: true,
+          comentario: true,
+          createdAt: true,
+          cliente: { select: PUBLIC_USER_SELECT },
+          fotos: { select: { id: true, archivo: true, tipo: true } },
+        },
         take: 5,
       },
       _count: { select: { opiniones: true } },

@@ -1,30 +1,29 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { requireAdmin, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 
-async function checkAdmin() {
-  const session = await auth()
-  if (!session?.user || session.user.role !== "ADMIN") return false
-  return true
-}
+const updateOpinionSchema = z.object({
+  comentario: z.string().max(2000).optional(),
+  puntuacion: z.number().int().min(1).max(5).optional(),
+})
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
+  const adminCheck = await requireAdmin()
+  if (adminCheck) return adminCheck
 
   const { id } = await params
   const body = await req.json()
-  const data: Record<string, any> = {}
-
-  if (typeof body.comentario === "string") data.comentario = body.comentario
-  if (typeof body.puntuacion === "number") data.puntuacion = body.puntuacion
+  const parsed = updateOpinionSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Datos inválidos" }, { status: 400 })
+  }
 
   const opinion = await prisma.opinion.update({
     where: { id },
-    data,
+    data: parsed.data,
     include: {
-      cliente: { select: { id: true, name: true } },
+      cliente: { select: PUBLIC_USER_SELECT },
       servicio: { select: { id: true, titulo: true } },
     },
   })
@@ -33,9 +32,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
+  const adminCheck = await requireAdmin()
+  if (adminCheck) return adminCheck
 
   const { id } = await params
   await prisma.opinion.delete({ where: { id } })

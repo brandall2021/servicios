@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import { prisma } from "@/lib/prisma"
+import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar } from "@/components/ui/avatar"
@@ -16,6 +18,23 @@ interface Props {
   params: Promise<{ id: string }>
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const servicio = await prisma.servicio.findUnique({
+    where: { id },
+    select: { titulo: true, descripcion: true, categoria: true },
+  })
+  if (!servicio) return { title: "Servicio no encontrado" }
+  return {
+    title: `${servicio.titulo} | Servicios`,
+    description: servicio.descripcion?.slice(0, 160) || `Encontrá ${servicio.titulo} y más servicios de ${servicio.categoria}`,
+    openGraph: {
+      title: servicio.titulo,
+      description: servicio.descripcion?.slice(0, 160),
+    },
+  }
+}
+
 export default async function ServicioDetailPage({ params }: Props) {
   const { id } = await params
   const session = await auth()
@@ -23,12 +42,16 @@ export default async function ServicioDetailPage({ params }: Props) {
   const servicio = await prisma.servicio.findUnique({
     where: { id },
     include: {
-      usuario: true,
+      usuario: { select: PUBLIC_PROVIDER_SELECT },
       fotos: true,
       opiniones: {
-        include: {
-          cliente: true,
-          fotos: true,
+        select: {
+          id: true,
+          puntuacion: true,
+          comentario: true,
+          createdAt: true,
+          cliente: { select: PUBLIC_USER_SELECT },
+          fotos: { select: { id: true, archivo: true, tipo: true } },
         },
         orderBy: { createdAt: "desc" },
       },

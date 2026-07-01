@@ -7,6 +7,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum TipoFoto {
+  SERVICIO
+  PERFIL
+  OPINION
+  TRABAJO
+}
+
+enum ReportMotivo {
+  SPAM
+  FALSO
+  INADECUADO
+  OTRO
+}
+
+enum ReportEstado {
+  PENDIENTE
+  REVISADO
+  RESUELTO
+}
+
+enum BudgetStatus {
+  PENDIENTE
+  COTIZADO
+  ACEPTADO
+  RECHAZADO
+  REVISION
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -14,7 +48,7 @@ model User {
   password      String?
   phone         String?
   image         String?
-  role          String    @default("CLIENT") // CLIENT, PROVIDER, ADMIN
+  role          Role      @default(CLIENT)
   verified      Boolean   @default(false)
   baneado       Boolean   @default(false)
   motivoBaneo   String?
@@ -39,6 +73,10 @@ model User {
   reportesRecibidos Report[]   @relation("ReportesRecibidos")
   presupuestoSolicitados BudgetRequest[] @relation("BudgetCliente")
   cotizacionesCreadas    BudgetQuote[]   @relation("BudgetProveedor")
+  notificaciones         Notification[]
+
+  resetToken            String?  @unique
+  resetTokenExpiry      DateTime?
 }
 
 model Servicio {
@@ -68,7 +106,9 @@ model Servicio {
 model Foto {
   id         String   @id @default(cuid())
   archivo    String
-  tipo       String   @default("SERVICIO") // SERVICIO, PERFIL, OPINION, TRABAJO
+  tipo       TipoFoto @default(SERVICIO)
+  size       Int?
+  mimeType   String?
   createdAt  DateTime @default(now())
 
   servicioId String?
@@ -96,12 +136,12 @@ model Opinion {
 }
 
 model Report {
-  id          String   @id @default(cuid())
-  motivo      String   // SPAM, FALSO, INADECUADO, OTRO
+  id          String       @id @default(cuid())
+  motivo      ReportMotivo
   descripcion String?
-  estado      String   @default("PENDIENTE") // PENDIENTE, REVISADO, RESUELTO
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  estado      ReportEstado @default(PENDIENTE)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   denuncianteId String
   denunciante   User   @relation("ReportesHechos", fields: [denuncianteId], references: [id], onDelete: Cascade)
@@ -144,13 +184,13 @@ model Mensaje {
 }
 
 model BudgetRequest {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   description String?
   materiales  String?
-  archivos    String?  // JSON array de {nombre, url, tipo}
-  status      String   @default("PENDIENTE") // PENDIENTE, COTIZADO, ACEPTADO, RECHAZADO, REVISION
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  archivos    String?
+  status      BudgetStatus @default(PENDIENTE)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   servicioId  String
   servicio    Servicio @relation(fields: [servicioId], references: [id], onDelete: Cascade)
@@ -176,4 +216,17 @@ model BudgetQuote {
 
   proveedorId  String
   proveedor    User         @relation("BudgetProveedor", fields: [proveedorId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String
+  title     String
+  message   String?
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

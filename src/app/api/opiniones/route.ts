@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { notifyNewOpinion } from "@/lib/notifications"
+
+const createOpinionSchema = z.object({
+  servicioId: z.string().min(1),
+  puntuacion: z.number().int().min(1).max(5),
+  comentario: z.string().max(2000).optional(),
+  recaptchaToken: z.string().min(1),
+  fotos: z.array(z.string()).optional(),
+})
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -9,11 +19,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { servicioId, puntuacion, comentario, recaptchaToken, fotos } = await req.json()
-
-    if (!recaptchaToken) {
-      return NextResponse.json({ error: "reCAPTCHA requerido" }, { status: 400 })
+    const body = await req.json()
+    const parsed = createOpinionSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Datos inválidos" }, { status: 400 })
     }
+
+    const { servicioId, puntuacion, comentario, recaptchaToken, fotos } = parsed.data
 
     const recaptchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
       method: "POST",
@@ -27,13 +39,6 @@ export async function POST(req: Request) {
     const recaptchaData = await recaptchaRes.json()
     if (!recaptchaData.success) {
       return NextResponse.json({ error: "reCAPTCHA inválido" }, { status: 400 })
-    }
-
-    if (!servicioId || !puntuacion || puntuacion < 1 || puntuacion > 5) {
-      return NextResponse.json(
-        { error: "Datos inválidos" },
-        { status: 400 }
-      )
     }
 
     const existing = await prisma.opinion.findFirst({
@@ -69,6 +74,8 @@ export async function POST(req: Request) {
           : undefined,
       },
     })
+
+    await notifyNewOpinion(servicioId, servicio.titulo, servicio.usuarioId, puntuacion)
 
     return NextResponse.json(opinion, { status: 201 })
   } catch {

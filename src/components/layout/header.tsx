@@ -6,10 +6,11 @@ import { Avatar } from "../ui/avatar"
 import {
   MessageSquare, FileText,
   Menu, X, ChevronDown, User, LogOut,
-  Search, Sun, Moon, Shield,
+  Sun, Moon, Shield,
 } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/components/shared/theme-provider"
+import NotificationBell from "@/components/shared/notification-bell"
 
 export function Header() {
   const { data: session } = useSession()
@@ -56,7 +57,8 @@ export function Header() {
             </button>
 
             {session?.user ? (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-1">
+                <NotificationBell />
                 <Link
                   href="/chat"
                   className="p-2 text-white/70 hover:text-white transition-colors"

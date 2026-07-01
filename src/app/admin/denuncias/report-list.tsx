@@ -83,7 +83,7 @@ export function AdminReportList({ reports }: { reports: Report[] }) {
                       </Link>
                     )}
                     {r.usuario && (
-                      <span>Usuario reportado: {r.usuario.name} ({r.usuario.email})</span>
+                      <span>Usuario reportado: {r.usuario.name}</span>
                     )}
                     {r.opinion && (
                       <span>Opinión: "{r.opinion.comentario}" ({r.opinion.puntuacion}★)</span>

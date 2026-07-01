@@ -1,39 +1,32 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { requireAdmin } from "@/lib/auth-guard"
 
-async function checkAdmin() {
-  const session = await auth()
-  if (!session?.user || session.user.role !== "ADMIN") {
-    return false
-  }
-  return true
-}
+const updateUserSchema = z.object({
+  verified: z.boolean().optional(),
+  baneado: z.boolean().optional(),
+  motivoBaneo: z.string().max(500).nullable().optional(),
+  role: z.enum(["CLIENT", "PROVIDER", "ADMIN"]).optional(),
+  name: z.string().min(1).max(100).optional(),
+  email: z.string().email().optional(),
+  phone: z.string().max(30).nullable().optional(),
+})
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
+  const adminCheck = await requireAdmin()
+  if (adminCheck) return adminCheck
 
   const { id } = await params
   const body = await req.json()
-
-  const data: Record<string, any> = {}
-  if (typeof body.verified === "boolean") data.verified = body.verified
-  if (typeof body.baneado === "boolean") {
-    data.baneado = body.baneado
-    data.motivoBaneo = body.motivoBaneo || null
+  const parsed = updateUserSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Datos inválidos" }, { status: 400 })
   }
-  if (body.role && ["CLIENT", "PROVIDER", "ADMIN"].includes(body.role)) {
-    data.role = body.role
-  }
-  if (typeof body.name === "string" && body.name.trim()) data.name = body.name.trim()
-  if (typeof body.email === "string" && body.email.trim()) data.email = body.email.trim()
-  if (typeof body.phone === "string") data.phone = body.phone || null
 
   const user = await prisma.user.update({
     where: { id },
-    data,
+    data: parsed.data,
     select: { id: true, name: true, email: true, role: true, verified: true, baneado: true, motivoBaneo: true },
   })
 
@@ -41,9 +34,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 }
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await checkAdmin())) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
+  const adminCheck = await requireAdmin()
+  if (adminCheck) return adminCheck
 
   const { id } = await params
   await prisma.user.delete({ where: { id } })
