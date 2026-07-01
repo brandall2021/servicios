@@ -9,8 +9,9 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 | **Framework** | Next.js 16 (App Router) |
 | **Lenguaje** | TypeScript |
 | **Estilos** | Tailwind CSS v4 + Modo oscuro |
-| **Base de datos** | PostgreSQL + Prisma ORM |
+| **Base de datos** | PostgreSQL + Prisma ORM (enums nativos) |
 | **Autenticación** | NextAuth v5 (Credentials, Google OAuth) |
+| **Validación** | Zod (todos los endpoints) |
 | **UI** | Componentes personalizados + Lucide icons |
 
 ## Funcionalidades
@@ -22,6 +23,7 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 - Chatear en tiempo real con el proveedor
 - Calificar servicios con 1-5 estrellas, comentarios y fotos
 - Aceptar, rechazar o solicitar revisión de cotizaciones
+- Recibir **notificaciones** de mensajes, opiniones, presupuestos y cotizaciones
 
 ### Para proveedores
 - Perfil público con descripción, experiencia, certificaciones y zona de trabajo
@@ -30,6 +32,7 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 - Cotizar con montos, desglose de costos y fechas de validez
 - Chat interno con clientes
 - Ver y responder opiniones
+- **Notificaciones** en tiempo real (polling cada 30s)
 
 ### Para administradores
 - **Dashboard** con estadísticas de uso: usuarios, servicios, opiniones, denuncias, presupuestos
@@ -47,6 +50,10 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 - Autenticación con email/contraseña y Google OAuth
 - Diseño responsive (mobile-first)
 - Protección reCAPTCHA en formularios
+- **SEO dinámico** con meta tags por página (servicios, proveedores)
+- **Paginación** en listados con componente reutilizable
+- **Recuperación de contraseña** por email con token hasheado + expiry de 1 hora
+- **Sistema de notificaciones** con campanita en el header y polling automático
 
 ## Requisitos
 
@@ -106,18 +113,22 @@ npm run dev
 src/
 ├── app/
 │   ├── page.tsx                    # Landing page
-│   ├── layout.tsx                  # Layout principal con ThemeProvider
+│   ├── layout.tsx                  # Layout principal con ThemeProvider + BackToTop
 │   ├── globals.css                 # Estilos globales + modo oscuro
-│   ├── login/                      # Inicio de sesión
+│   ├── loading.tsx                 # Loading global
+│   ├── error.tsx                   # Error boundary global
+│   ├── login/                      # Inicio de sesión (con link a recuperar contraseña)
 │   ├── register/                   # Registro
+│   ├── forgot-password/            # Solicitar enlace de recuperación
+│   ├── reset-password/             # Restablecer contraseña con token
 │   ├── buscar/                     # Buscador de servicios
 │   ├── perfil/                     # Perfil de usuario
-│   ├── proveedores/[id]/           # Perfil público del proveedor
+│   ├── proveedores/[id]/           # Perfil público del proveedor + SEO dinámico
 │   ├── servicios/
 │   │   ├── nuevo/                  # Crear servicio
-│   │   └── [id]/                   # Detalle del servicio + opiniones
+│   │   └── [id]/                   # Detalle del servicio + opiniones + SEO dinámico
 │   ├── chat/                       # Mensajería interna
-│   ├── presupuestos/               # Solicitudes de presupuesto
+│   ├── presupuestos/               # Solicitudes de presupuesto (con paginación)
 │   │   ├── solicitar/              # Formulario con carga de archivos
 │   │   └── [id]/                   # Detalle con cotizaciones
 │   ├── admin/                      # Panel administrativo
@@ -129,34 +140,37 @@ src/
 │   │   ├── denuncias/              # Gestionar reportes
 │   │   ├── presupuestos/           # Ver todas las solicitudes
 │   │   └── categorias/             # Distribución por categoría
-│   └── api/                        # API routes
+│   └── api/                        # API routes (seguridad con zod en todas)
 ├── components/
 │   ├── ui/                         # Componentes base (Button, Input, Card, Modal, Select...)
-│   ├── layout/                     # Header, Footer
-│   └── shared/                     # ThemeProvider, ServiceCard, StarRating...
+│   ├── layout/                     # Header (con NotificationBell), Footer
+│   └── shared/                     # ThemeProvider, ServiceCard, StarRating,
+│                                   # NotificationBell, Pagination, BackToTop...
 ├── lib/
-│   ├── auth.ts                     # Configuración NextAuth
+│   ├── auth.ts                     # Configuración NextAuth + baneo check
+│   ├── auth-guard.ts               # Helpers: requireAdmin, PUBLIC_USER_SELECT, etc.
+│   ├── notifications.ts            # Helper para crear notificaciones
 │   ├── prisma.ts                   # Cliente Prisma singleton
 │   ├── constants.ts                # Categorías, provincias
 │   └── utils.ts                    # cn(), formatDate(), formatPrice()
 └── types/                          # Tipos TypeScript (Session, ServicioWithRelations...)
 prisma/
-├── schema.prisma                   # Modelos: User, Servicio, Foto, Opinion, Report,
-│                                   # Chat, Mensaje, BudgetRequest, BudgetQuote
+├── schema.prisma                   # Modelos + enums nativos (Role, TipoFoto, etc.)
 ├── seed.ts                         # Datos de prueba
 └── migrations/                     # Migraciones automáticas
 ```
 
 ## Modelo de datos
 
-- **User** — Cliente, Proveedor o Admin con perfil completo, verificación y bloqueo
+- **User** — Cliente, Proveedor o Admin (enum `Role`) con perfil completo, verificación, bloqueo y recuperación de contraseña
 - **Servicio** — Publicación con categoría, precio, ubicación GPS y disponibilidad
-- **Foto** — Imágenes asociadas a servicios, opiniones y perfiles
+- **Foto** — Imágenes asociadas a servicios, opiniones y perfiles, con metadatos (`size`, `mimeType`) y tipo enum (`TipoFoto`)
 - **Opinion** — Calificación 1-5 estrellas con comentario opcional
-- **Report** — Denuncias con motivo y estado (Pendiente/Revisado/Resuelto)
+- **Report** — Denuncias con motivo enum (`ReportMotivo`) y estado enum (`ReportEstado`)
 - **Chat / Mensaje** — Mensajería interna entre cliente y proveedor
 - **BudgetRequest** — Solicitud de presupuesto con descripción, materiales y archivos
-- **BudgetQuote** — Cotización con monto, desglose y versión
+- **BudgetQuote** — Cotización con monto, desglose, versión y estado enum (`BudgetStatus`)
+- **Notification** — Notificaciones por tipo (mensaje, opinión, presupuesto, cotización, admin) con leído/no leído
 
 ## Deploy en Dokploy
 
