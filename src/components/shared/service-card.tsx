@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { StarRating } from "./star-rating"
-import { Avatar } from "../ui/avatar"
-import { MapPin } from "lucide-react"
+import { MapPin, BadgeCheck } from "lucide-react"
 import type { ServicioWithRelations } from "@/types"
 import { CATEGORIAS } from "@/lib/constants"
 
@@ -56,37 +55,43 @@ export function ServiceCard({ servicio }: ServiceCardProps) {
           >
             {catInfo?.icon} {catInfo?.label || servicio.categoria}
           </span>
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1">
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1 text-base">
             {servicio.titulo}
           </h3>
-          <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2 mt-1 mb-3">
-            {servicio.descripcion}
-          </p>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Avatar src={servicio.usuario.image} fallback={servicio.usuario.name} size="sm" />
-              <span className="text-sm text-stone-600 dark:text-stone-400">{servicio.usuario.name}</span>
+
+          <div className="flex items-baseline gap-2 mt-1.5">
+            {servicio.precio ? (
+              <span className="text-lg font-bold" style={{ color: "#FF8A00" }}>
+                ${servicio.precio.toLocaleString("es-AR")}
+              </span>
+            ) : (
+              <span className="text-sm font-medium text-zinc-400">Consultar precio</span>
+            )}
+            <div className="flex items-center gap-1 ml-auto text-xs text-stone-400 dark:text-stone-500">
+              <MapPin className="h-3 w-3" />
+              {servicio.ubicacion || "Sin ubicación"}
+              {servicio.distance !== null && servicio.distance !== undefined && (
+                <span className="font-medium" style={{ color: "#FF8A00" }}>
+                  &middot; {servicio.distance < 1
+                    ? `${Math.round(servicio.distance * 1000)}m`
+                    : `${servicio.distance.toFixed(1)}km`}
+                </span>
+              )}
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-2">
             {avgRating > 0 && (
               <StarRating value={avgRating} size="sm" showValue count={servicio.opiniones.length} readonly />
             )}
           </div>
-          <div className="flex items-center gap-1 mt-2 text-xs text-stone-400 dark:text-stone-500">
-            <MapPin className="h-3 w-3" />
-            {servicio.ubicacion || "Ubicación no especificada"}
-            {servicio.distance !== null && servicio.distance !== undefined && (
-              <span className="ml-auto font-medium" style={{ color: "#FF8A00" }}>
-                {servicio.distance < 1
-                  ? `${Math.round(servicio.distance * 1000)}m`
-                  : `${servicio.distance.toFixed(1)}km`}
-              </span>
+
+          <div className="flex items-center gap-1.5 mt-2 text-sm text-stone-500 dark:text-stone-400">
+            <span>{servicio.usuario.name}</span>
+            {servicio.usuario.verified && (
+              <BadgeCheck className="h-4 w-4 text-blue-500" />
             )}
           </div>
-          {servicio.precio && (
-            <div className="mt-2 text-lg font-bold" style={{ color: "#FF8A00" }}>
-              ${servicio.precio.toLocaleString("es-AR")}
-            </div>
-          )}
         </div>
       </div>
     </Link>

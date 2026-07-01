@@ -5,9 +5,11 @@ import { ServiceCard } from "@/components/shared/service-card"
 import { SearchBar } from "@/components/shared/search-bar"
 import { NearMeButton } from "@/components/shared/near-me-button"
 import { CATEGORIAS } from "@/lib/constants"
+import { SortSelect } from "./sort-select"
+import { CategoryChips } from "./category-chips"
 
 interface Props {
-  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string }>
+  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string }>
 }
 
 async function getServicios(params: Awaited<Props["searchParams"]>) {
@@ -83,6 +85,15 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
   if (params.categoria) where.categoria = params.categoria
   if (params.ubicacion) where.ubicacion = { contains: params.ubicacion, mode: "insensitive" }
 
+  const orderBy: Record<string, string> = {}
+  if (params.sort === "precio_asc") {
+    orderBy.precio = "asc"
+  } else if (params.sort === "precio_desc") {
+    orderBy.precio = "desc"
+  } else {
+    orderBy.createdAt = "desc"
+  }
+
   const servicios = await prisma.servicio.findMany({
     where,
     include: {
@@ -101,7 +112,7 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
       },
       _count: { select: { opiniones: true } },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy,
     take: 50,
   })
 
@@ -117,22 +128,29 @@ export default async function BuscarPage({ searchParams }: Props) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-zinc-900 mb-4">Buscar servicios</h1>
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+          {params.q ? `Resultados para "${params.q}"` : "Buscar servicios"}
+        </h1>
         <SearchBar />
       </div>
 
-      <div className="flex gap-6">
+      <CategoryChips
+        categorias={CATEGORIAS}
+        selected={selectedCategoria}
+      />
+
+      <div className="flex gap-6 mt-6">
         <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-24 space-y-6">
             <div>
-              <h3 className="font-semibold text-sm text-zinc-900 mb-3">Categorías</h3>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">Categorías</h3>
               <div className="space-y-1">
                 <a
                   href="/buscar"
                   className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                     !selectedCategoria
-                      ? "bg-orange-50 text-orange-700 font-medium"
-                      : "text-zinc-600 hover:bg-zinc-50"
+                      ? "bg-orange-50 text-orange-700 font-medium dark:bg-orange-900/30 dark:text-orange-400"
+                      : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800"
                   }`}
                 >
                   Todas
@@ -143,8 +161,8 @@ export default async function BuscarPage({ searchParams }: Props) {
                     href={`/buscar?categoria=${cat.value}`}
                     className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                       selectedCategoria === cat.value
-                        ? "bg-orange-50 text-orange-700 font-medium"
-                        : "text-zinc-600 hover:bg-zinc-50"
+                        ? "bg-orange-50 text-orange-700 font-medium dark:bg-orange-900/30 dark:text-orange-400"
+                        : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800"
                     }`}
                   >
                     {cat.icon} {cat.label}
@@ -154,38 +172,41 @@ export default async function BuscarPage({ searchParams }: Props) {
             </div>
 
             <div>
-              <h3 className="font-semibold text-sm text-zinc-900 mb-3">Cerca de mí</h3>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">Cerca de mí</h3>
               <NearMeButton />
             </div>
           </div>
         </aside>
 
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-zinc-500">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
               {servicios.length} {servicios.length === 1 ? "servicio encontrado" : "servicios encontrados"}
-              {params.lat && params.lng && ` (ordenados por cercanía)`}
+              {params.lat && params.lng && " (ordenados por cercanía)"}
             </p>
-            {params.lat && params.lng && (
-              <div className="flex items-center gap-2">
-                <label className="text-xs text-zinc-500">Radio:</label>
-                <select
-                  className="h-8 px-2 border border-stone-200 rounded-lg text-xs bg-white text-stone-600 outline-none focus:border-orange-500"
-                  onChange={(e) => {
-                    const url = new URL(window.location.href)
-                    url.searchParams.set("radio", e.target.value)
-                    window.location.href = url.toString()
-                  }}
-                  defaultValue={params.radio || "50"}
-                >
-                  <option value="10">10 km</option>
-                  <option value="25">25 km</option>
-                  <option value="50">50 km</option>
-                  <option value="100">100 km</option>
-                  <option value="200">200 km</option>
-                </select>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {params.lat && params.lng && (
+                <div className="flex items-center gap-2">
+                  <label className="text-xs text-zinc-500 dark:text-zinc-400">Radio:</label>
+                  <select
+                    className="h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+                    onChange={(e) => {
+                      const url = new URL(window.location.href)
+                      url.searchParams.set("radio", e.target.value)
+                      window.location.href = url.toString()
+                    }}
+                    defaultValue={params.radio || "50"}
+                  >
+                    <option value="10">10 km</option>
+                    <option value="25">25 km</option>
+                    <option value="50">50 km</option>
+                    <option value="100">100 km</option>
+                    <option value="200">200 km</option>
+                  </select>
+                </div>
+              )}
+              <SortSelect />
+            </div>
           </div>
           {servicios.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -195,8 +216,8 @@ export default async function BuscarPage({ searchParams }: Props) {
             </div>
           ) : (
             <div className="text-center py-20">
-              <p className="text-zinc-400 text-lg mb-2">No encontramos servicios</p>
-              <p className="text-zinc-400 text-sm">Probá con otros términos de búsqueda</p>
+              <p className="text-zinc-400 dark:text-zinc-500 text-lg mb-2">No encontramos servicios</p>
+              <p className="text-zinc-400 dark:text-zinc-500 text-sm">Probá con otros términos de búsqueda o categoría</p>
             </div>
           )}
         </div>

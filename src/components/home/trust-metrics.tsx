@@ -4,25 +4,25 @@ const steps = [
   {
     icon: Search,
     title: "Buscá",
-    description: "Encontrá el servicio que necesitás filtrando por categoría, ubicación y precio.",
+    description: "Encontrá los materiales o servicios que necesitás filtrando por categoría, ubicación y precio.",
     color: "blue",
   },
   {
     icon: MessageSquareText,
-    title: "Consultá",
-    description: "Charlá directamente con el proveedor, resolvé tus dudas y acordá los detalles.",
+    title: "Compará",
+    description: "Compará precios y opiniones de diferentes proveedores en un solo lugar.",
     color: "cyan",
   },
   {
     icon: Star,
     title: "Elegí",
-    description: "Compará opiniones reales de otros clientes y elegí con confianza.",
+    description: "Seleccioná la mejor opción según reputación, precio y cercanía.",
     color: "orange",
   },
   {
     icon: ShieldCheck,
     title: "Contratá",
-    description: "Trabajá con profesionales verificados. Tu satisfacción es lo más importante.",
+    description: "Trabajá con proveedores verificados. Tu satisfacción es lo más importante.",
     color: "purple",
   },
 ]
@@ -43,10 +43,10 @@ export function TrustMetrics() {
             Cómo funciona
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mt-1">
-            Encontrá al profesional ideal en 4 pasos
+            Encontrá lo que necesitás en 4 pasos
           </h2>
           <p className="text-sm text-stone-500 dark:text-stone-400 mt-2 max-w-lg mx-auto">
-            Simplificamos la conexión entre clientes y proveedores para que sea rápida, segura y sin complicaciones.
+            Simplificamos la conexión entre compradores y proveedores para que sea rápida, segura y sin complicaciones.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react"
 import { Avatar } from "../ui/avatar"
 import {
   MessageSquare, FileText,
-  Menu, X, ChevronDown, User, LogOut,
+  Menu, X, ChevronDown, User, LogOut, Plus,
   Sun, Moon, Shield,
 } from "lucide-react"
 import { useState } from "react"
@@ -35,14 +35,15 @@ export function Header() {
               Inicio
             </Link>
             <Link href="/buscar" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
-              Servicios
+              Buscar
             </Link>
-            <Link href="/buscar" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
-              Profesionales
-            </Link>
-            <Link href="/buscar" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
-              Contacto
-            </Link>
+            {session?.user && (
+              <>
+                <Link href="/presupuestos" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
+                  Presupuestos
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Right section */}
@@ -58,6 +59,12 @@ export function Header() {
 
             {session?.user ? (
               <div className="hidden md:flex items-center gap-1">
+                <Link
+                  href="/servicios/nuevo"
+                  className="h-9 px-3 text-sm font-semibold btn-orange shadow-md inline-flex items-center gap-1.5"
+                >
+                  <Plus className="h-4 w-4" /> Publicar
+                </Link>
                 <NotificationBell />
                 <Link
                   href="/chat"
@@ -133,14 +140,18 @@ export function Header() {
               Inicio
             </Link>
             <Link href="/buscar" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
-              Servicios
+              Buscar
             </Link>
-            <Link href="/buscar" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
-              Profesionales
-            </Link>
-            <Link href="/buscar" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
-              Contacto
-            </Link>
+            {session?.user && (
+              <>
+                <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                  Presupuestos
+                </Link>
+                <Link href="/servicios/nuevo" className="block px-3 py-2.5 text-sm font-medium text-white btn-orange text-center rounded-lg" onClick={() => setMenuOpen(false)}>
+                  Publicar servicio
+                </Link>
+              </>
+            )}
             <hr className="my-3 border-white/10" />
             {session?.user ? (
               <>
