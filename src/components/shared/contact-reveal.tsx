@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { Eye, EyeOff, Globe, Facebook, Instagram, Phone, ExternalLink } from "lucide-react"
+import { Eye, EyeOff, Globe, Phone, ExternalLink, Link2 } from "lucide-react"
 import { registrarContacto } from "@/actions/contacto"
 
 interface ContactRevealProps {
@@ -17,8 +17,8 @@ function defaultIcon(tipo: string) {
     case "phone": return <Phone className="h-3.5 w-3.5" />
     case "whatsapp": return <Phone className="h-3.5 w-3.5" />
     case "website": return <Globe className="h-3.5 w-3.5" />
-    case "facebook": return <Facebook className="h-3.5 w-3.5" />
-    case "instagram": return <Instagram className="h-3.5 w-3.5" />
+    case "facebook": return <Link2 className="h-3.5 w-3.5" />
+    case "instagram": return <Link2 className="h-3.5 w-3.5" />
   }
 }
 
