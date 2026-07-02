@@ -63,6 +63,11 @@ body {
   color: white;
 }
 
+.dark ::selection {
+  background: rgba(255, 138, 0, 0.3);
+  color: #e5e5e5;
+}
+
 .dark .text-zinc-900 { color: #e5e5e5; }
 .dark .text-zinc-800 { color: #d4d4d8; }
 .dark .text-zinc-700 { color: #c0c0c0; }
