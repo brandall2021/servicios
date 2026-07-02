@@ -236,3 +236,15 @@ model Notification {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model ContactView {
+  id         String   @id @default(cuid())
+  tipo       String   // phone, whatsapp, website, facebook, instagram
+  targetId   String   // user id or service id
+  targetType String   // "proveedor" | "servicio"
+  userId     String
+  createdAt  DateTime @default(now())
+
+  @@index([targetId, targetType])
+  @@index([createdAt])
+}

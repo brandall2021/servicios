@@ -13,6 +13,7 @@ import { CATEGORIAS } from "@/lib/constants"
 import { OpinionForm } from "./opinion-form"
 import { ReportButton } from "./report-button"
 import { auth } from "@/lib/auth"
+import { ContactReveal } from "@/components/shared/contact-reveal"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -238,21 +239,33 @@ export default async function ServicioDetailPage({ params }: Props) {
               {(servicio.website || servicio.facebook || servicio.instagram) && (
                 <div className="mb-4 pb-4 border-b border-stone-100">
                   <p className="text-xs text-zinc-400 uppercase tracking-wide font-medium mb-2">Redes</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col gap-2">
                     {servicio.website && (
-                      <a href={servicio.website} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-                        🌐 Web
-                      </a>
+                      <ContactReveal
+                        tipo="website"
+                        valor={servicio.website}
+                        targetId={servicio.id}
+                        targetType="servicio"
+                        className="text-xs text-zinc-500 hover:text-zinc-700"
+                      />
                     )}
                     {servicio.facebook && (
-                      <a href={servicio.facebook} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-                        📘 Facebook
-                      </a>
+                      <ContactReveal
+                        tipo="facebook"
+                        valor={servicio.facebook}
+                        targetId={servicio.id}
+                        targetType="servicio"
+                        className="text-xs text-zinc-500 hover:text-zinc-700"
+                      />
                     )}
                     {servicio.instagram && (
-                      <a href={servicio.instagram} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-                        📸 Instagram
-                      </a>
+                      <ContactReveal
+                        tipo="instagram"
+                        valor={servicio.instagram}
+                        targetId={servicio.id}
+                        targetType="servicio"
+                        className="text-xs text-zinc-500 hover:text-zinc-700"
+                      />
                     )}
                   </div>
                 </div>

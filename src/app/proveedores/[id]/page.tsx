@@ -10,6 +10,7 @@ import { ServiceCard } from "@/components/shared/service-card"
 import Link from "next/link"
 import { MapPin, Shield, Phone, Clock, Award, ChevronLeft, MessageSquare, CheckCircle, Briefcase, Star } from "lucide-react"
 import { auth } from "@/lib/auth"
+import { ContactReveal } from "@/components/shared/contact-reveal"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -135,8 +136,13 @@ export default async function ProveedorPage({ params }: Props) {
                 )}
                 {provider.phone && (
                   <span className="inline-flex items-center gap-1.5 text-xs text-white bg-white/10 rounded-full px-3 py-1.5">
-                    <Phone className="h-3.5 w-3.5" />
-                    {provider.phone}
+                    <ContactReveal
+                      tipo="phone"
+                      valor={provider.phone}
+                      targetId={provider.id}
+                      targetType="proveedor"
+                      className="text-white/80 hover:text-white"
+                    />
                   </span>
                 )}
                 {provider.availability && (
@@ -208,21 +214,33 @@ export default async function ProveedorPage({ params }: Props) {
               {(provider.website || provider.facebook || provider.instagram) && (
                 <div className="bg-white rounded-2xl border border-stone-200 p-4">
                   <p className="text-xs text-zinc-400 uppercase tracking-wide font-medium mb-2">Redes</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col gap-2">
                     {provider.website && (
-                      <a href={provider.website} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-medium">
-                        🌐 Sitio web
-                      </a>
+                      <ContactReveal
+                        tipo="website"
+                        valor={provider.website}
+                        targetId={provider.id}
+                        targetType="proveedor"
+                        className="text-xs text-zinc-500 hover:text-zinc-700"
+                      />
                     )}
                     {provider.facebook && (
-                      <a href={provider.facebook} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-medium">
-                        📘 Facebook
-                      </a>
+                      <ContactReveal
+                        tipo="facebook"
+                        valor={provider.facebook}
+                        targetId={provider.id}
+                        targetType="proveedor"
+                        className="text-xs text-zinc-500 hover:text-zinc-700"
+                      />
                     )}
                     {provider.instagram && (
-                      <a href={provider.instagram} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-medium">
-                        📸 Instagram
-                      </a>
+                      <ContactReveal
+                        tipo="instagram"
+                        valor={provider.instagram}
+                        targetId={provider.id}
+                        targetType="proveedor"
+                        className="text-xs text-zinc-500 hover:text-zinc-700"
+                      />
                     )}
                   </div>
                 </div>
