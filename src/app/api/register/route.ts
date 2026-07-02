@@ -8,6 +8,7 @@ const registerSchema = z.object({
   email: z.string().email().max(254),
   password: z.string().min(6).max(128),
   phone: z.string().max(50).optional(),
+  role: z.enum(["CLIENT", "PROVIDER"]).optional(),
 })
 
 export async function POST(req: Request) {
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const { name, email, password, phone } = parsed.data
+    const { name, email, password, phone, role } = parsed.data
 
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
@@ -33,6 +34,8 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
+    const solicitudProveedor = role === "PROVIDER"
+
     const user = await prisma.user.create({
       data: {
         name,
@@ -40,11 +43,12 @@ export async function POST(req: Request) {
         password: hashedPassword,
         role: "CLIENT",
         phone,
+        solicitudProveedor,
       },
     })
 
     return NextResponse.json(
-      { id: user.id, name: user.name, email: user.email, role: user.role },
+      { id: user.id, name: user.name, email: user.email, role: user.role, solicitudProveedor },
       { status: 201 }
     )
   } catch {

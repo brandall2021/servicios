@@ -29,6 +29,7 @@ export default function RegisterPage() {
       setLoading(false)
       return
     }
+    const roleValue = role
 
     const res = await fetch("/api/register", {
       method: "POST",
@@ -38,6 +39,7 @@ export default function RegisterPage() {
         email: formData.get("email"),
         password,
         phone: formData.get("phone"),
+        role: roleValue,
       }),
     })
 
@@ -49,7 +51,11 @@ export default function RegisterPage() {
       return
     }
 
-    router.push("/login?registered=true")
+    if (roleValue === "PROVIDER") {
+      router.push("/login?registered=provider")
+    } else {
+      router.push("/login?registered=true")
+    }
   }
 
   return (
@@ -118,7 +124,6 @@ export default function RegisterPage() {
               label="Teléfono"
               placeholder="+54 381 1234567"
             />
-            <input type="hidden" name="role" value={role} />
             <Input
               id="password"
               name="password"

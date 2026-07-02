@@ -25,6 +25,7 @@ export function SortSelect() {
       <option value="">Más relevantes</option>
       <option value="precio_asc">Menor precio</option>
       <option value="precio_desc">Mayor precio</option>
+      <option value="rating">Mejor calificados</option>
     </select>
   )
 }

@@ -19,6 +19,7 @@ interface User {
   verified: boolean
   baneado: boolean
   motivoBaneo: string | null
+  solicitudProveedor: boolean
   createdAt: Date
   _count: { servicios: number; opiniones: number }
 }
@@ -147,6 +148,28 @@ export function AdminUserList({ usuarios }: { usuarios: User[] }) {
     router.refresh()
   }
 
+  async function approveProvider(userId: string) {
+    setLoading(userId)
+    await fetch(`/api/admin/usuarios/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: "PROVIDER", verified: true, solicitudProveedor: false }),
+    })
+    setLoading(null)
+    router.refresh()
+  }
+
+  async function rejectProvider(userId: string) {
+    setLoading(userId)
+    await fetch(`/api/admin/usuarios/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ solicitudProveedor: false }),
+    })
+    setLoading(null)
+    router.refresh()
+  }
+
   async function deleteUser(userId: string, name: string) {
     if (!confirm(`¿Eliminar a "${name}"? Esta acción no se puede deshacer.`)) return
     setLoading(userId)
@@ -194,13 +217,38 @@ export function AdminUserList({ usuarios }: { usuarios: User[] }) {
                 <td className="py-3 px-4 text-center text-zinc-500">{u._count.servicios}</td>
                 <td className="py-3 px-4 text-center">
                   <div className="flex items-center justify-center gap-1">
+                    {u.solicitudProveedor && (
+                      <span title="Solicitó ser proveedor" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        Pendiente
+                      </span>
+                    )}
                     {u.verified && <span title="Verificado"><CheckCircle className="h-4 w-4 text-green-600" /></span>}
                     {u.baneado && <span title="Bloqueado"><Ban className="h-4 w-4 text-red-600" /></span>}
-                    {!u.verified && !u.baneado && <span className="text-zinc-300">—</span>}
+                    {!u.solicitudProveedor && !u.verified && !u.baneado && <span className="text-zinc-300">—</span>}
                   </div>
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex items-center justify-end gap-1">
+                    {u.solicitudProveedor && (
+                      <>
+                        <button
+                          onClick={() => approveProvider(u.id)}
+                          disabled={loading === u.id}
+                          className="p-1.5 rounded-lg hover:bg-green-50 text-green-600 hover:text-green-700"
+                          title="Aprobar como proveedor"
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => rejectProvider(u.id)}
+                          disabled={loading === u.id}
+                          className="p-1.5 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-700"
+                          title="Rechazar solicitud"
+                        >
+                          <XCircle className="h-4 w-4" />
+                        </button>
+                      </>
+                    )}
                     <button
                       onClick={() => openEdit(u)}
                       disabled={loading === u.id}

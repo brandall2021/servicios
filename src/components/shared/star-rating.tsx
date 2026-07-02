@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils"
 interface StarRatingProps {
   value: number
   onChange?: (value: number) => void
-  size?: "sm" | "md" | "lg"
+  size?: "xs" | "sm" | "md" | "lg"
   showValue?: boolean
   count?: number
   readonly?: boolean
 }
 
-const sizeMap = { sm: "text-sm", md: "text-lg", lg: "text-2xl" }
+const sizeMap = { xs: "text-xs", sm: "text-sm", md: "text-lg", lg: "text-2xl" }
 
 export function StarRating({
   value,

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { ChatView } from "./chat-view"
 
 interface Props {
-  searchParams: Promise<{ proveedor?: string; servicio?: string }>
+  searchParams: Promise<{ proveedor?: string; servicio?: string; chat?: string }>
 }
 
 export default async function ChatPage({ searchParams }: Props) {
@@ -48,7 +48,7 @@ export default async function ChatPage({ searchParams }: Props) {
     }
   })
 
-  const initialChatId = params.proveedor ? undefined : chatList[0]?.id
+  const initialChatId = params.chat || (params.proveedor ? undefined : chatList[0]?.id)
 
   return (
     <div className="h-[calc(100vh-4rem)] max-w-6xl mx-auto flex">

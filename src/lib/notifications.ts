@@ -26,7 +26,7 @@ export async function notifyNewMessage(chatId: string, emisorId: string, recepto
     type: "mensaje",
     title: "Nuevo mensaje",
     message: contenido?.slice(0, 200),
-    link: `/chat/${chatId}`,
+    link: `/chat?chat=${chatId}`,
   })
 }
 

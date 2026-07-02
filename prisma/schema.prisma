@@ -61,6 +61,7 @@ model User {
   website       String?
   facebook      String?
   instagram     String?
+  solicitudProveedor Boolean @default(false)
   trabajosRealizados Int @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
