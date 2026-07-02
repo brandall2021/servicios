@@ -58,6 +58,9 @@ model User {
   zone          String?
   availability  String?
   whatsapp      String?
+  website       String?
+  facebook      String?
+  instagram     String?
   trabajosRealizados Int @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -90,6 +93,9 @@ model Servicio {
   lat         Float?
   lng         Float?
   disponibilidad String?
+  website       String?
+  facebook      String?
+  instagram     String?
   activo      Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

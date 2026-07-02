@@ -12,6 +12,9 @@ const createServicioSchema = z.object({
   precioTexto: z.string().max(200).optional(),
   ubicacion: z.string().max(200).optional(),
   disponibilidad: z.string().max(200).optional(),
+  website: z.string().max(500).optional(),
+  facebook: z.string().max(500).optional(),
+  instagram: z.string().max(500).optional(),
   lat: z.string().optional(),
   lng: z.string().optional(),
   fotos: z.array(z.string()).optional(),
@@ -33,7 +36,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const { titulo, descripcion, categoria, precio, precioTexto, ubicacion, disponibilidad, lat, lng, fotos } = parsed.data
+    const { titulo, descripcion, categoria, precio, precioTexto, ubicacion, disponibilidad, website, facebook, instagram, lat, lng, fotos } = parsed.data
 
     const servicio = await prisma.servicio.create({
       data: {
@@ -46,6 +49,9 @@ export async function POST(req: Request) {
         lat: lat ? parseFloat(lat) : null,
         lng: lng ? parseFloat(lng) : null,
         disponibilidad,
+        website: website || null,
+        facebook: facebook || null,
+        instagram: instagram || null,
         usuarioId: session.user.id,
         fotos: fotos?.length
           ? { create: fotos.map((archivo: string) => ({ archivo, tipo: "SERVICIO" })) }

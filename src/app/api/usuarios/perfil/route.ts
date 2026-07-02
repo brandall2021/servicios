@@ -12,6 +12,9 @@ const updatePerfilSchema = z.object({
   zone: z.string().max(200).nullable().optional(),
   availability: z.string().max(500).nullable().optional(),
   whatsapp: z.string().max(30).nullable().optional(),
+  website: z.string().max(500).nullable().optional(),
+  facebook: z.string().max(500).nullable().optional(),
+  instagram: z.string().max(500).nullable().optional(),
 })
 
 export async function PUT(req: Request) {

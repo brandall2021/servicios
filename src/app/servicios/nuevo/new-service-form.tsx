@@ -167,6 +167,30 @@ export function NewServiceForm() {
             placeholder="Ej: Lunes a viernes 9-18hs"
           />
 
+          <div className="border-t border-stone-200 pt-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400 mb-3">Redes y sitio web</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Input
+                id="website"
+                name="website"
+                label="Sitio web"
+                placeholder="https://..."
+              />
+              <Input
+                id="facebook"
+                name="facebook"
+                label="Facebook"
+                placeholder="https://facebook.com/..."
+              />
+              <Input
+                id="instagram"
+                name="instagram"
+                label="Instagram"
+                placeholder="https://instagram.com/..."
+              />
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1.5">
               Fotos del servicio

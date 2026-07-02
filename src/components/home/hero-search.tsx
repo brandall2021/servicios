@@ -37,14 +37,14 @@ export function HeroSearch() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
         <div className="animate-fade-up">
           <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase bg-white/10 text-orange-300 border border-white/10 mb-6">
-            Marketplace de materiales
+            Marketplace de servicios
           </span>
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-[1.1] mb-4 animate-fade-up animate-fade-up-delay-1">
           Compará precios y encontrá
           <br />
           <span className="bg-gradient-to-r from-orange-400 via-orange-300 to-yellow-200 bg-clip-text text-transparent">
-            proveedores de confianza
+            los mejores servicios
           </span>
         </h1>
         <p className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto mb-8 animate-fade-up animate-fade-up-delay-2">

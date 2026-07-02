@@ -235,6 +235,29 @@ export default async function ServicioDetailPage({ params }: Props) {
                 </div>
               )}
 
+              {(servicio.website || servicio.facebook || servicio.instagram) && (
+                <div className="mb-4 pb-4 border-b border-stone-100">
+                  <p className="text-xs text-zinc-400 uppercase tracking-wide font-medium mb-2">Redes</p>
+                  <div className="flex flex-wrap gap-2">
+                    {servicio.website && (
+                      <a href={servicio.website} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+                        🌐 Web
+                      </a>
+                    )}
+                    {servicio.facebook && (
+                      <a href={servicio.facebook} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+                        📘 Facebook
+                      </a>
+                    )}
+                    {servicio.instagram && (
+                      <a href={servicio.instagram} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+                        📸 Instagram
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-2">
                 {session?.user && session.user.id !== servicio.usuarioId && (
                   <>

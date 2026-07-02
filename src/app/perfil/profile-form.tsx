@@ -20,6 +20,9 @@ interface ProfileFormProps {
     zone: string | null
     availability: string | null
     whatsapp: string | null
+    website: string | null
+    facebook: string | null
+    instagram: string | null
     role: string
   }
 }
@@ -123,6 +126,32 @@ export function ProfileForm({ user }: ProfileFormProps) {
             defaultValue={user.whatsapp || ""}
             placeholder="Ej: +54 11 2345-6789"
           />
+          <div className="border-t border-stone-200 pt-4 mt-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400 mb-3">Redes y sitio web</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <Input
+                id="website"
+                name="website"
+                label="Sitio web"
+                defaultValue={user.website || ""}
+                placeholder="https://..."
+              />
+              <Input
+                id="facebook"
+                name="facebook"
+                label="Facebook"
+                defaultValue={user.facebook || ""}
+                placeholder="https://facebook.com/..."
+              />
+              <Input
+                id="instagram"
+                name="instagram"
+                label="Instagram"
+                defaultValue={user.instagram || ""}
+                placeholder="https://instagram.com/..."
+              />
+            </div>
+          </div>
         </>
       )}
 

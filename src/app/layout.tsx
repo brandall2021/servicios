@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Servicios - Encuentra profesionales de confianza",
-  description: "Plataforma de publicación y evaluación de servicios. Conectamos clientes con proveedores verificados.",
+  title: "Servicios - Encontrá servicios de confianza",
+  description: "Plataforma de publicación y búsqueda de servicios. Conectamos clientes con profesionales verificados.",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",

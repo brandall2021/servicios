@@ -205,6 +205,28 @@ export default async function ProveedorPage({ params }: Props) {
                   </Button>
                 </a>
               )}
+              {(provider.website || provider.facebook || provider.instagram) && (
+                <div className="bg-white rounded-2xl border border-stone-200 p-4">
+                  <p className="text-xs text-zinc-400 uppercase tracking-wide font-medium mb-2">Redes</p>
+                  <div className="flex flex-wrap gap-2">
+                    {provider.website && (
+                      <a href={provider.website} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-medium">
+                        🌐 Sitio web
+                      </a>
+                    )}
+                    {provider.facebook && (
+                      <a href={provider.facebook} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-medium">
+                        📘 Facebook
+                      </a>
+                    )}
+                    {provider.instagram && (
+                      <a href={provider.instagram} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline font-medium">
+                        📸 Instagram
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </>
           )}
 
