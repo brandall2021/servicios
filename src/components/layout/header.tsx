@@ -22,11 +22,10 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <Link href="/" className="flex items-center shrink-0 group">
             <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl overflow-hidden ring-2 ring-orange-400/60 group-hover:ring-orange-400 transition-all shadow-lg shadow-orange-500/10">
               <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
             </div>
-            <span className="font-bold text-xl sm:text-2xl text-white tracking-tight">Servicios</span>
           </Link>
 
           {/* Desktop nav */}
