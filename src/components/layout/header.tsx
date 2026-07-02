@@ -23,8 +23,8 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0 group">
-            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl overflow-hidden ring-2 ring-orange-400/60 group-hover:ring-orange-400 transition-all shadow-lg shadow-orange-500/10">
-              <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
+            <div className="h-10 w-auto max-w-[140px] sm:max-w-[180px] rounded-lg overflow-hidden ring-2 ring-orange-400/60 group-hover:ring-orange-400 transition-all shadow-lg shadow-orange-500/10">
+              <img src="/logo.png" alt="Servicios" className="h-full w-full object-contain" />
             </div>
           </Link>
 

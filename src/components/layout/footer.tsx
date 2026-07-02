@@ -43,8 +43,8 @@ export function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div className="col-span-2 sm:col-span-1">
               <Link href="/" className="flex items-center mb-3">
-                <div className="h-7 w-7 rounded-lg overflow-hidden">
-                  <img src="/logo.png" alt="Servicios" className="h-full w-full object-cover" />
+                <div className="h-7 w-auto max-w-[100px] rounded overflow-hidden">
+                  <img src="/logo.png" alt="Servicios" className="h-full w-full object-contain" />
                 </div>
               </Link>
               <p className="text-xs text-white/60 leading-relaxed max-w-xs">
