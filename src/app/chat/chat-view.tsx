@@ -6,6 +6,7 @@ import { Avatar } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Send, MessageSquare } from "lucide-react"
+import { TextToolbar, renderMarkdown } from "@/components/shared/text-toolbar"
 
 interface ChatListProps {
   currentUserId: string
@@ -185,7 +186,7 @@ export function ChatView({
                         : "bg-zinc-100 text-zinc-900"
                     }`}
                   >
-                    <p className="text-sm">{msg.contenido}</p>
+                    <p className="text-sm" dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.contenido || "") }} />
                     <p
                       className={`text-xs mt-1 ${
                         msg.emisorId === currentUserId
@@ -203,17 +204,28 @@ export function ChatView({
               ))}
               <div ref={messagesEndRef} />
             </div>
-            <form onSubmit={handleSend} className="p-4 border-t border-zinc-200 flex gap-2">
-              <Input
-                id="message"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Escribí un mensaje..."
-                className="flex-1"
-              />
-              <Button type="submit" disabled={!newMessage.trim() || sending} size="icon">
-                <Send className="h-4 w-4" />
-              </Button>
+            <form onSubmit={handleSend} className="p-4 border-t border-zinc-200">
+              <TextToolbar textareaId="message" />
+              <div className="flex gap-2">
+                <textarea
+                  id="message"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Escribí un mensaje..."
+                  className="flex-1 min-h-[2.5rem] max-h-32 resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 transition-colors"
+                  rows={1}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      const form = (e.target as HTMLElement).closest("form")
+                      form?.requestSubmit()
+                    }
+                  }}
+                />
+                <Button type="submit" disabled={!newMessage.trim() || sending} size="icon" className="shrink-0">
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
             </form>
           </>
         ) : (
