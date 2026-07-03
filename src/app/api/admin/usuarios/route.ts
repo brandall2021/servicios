@@ -3,6 +3,7 @@ import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcryptjs"
 import { requireAdmin } from "@/lib/auth-guard"
+import { logAdminAction } from "@/lib/audit"
 
 const createUserSchema = z.object({
   name: z.string().min(1).max(100),
@@ -51,6 +52,8 @@ export async function POST(req: Request) {
       createdAt: true,
     },
   })
+
+  await logAdminAction("crear_usuario", `Creado ${name} (${email}) como ${role}${verified ? " verificado" : ""}`, user.id)
 
   return NextResponse.json(user, { status: 201 })
 }

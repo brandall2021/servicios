@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, Star, AlertTriangle, FileText } from "lucide-react"
+import { Users, Briefcase, Star, AlertTriangle, FileText, ScrollText } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 import Link from "next/link"
 import { AdminDashboardChart } from "./dashboard-chart"
@@ -25,6 +25,7 @@ export default async function AdminPage() {
     reportsPendientes,
     totalBaneados,
     totalPresupuestos,
+    totalAuditLogs,
     monthlyRegistrations,
     servicesByCategory,
     recentReports,
@@ -40,6 +41,7 @@ export default async function AdminPage() {
     prisma.report.count({ where: { estado: "PENDIENTE" } }),
     prisma.user.count({ where: { baneado: true } }),
     prisma.budgetRequest.count(),
+    prisma.auditLog.count(),
     prisma.user.groupBy({
       by: ["createdAt"],
       where: { createdAt: { gte: sixMonthsAgo } },
@@ -151,6 +153,20 @@ export default async function AdminPage() {
                     <p className="text-2xl font-bold text-zinc-900">{totalPresupuestos.toLocaleString()}</p>
                   </div>
                   <FileText className="h-8 w-8 text-blue-600" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/auditoria">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-zinc-500">Auditoría</p>
+                    <p className="text-2xl font-bold text-zinc-900">{totalAuditLogs.toLocaleString()}</p>
+                  </div>
+                  <ScrollText className="h-8 w-8 text-purple-600" />
                 </div>
               </CardContent>
             </Card>

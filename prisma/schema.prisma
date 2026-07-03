@@ -78,6 +78,7 @@ model User {
   presupuestoSolicitados BudgetRequest[] @relation("BudgetCliente")
   cotizacionesCreadas    BudgetQuote[]   @relation("BudgetProveedor")
   notificaciones         Notification[]
+  auditoria              AuditLog[]
 
   resetToken            String?  @unique
   resetTokenExpiry      DateTime?
@@ -247,5 +248,18 @@ model ContactView {
   createdAt  DateTime @default(now())
 
   @@index([targetId, targetType])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  accion    String   // cambio_rol, banear, desbanear, eliminar, crear_usuario, editar_usuario, aprobar_proveedor, rechazar_proveedor
+  detalle   String?  // descripción legible
+  adminId   String
+  admin     User     @relation(fields: [adminId], references: [id])
+  targetId  String?  // id del usuario afectado
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
   @@index([createdAt])
 }
