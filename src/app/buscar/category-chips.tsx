@@ -26,10 +26,10 @@ export function CategoryChips({ categorias, selected }: CategoryChipsProps) {
     <div className="flex gap-2 overflow-x-auto pb-2 -mb-1 scrollbar-none">
       <button
         onClick={() => selectCategory("")}
-        className={`shrink-0 px-3 py-1.5 text-sm rounded-full border transition-colors ${
+        className={`shrink-0 px-4 py-2 text-sm rounded-xl border transition-all duration-300 ${
           !selected
-            ? "bg-orange-600 text-white border-orange-600 font-medium"
-            : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-orange-300"
+            ? "bg-orange-600 text-white border-orange-600 font-medium shadow-sm shadow-orange-600/20"
+            : "bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 border-stone-200/70 dark:border-zinc-700/50 hover:border-orange-300 dark:hover:border-orange-600/50"
         }`}
       >
         Todas
@@ -38,10 +38,10 @@ export function CategoryChips({ categorias, selected }: CategoryChipsProps) {
         <button
           key={cat.value}
           onClick={() => selectCategory(cat.value)}
-          className={`shrink-0 px-3 py-1.5 text-sm rounded-full border transition-colors whitespace-nowrap ${
+          className={`shrink-0 px-4 py-2 text-sm rounded-xl border transition-all duration-300 whitespace-nowrap ${
             selected === cat.value
-              ? "bg-orange-600 text-white border-orange-600 font-medium"
-              : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-orange-300"
+              ? "bg-orange-600 text-white border-orange-600 font-medium shadow-sm shadow-orange-600/20"
+              : "bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 border-stone-200/70 dark:border-zinc-700/50 hover:border-orange-300 dark:hover:border-orange-600/50"
           }`}
         >
           {cat.icon} {cat.label}

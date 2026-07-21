@@ -51,16 +51,19 @@ export default async function PresupuestosPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-stone-900">Presupuestos</h1>
-          <p className="text-sm text-stone-500 mt-1">Gestioná tus solicitudes de presupuesto</p>
-        </div>
+      <div className="mb-8 animate-fade-in">
+        <span className="text-xs font-semibold tracking-widest uppercase gradient-text-animated">
+          Presupuestos
+        </span>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mt-1">
+          Presupuestos
+        </h1>
+        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1.5">Gestioná tus solicitudes de presupuesto</p>
       </div>
 
       {isProvider && cotizacionesPendientes.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-sm font-semibold text-stone-900 uppercase tracking-wider mb-3">
+          <h2 className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3">
             Solicitudes recibidas ({cotizacionesPendientes.length})
           </h2>
           <BudgetList requests={serializeDates(cotizacionesPendientes)} rol="proveedor" />
@@ -69,19 +72,19 @@ export default async function PresupuestosPage() {
 
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-stone-900 uppercase tracking-wider">
+          <h2 className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             Mis solicitudes ({misSolicitudes.length})
           </h2>
         </div>
         {misSolicitudes.length > 0 ? (
           <BudgetList requests={serializeDates(misSolicitudes)} rol="cliente" />
         ) : (
-          <div className="text-center py-16 bg-stone-50 rounded-xl border border-stone-200/60">
-            <div className="h-12 w-12 rounded-xl bg-stone-100 flex items-center justify-center mx-auto mb-3">
+          <div className="text-center py-16 bg-stone-50 dark:bg-zinc-800/30 rounded-2xl border border-stone-200/60 dark:border-zinc-700/30">
+            <div className="h-12 w-12 rounded-2xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-3">
               <FileText className="h-6 w-6 text-stone-400" />
             </div>
-            <h3 className="font-semibold text-stone-900 mb-1">No tenés solicitudes</h3>
-            <p className="text-sm text-stone-500 mb-4">Solicitá un presupuesto personalizado a un proveedor</p>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">No tenés solicitudes</h3>
+            <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">Solicitá un presupuesto personalizado a un proveedor</p>
             <Link href="/buscar">
               <Button variant="outline" className="rounded-xl">
                 Explorar servicios <ArrowRight className="h-4 w-4 ml-1.5" />

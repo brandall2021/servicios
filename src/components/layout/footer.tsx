@@ -37,31 +37,32 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="mt-auto relative" style={{ backgroundColor: "#0B2A55" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="py-12 sm:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+    <footer className="mt-auto relative overflow-hidden" style={{ backgroundColor: "#0B2A55" }}>
+      <div className="absolute inset-0 dot-pattern opacity-10" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="py-14 sm:py-18">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
             <div className="col-span-2 sm:col-span-1">
-              <Link href="/" className="flex items-center mb-3">
-                <div className="h-7 w-auto max-w-[100px] rounded overflow-hidden">
+              <Link href="/" className="flex items-center mb-4 group">
+                <div className="h-8 w-auto max-w-[110px] rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:ring-orange-400/40 transition-all">
                   <img src="/logo.png" alt="Servicios" className="h-full w-full object-contain" />
                 </div>
               </Link>
-              <p className="text-xs text-white/60 leading-relaxed max-w-xs">
+              <p className="text-xs text-white/50 leading-relaxed max-w-xs">
                 La plataforma que conecta clientes con profesionales verificados en Argentina. Encontrá, compará y contratá con confianza.
               </p>
             </div>
             {footerLinks.map((group) => (
               <div key={group.title}>
-                <h3 className="font-semibold text-xs text-white uppercase tracking-wider mb-3">
+                <h3 className="font-semibold text-[11px] text-white/40 uppercase tracking-widest mb-4">
                   {group.title}
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-2.5">
                   {group.links.map((link) => (
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-sm text-white/70 hover:text-[#FFA733] transition-colors duration-200"
+                        className="text-sm text-white/60 hover:text-orange-300 transition-colors duration-300"
                       >
                         {link.label}
                       </Link>
@@ -72,9 +73,12 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="py-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/50">
+        <div className="py-6 border-t border-white/8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <p>&copy; {new Date().getFullYear()} Servicios. Todos los derechos reservados.</p>
-          <p>Hecho en Argentina</p>
+          <p className="flex items-center gap-1.5">
+            Hecho en
+            <span className="text-orange-400/80 font-medium">Argentina</span>
+          </p>
         </div>
       </div>
     </footer>

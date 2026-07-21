@@ -30,11 +30,11 @@ export function NearMeButton() {
     <button
       onClick={handleClick}
       disabled={loading}
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 w-full ${
+      className={`flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 w-full ${
         hasCoords
-          ? "bg-orange-50 text-orange-700 border border-orange-200"
-          : "bg-stone-50 text-stone-600 border border-stone-200 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200"
-      } disabled:opacity-50`}
+          ? "bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 border border-orange-200/70 dark:border-orange-800/50"
+          : "bg-stone-50 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 border border-stone-200/70 dark:border-zinc-700/50 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-700 dark:hover:text-orange-400 hover:border-orange-200/70 dark:hover:border-orange-800/50"
+      } disabled:opacity-50 active:scale-[0.97]`}
     >
       <Navigation className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
       {loading ? "Buscando..." : hasCoords ? "Cerca de mí activado" : "Servicios cercanos"}

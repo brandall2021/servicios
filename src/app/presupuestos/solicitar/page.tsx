@@ -116,131 +116,125 @@ export default function SolicitarPresupuestoPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-      <Link href={servicioId ? `/servicios/${servicioId}` : "/"} className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 mb-6 transition-colors">
+      <Link href={servicioId ? `/servicios/${servicioId}` : "/"} className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Volver
       </Link>
 
-      <Card>
-        <CardHeader>
+      <div className="animate-fade-in">
+        <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
-            <div className="h-10 w-10 rounded-xl bg-orange-100 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
               <FileText className="h-5 w-5 text-orange-600" />
             </div>
             <div>
-              <CardTitle>Solicitar presupuesto</CardTitle>
-              <CardDescription>
-                Contale al proveedor qué necesitás y recibí una cotización personalizada
-              </CardDescription>
+              <h1 className="text-xl font-bold tracking-tight text-stone-900 dark:text-stone-100">Solicitar presupuesto</h1>
+              <p className="text-sm text-stone-500 dark:text-stone-400">Contale al proveedor qué necesitás</p>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <Textarea
-              id="description"
-              label="Descripción del trabajo"
-              placeholder="Describí en detalle lo que necesitas, alcance del trabajo, plazos, etc."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              required
-            />
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">
-                Lista de materiales / requerimientos
-              </label>
-              <p className="text-xs text-stone-400 mb-3">
-                Opcional. Agregá los materiales, insumos o requerimientos que necesitás que el proveedor considere.
-              </p>
-              <div className="space-y-2">
-                {materiales.map((m, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <Input
-                      id={`material-${i}`}
-                      value={m}
-                      onChange={(e) => updateMaterial(i, e.target.value)}
-                      placeholder={`Ítem ${i + 1}`}
-                      className="flex-1"
-                    />
-                    {materiales.length > 1 && (
-                      <button type="button" onClick={() => removeMaterial(i)} className="p-2 rounded-lg hover:bg-red-50 text-stone-400 hover:text-red-600 transition-colors">
-                        <X className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <button type="button" onClick={addMaterial} className="mt-2 flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors">
-                <Plus className="h-4 w-4" /> Agregar ítem
-              </button>
-            </div>
+        <Card>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Textarea
+                id="description"
+                label="Descripción del trabajo"
+                placeholder="Describí en detalle lo que necesitas, alcance del trabajo, plazos, etc."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                required
+              />
 
-            <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">
-                Archivos adjuntos
-              </label>
-              <p className="text-xs text-stone-400 mb-3">
-                Opcional. Adjuntá imágenes, planos, presupuestos previos o documentos relevantes (máx. 5 archivos, 10MB c/u).
-              </p>
-
-              {archivos.length > 0 && (
-                <div className="space-y-2 mb-3">
-                  {archivos.map((a, i) => (
-                    <div key={i} className="flex items-center gap-2 rounded-lg bg-stone-50 border border-stone-200 p-2.5">
-                      {isImage(a.tipo) ? (
-                        <div className="h-10 w-10 rounded-lg overflow-hidden shrink-0 bg-stone-100">
-                          <img src={a.url} alt={a.nombre} className="h-full w-full object-cover" />
-                        </div>
-                      ) : (
-                        <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                          <File className="h-5 w-5 text-blue-600" />
-                        </div>
+              <div>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                  Lista de materiales / requerimientos
+                </label>
+                <p className="text-xs text-stone-400 dark:text-stone-500 mb-3">
+                  Opcional. Agregá los materiales o insumos que necesitás.
+                </p>
+                <div className="space-y-2">
+                  {materiales.map((m, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <Input
+                        id={`material-${i}`}
+                        value={m}
+                        onChange={(e) => updateMaterial(i, e.target.value)}
+                        placeholder={`Ítem ${i + 1}`}
+                        className="flex-1"
+                      />
+                      {materiales.length > 1 && (
+                        <button type="button" onClick={() => removeMaterial(i)} className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-stone-400 hover:text-red-600 transition-colors">
+                          <X className="h-4 w-4" />
+                        </button>
                       )}
-                      <span className="text-sm text-stone-600 flex-1 truncate">{fileName(a.nombre)}</span>
-                      <button type="button" onClick={() => removeArchivo(i)} className="p-1 rounded-lg hover:bg-red-50 text-stone-400 hover:text-red-600 transition-colors">
-                        <X className="h-4 w-4" />
-                      </button>
                     </div>
                   ))}
                 </div>
-              )}
-
-              <label className={`flex items-center justify-center gap-2 p-4 rounded-lg border-2 border-dashed border-stone-300 cursor-pointer hover:border-orange-400 hover:bg-orange-50/50 transition-colors ${subiendo ? "opacity-50 pointer-events-none" : ""}`}>
-                {subiendo ? (
-                  <Loader2 className="h-5 w-5 text-stone-400 animate-spin" />
-                ) : (
-                  <Upload className="h-5 w-5 text-stone-400" />
-                )}
-                <span className="text-sm text-stone-500 font-medium">
-                  {subiendo ? "Subiendo..." : "Hacé clic para adjuntar archivos"}
-                </span>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  disabled={subiendo || archivos.length >= 5}
-                />
-              </label>
-              {archivos.length >= 5 && (
-                <p className="text-xs text-amber-600 mt-1">Máximo 5 archivos alcanzado</p>
-              )}
-            </div>
-
-            {error && (
-              <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">
-                {error}
+                <button type="button" onClick={addMaterial} className="mt-2 flex items-center gap-1.5 text-sm text-orange-600 hover:text-orange-700 font-medium transition-colors">
+                  <Plus className="h-4 w-4" /> Agregar ítem
+                </button>
               </div>
-            )}
 
-            <Button type="submit" disabled={loading || subiendo} className="w-full">
-              {loading ? "Enviando..." : "Enviar solicitud de presupuesto"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              <div>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                  Archivos adjuntos
+                </label>
+                <p className="text-xs text-stone-400 dark:text-stone-500 mb-3">
+                  Opcional. Imágenes, planos o documentos (máx. 5, 10MB c/u).
+                </p>
+
+                {archivos.length > 0 && (
+                  <div className="space-y-2 mb-3">
+                    {archivos.map((a, i) => (
+                      <div key={i} className="flex items-center gap-2.5 rounded-xl bg-stone-50 dark:bg-zinc-800/50 border border-stone-200/70 dark:border-zinc-700/50 p-2.5">
+                        {isImage(a.tipo) ? (
+                          <div className="h-10 w-10 rounded-xl overflow-hidden shrink-0 bg-stone-100 dark:bg-zinc-800">
+                            <img src={a.url} alt={a.nombre} className="h-full w-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
+                            <File className="h-5 w-5 text-blue-600" />
+                          </div>
+                        )}
+                        <span className="text-sm text-stone-600 dark:text-stone-400 flex-1 truncate">{fileName(a.nombre)}</span>
+                        <button type="button" onClick={() => removeArchivo(i)} className="p-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-stone-400 hover:text-red-600 transition-colors">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <label className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-stone-300 dark:border-zinc-700 cursor-pointer hover:border-orange-400 hover:bg-orange-50/50 dark:hover:bg-orange-900/10 transition-colors ${subiendo ? "opacity-50 pointer-events-none" : ""}`}>
+                  {subiendo ? (
+                    <Loader2 className="h-5 w-5 text-stone-400 animate-spin" />
+                  ) : (
+                    <Upload className="h-5 w-5 text-stone-400" />
+                  )}
+                  <span className="text-sm text-stone-500 dark:text-stone-400 font-medium">
+                    {subiendo ? "Subiendo..." : "Hacé clic para adjuntar archivos"}
+                  </span>
+                  <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onChange={handleFileUpload} className="hidden" disabled={subiendo || archivos.length >= 5} />
+                </label>
+                {archivos.length >= 5 && (
+                  <p className="text-xs text-amber-600 dark:text-amber-500 mt-1.5">Máximo 5 archivos alcanzado</p>
+                )}
+              </div>
+
+              {error && (
+                <div className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200/70 dark:border-red-800/50 p-3.5 text-sm text-red-700 dark:text-red-400">
+                  {error}
+                </div>
+              )}
+
+              <Button type="submit" disabled={loading || subiendo} className="w-full btn-glow h-11 rounded-xl">
+                {loading ? "Enviando..." : "Enviar solicitud de presupuesto"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

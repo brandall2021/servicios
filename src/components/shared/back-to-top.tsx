@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { ArrowUp } from "lucide-react"
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false)
@@ -18,12 +19,10 @@ export function BackToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-6 right-6 z-50 h-10 w-10 rounded-full bg-orange-600 text-white shadow-lg flex items-center justify-center hover:bg-orange-700 transition-all"
+      className="fixed bottom-6 right-6 z-50 h-11 w-11 rounded-2xl bg-white dark:bg-zinc-800 text-stone-700 dark:text-stone-300 shadow-[0_4px_24px_rgba(0,0,0,0.12)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex items-center justify-center hover:bg-stone-50 dark:hover:bg-zinc-700 hover:shadow-[0_8px_32px_rgba(0,0,0,0.16)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95 animate-fade-in border border-stone-200/70 dark:border-zinc-700/50"
       aria-label="Volver arriba"
     >
-      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-      </svg>
+      <ArrowUp className="h-4 w-4" />
     </button>
   )
 }

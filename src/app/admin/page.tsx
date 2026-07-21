@@ -75,108 +75,129 @@ export default async function AdminPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">Panel de Administración</h1>
+      <div className="mb-8 animate-fade-in">
+        <span className="text-xs font-semibold tracking-widest uppercase gradient-text-animated">
+          Admin
+        </span>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mt-1">
+          Panel de Administración
+        </h1>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Link href="/admin/usuarios">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+        <Link href="/admin/usuarios" className="animate-fade-in" style={{ animationDelay: "0ms" }}>
+          <Card className="hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-zinc-500">Usuarios</p>
-                  <p className="text-2xl font-bold text-zinc-900">{totalUsers.toLocaleString()}</p>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Usuarios</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{totalUsers.toLocaleString()}</p>
                 </div>
-                <Users className="h-8 w-8 text-orange-600" />
+                <div className="h-10 w-10 rounded-xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 transition-colors">
+                  <Users className="h-5 w-5 text-orange-600" />
+                </div>
               </div>
-              <div className="mt-2 text-xs text-zinc-400">
-                {totalClients} clientes &middot; {totalProviders} proveedores
-                {totalBaneados > 0 && <span className="text-red-500"> &middot; {totalBaneados} bloqueados</span>}
+              <div className="mt-3 text-xs text-stone-500 dark:text-stone-400">
+                {totalClients} clientes · {totalProviders} proveedores
+                {totalBaneados > 0 && <span className="text-red-500"> · {totalBaneados} bloqueados</span>}
               </div>
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/admin/servicios">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+        <Link href="/admin/servicios" className="animate-fade-in" style={{ animationDelay: "60ms" }}>
+          <Card className="hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-zinc-500">Servicios</p>
-                  <p className="text-2xl font-bold text-zinc-900">{totalServicios.toLocaleString()}</p>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Servicios</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{totalServicios.toLocaleString()}</p>
                 </div>
-                <Briefcase className="h-8 w-8 text-green-600" />
+                <div className="h-10 w-10 rounded-xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors">
+                  <Briefcase className="h-5 w-5 text-green-600" />
+                </div>
               </div>
               {serviciosInactivos > 0 && (
-                <div className="mt-2 text-xs text-red-500">{serviciosInactivos} inactivos</div>
+                <div className="mt-3 text-xs text-red-500">{serviciosInactivos} inactivos</div>
               )}
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/admin/denuncias">
-          <Card className={`hover:shadow-md transition-shadow cursor-pointer ${reportsPendientes > 0 ? "border-yellow-300" : ""}`}>
+        <Link href="/admin/denuncias" className="animate-fade-in" style={{ animationDelay: "120ms" }}>
+          <Card className={`hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group ${reportsPendientes > 0 ? "ring-2 ring-yellow-300/50" : ""}`}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-zinc-500">Denuncias</p>
-                  <p className="text-2xl font-bold text-zinc-900">{totalReports.toLocaleString()}</p>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Denuncias</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{totalReports.toLocaleString()}</p>
                 </div>
-                <AlertTriangle className={`h-8 w-8 ${reportsPendientes > 0 ? "text-yellow-500" : "text-zinc-400"}`} />
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-colors ${
+                  reportsPendientes > 0 ? "bg-yellow-50 dark:bg-yellow-900/20 group-hover:bg-yellow-100" : "bg-stone-100 dark:bg-zinc-800"
+                }`}>
+                  <AlertTriangle className={`h-5 w-5 ${reportsPendientes > 0 ? "text-yellow-500" : "text-stone-400"}`} />
+                </div>
               </div>
               {reportsPendientes > 0 && (
-                <div className="mt-2 text-xs text-yellow-600 font-medium">{reportsPendientes} pendientes</div>
+                <div className="mt-3 text-xs text-yellow-600 dark:text-yellow-500 font-medium">{reportsPendientes} pendientes</div>
               )}
             </CardContent>
           </Card>
         </Link>
 
-          <Link href="/admin/opiniones">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-zinc-500">Opiniones</p>
-                    <p className="text-2xl font-bold text-zinc-900">{totalOpiniones.toLocaleString()}</p>
-                  </div>
-                  <Star className="h-8 w-8 text-yellow-500" />
+        <Link href="/admin/opiniones" className="animate-fade-in" style={{ animationDelay: "180ms" }}>
+          <Card className="hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Opiniones</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{totalOpiniones.toLocaleString()}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </Link>
+                <div className="h-10 w-10 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors">
+                  <Star className="h-5 w-5 text-yellow-500" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
 
-          <Link href="/admin/presupuestos">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-zinc-500">Presupuestos</p>
-                    <p className="text-2xl font-bold text-zinc-900">{totalPresupuestos.toLocaleString()}</p>
-                  </div>
-                  <FileText className="h-8 w-8 text-blue-600" />
+        <Link href="/admin/presupuestos" className="animate-fade-in" style={{ animationDelay: "240ms" }}>
+          <Card className="hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Presupuestos</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{totalPresupuestos.toLocaleString()}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </Link>
+                <div className="h-10 w-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
+                  <FileText className="h-5 w-5 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
 
-          <Link href="/admin/auditoria">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-zinc-500">Auditoría</p>
-                    <p className="text-2xl font-bold text-zinc-900">{totalAuditLogs.toLocaleString()}</p>
-                  </div>
-                  <ScrollText className="h-8 w-8 text-purple-600" />
+        <Link href="/admin/auditoria" className="animate-fade-in" style={{ animationDelay: "300ms" }}>
+          <Card className="hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Auditoría</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{totalAuditLogs.toLocaleString()}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </Link>
+                <div className="h-10 w-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
+                  <ScrollText className="h-5 w-5 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-lg">Registros por mes</CardTitle>
+            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Registros por mes</CardTitle>
           </CardHeader>
           <CardContent>
             <AdminDashboardChart data={monthlyData} maxValue={maxRegistrations} />
@@ -185,18 +206,18 @@ export default async function AdminPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Servicios por categoría</CardTitle>
+            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Por categoría</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2.5">
             {servicesByCategory
               .sort((a, b) => b.count - a.count)
               .map((cat) => (
                 <div key={cat.value} className="flex items-center justify-between text-sm">
-                  <span className="text-zinc-600 flex items-center gap-1.5">
+                  <span className="text-stone-600 dark:text-stone-400 flex items-center gap-2">
                     <span>{cat.icon}</span>
                     {cat.label}
                   </span>
-                  <span className="font-medium text-zinc-900">{cat.count}</span>
+                  <span className="font-semibold text-stone-900 dark:text-stone-100">{cat.count}</span>
                 </div>
               ))}
           </CardContent>
@@ -206,24 +227,24 @@ export default async function AdminPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Denuncias pendientes</CardTitle>
+            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Denuncias pendientes</CardTitle>
           </CardHeader>
           <CardContent>
             {recentReports.length === 0 ? (
-              <p className="text-sm text-zinc-400">No hay denuncias pendientes</p>
+              <p className="text-sm text-stone-400 dark:text-stone-500">No hay denuncias pendientes</p>
             ) : (
               <div className="space-y-3">
                 {recentReports.map((r) => (
-                  <div key={r.id} className="flex items-start justify-between text-sm">
+                  <div key={r.id} className="flex items-start justify-between text-sm p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800/50 transition-colors">
                     <div>
-                      <p className="font-medium text-zinc-900">{r.motivo}</p>
-                      <p className="text-zinc-500 text-xs">
+                      <p className="font-medium text-stone-900 dark:text-stone-100">{r.motivo}</p>
+                      <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">
                         {r.denunciante.name}{r.servicio ? ` — ${r.servicio.titulo}` : ""}
                       </p>
                     </div>
                     <Link
                       href="/admin/denuncias"
-                      className="text-orange-600 hover:text-orange-700 text-xs font-medium"
+                      className="text-orange-600 hover:text-orange-700 text-xs font-medium shrink-0"
                     >
                       Revisar
                     </Link>
@@ -236,19 +257,23 @@ export default async function AdminPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Últimos registros</CardTitle>
+            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Últimos registros</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {recentUsers.map((u) => (
-                <div key={u.id} className="flex items-center justify-between text-sm">
+                <div key={u.id} className="flex items-center justify-between text-sm p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800/50 transition-colors">
                   <div>
-                    <p className="font-medium text-zinc-900">{u.name}</p>
-                    <p className="text-zinc-500 text-xs">{u.email}</p>
+                    <p className="font-medium text-stone-900 dark:text-stone-100">{u.name}</p>
+                    <p className="text-stone-500 dark:text-stone-400 text-xs">{u.email}</p>
                   </div>
-                  <Badge variant={u.role === "PROVIDER" ? "success" : "secondary"} className="text-[10px]">
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    u.role === "PROVIDER"
+                      ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                      : "bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-stone-300"
+                  }`}>
                     {u.role === "PROVIDER" ? "Proveedor" : "Cliente"}
-                  </Badge>
+                  </span>
                 </div>
               ))}
             </div>
@@ -279,15 +304,4 @@ function aggregateByMonth(
     cursor.setMonth(cursor.getMonth() + 1)
   }
   return months
-}
-
-function Badge({ variant, className, children }: { variant: string; className?: string; children: React.ReactNode }) {
-  const base = "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
-  const colors: Record<string, string> = {
-    default: "bg-orange-600 text-white",
-    secondary: "bg-zinc-100 text-zinc-800",
-    success: "bg-green-100 text-green-800",
-    destructive: "bg-red-100 text-red-800",
-  }
-  return <span className={`${base} ${colors[variant] || colors.secondary} ${className || ""}`}>{children}</span>
 }

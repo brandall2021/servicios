@@ -18,7 +18,7 @@ export function SortSelect() {
 
   return (
     <select
-      className="h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+      className="h-9 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all duration-200"
       value={searchParams.get("sort") || ""}
       onChange={(e) => handleChange(e.target.value)}
     >

@@ -7,6 +7,7 @@ import { NearMeButton } from "@/components/shared/near-me-button"
 import { CATEGORIAS } from "@/lib/constants"
 import { SortSelect } from "./sort-select"
 import { CategoryChips } from "./category-chips"
+import type { ServicioWithRelations } from "@/types"
 
 interface Props {
   searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string }>
@@ -153,8 +154,8 @@ export default async function BuscarPage({ searchParams }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+      <div className="mb-8 animate-fade-in">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mb-4">
           {params.q ? `Resultados para "${params.q}"` : "Buscar servicios"}
         </h1>
         <SearchBar />
@@ -169,43 +170,43 @@ export default async function BuscarPage({ searchParams }: Props) {
         <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-24 space-y-6">
             <div>
-              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">Categorías</h3>
-              <div className="space-y-1">
+              <h3 className="font-semibold text-xs tracking-widest uppercase text-stone-500 dark:text-stone-400 mb-3">Categorías</h3>
+              <div className="space-y-0.5">
                 <a
                   href="/buscar"
-                  className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
                     !selectedCategoria
-                      ? "bg-orange-50 text-orange-700 font-medium dark:bg-orange-900/30 dark:text-orange-400"
-                      : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                      ? "bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 font-medium"
+                      : "text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-zinc-800"
                   }`}
                 >
-                  Todas
+                  Todos
                 </a>
                 {CATEGORIAS.map((cat) => (
                   <a
                     key={cat.value}
                     href={`/buscar?categoria=${cat.value}`}
-                    className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 ${
                       selectedCategoria === cat.value
-                        ? "bg-orange-50 text-orange-700 font-medium dark:bg-orange-900/30 dark:text-orange-400"
-                        : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                        ? "bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 font-medium"
+                        : "text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-zinc-800"
                     }`}
                   >
-                    {cat.icon} {cat.label}
+                    <span>{cat.icon}</span> {cat.label}
                   </a>
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">Cerca de mí</h3>
+              <h3 className="font-semibold text-xs tracking-widest uppercase text-stone-500 dark:text-stone-400 mb-3">Cerca de mí</h3>
               <NearMeButton />
             </div>
 
-            <div className="border-t border-stone-200 dark:border-zinc-700 pt-4 space-y-4">
-              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">Filtros</h3>
+            <div className="border-t border-stone-200/70 dark:border-zinc-700/50 pt-4 space-y-4">
+              <h3 className="font-semibold text-xs tracking-widest uppercase text-stone-500 dark:text-stone-400">Filtros</h3>
 
-              <label className="flex items-center gap-2 text-sm">
+              <label className="flex items-center gap-2.5 text-sm text-stone-600 dark:text-stone-400 cursor-pointer">
                 <input
                   type="checkbox"
                   defaultChecked={params.verificado === "true"}
@@ -215,13 +216,13 @@ export default async function BuscarPage({ searchParams }: Props) {
                     else url.searchParams.delete("verificado")
                     window.location.href = url.toString()
                   }}
-                  className="rounded border-zinc-300 text-orange-600 focus:ring-orange-500"
+                  className="rounded border-stone-300 dark:border-zinc-600 text-orange-600 focus:ring-orange-500/30"
                 />
-                Solo proveedores verificados
+                Solo verificados
               </label>
 
               <div>
-                <label className="text-xs text-zinc-500 dark:text-zinc-400 block mb-1">Puntaje mínimo</label>
+                <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Puntaje mínimo</label>
                 <select
                   defaultValue={params.punt_min || ""}
                   onChange={(e) => {
@@ -230,7 +231,7 @@ export default async function BuscarPage({ searchParams }: Props) {
                     else url.searchParams.delete("punt_min")
                     window.location.href = url.toString()
                   }}
-                  className="w-full h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+                  className="w-full h-9 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                 >
                   <option value="">Cualquier puntaje</option>
                   <option value="4">4 ★ o más</option>
@@ -240,7 +241,7 @@ export default async function BuscarPage({ searchParams }: Props) {
               </div>
 
               <div>
-                <label className="text-xs text-zinc-500 dark:text-zinc-400 block mb-1">Precio mínimo</label>
+                <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Precio mínimo</label>
                 <input
                   type="number"
                   defaultValue={params.precio_min || ""}
@@ -251,12 +252,12 @@ export default async function BuscarPage({ searchParams }: Props) {
                     else url.searchParams.delete("precio_min")
                     window.location.href = url.toString()
                   }}
-                  className="w-full h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+                  className="w-full h-9 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-zinc-500 dark:text-zinc-400 block mb-1">Precio máximo</label>
+                <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Precio máximo</label>
                 <input
                   type="number"
                   defaultValue={params.precio_max || ""}
@@ -267,12 +268,12 @@ export default async function BuscarPage({ searchParams }: Props) {
                     else url.searchParams.delete("precio_max")
                     window.location.href = url.toString()
                   }}
-                  className="w-full h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+                  className="w-full h-9 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-zinc-500 dark:text-zinc-400 block mb-1">Nombre del proveedor</label>
+                <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Nombre del proveedor</label>
                 <input
                   type="text"
                   defaultValue={params.proveedor || ""}
@@ -291,7 +292,7 @@ export default async function BuscarPage({ searchParams }: Props) {
                       window.location.href = url.toString()
                     }
                   }}
-                  className="w-full h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+                  className="w-full h-9 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                 />
               </div>
             </div>
@@ -300,16 +301,16 @@ export default async function BuscarPage({ searchParams }: Props) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               {servicios.length} {servicios.length === 1 ? "servicio encontrado" : "servicios encontrados"}
               {params.lat && params.lng && " (ordenados por cercanía)"}
             </p>
             <div className="flex items-center gap-2">
               {params.lat && params.lng && (
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-zinc-500 dark:text-zinc-400">Radio:</label>
+                  <label className="text-xs text-stone-500 dark:text-stone-400">Radio:</label>
                   <select
-                    className="h-8 px-2 border border-stone-200 dark:border-zinc-700 rounded-lg text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 outline-none focus:border-orange-500"
+                    className="h-9 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-xs bg-white dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     onChange={(e) => {
                       const url = new URL(window.location.href)
                       url.searchParams.set("radio", e.target.value)
@@ -329,15 +330,18 @@ export default async function BuscarPage({ searchParams }: Props) {
             </div>
           </div>
           {servicios.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {servicios.map((s) => (
-                <ServiceCard key={s.id} servicio={s} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              {servicios.map((s, i) => (
+                <ServiceCard key={s.id} servicio={s as ServicioWithRelations} index={i} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <p className="text-zinc-400 dark:text-zinc-500 text-lg mb-2">No encontramos servicios</p>
-              <p className="text-zinc-400 dark:text-zinc-500 text-sm">Probá con otros términos de búsqueda o categoría</p>
+            <div className="text-center py-20 animate-fade-in">
+              <div className="h-16 w-16 rounded-2xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">🔍</span>
+              </div>
+              <p className="text-stone-700 dark:text-stone-300 font-semibold text-lg mb-1">No encontramos servicios</p>
+              <p className="text-stone-500 dark:text-stone-400 text-sm">Probá con otros términos de búsqueda o categoría</p>
             </div>
           )}
         </div>

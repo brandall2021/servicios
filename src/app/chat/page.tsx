@@ -51,7 +51,7 @@ export default async function ChatPage({ searchParams }: Props) {
   const initialChatId = params.chat || (params.proveedor ? undefined : chatList[0]?.id)
 
   return (
-    <div className="h-[calc(100vh-4rem)] max-w-6xl mx-auto flex">
+    <div className="h-[calc(100vh-4rem)] max-w-6xl mx-auto flex bg-stone-50 dark:bg-zinc-900">
       <ChatView
         currentUserId={session.user.id}
         chats={chatList as never[]}

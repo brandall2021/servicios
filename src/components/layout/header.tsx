@@ -8,7 +8,7 @@ import {
   Menu, X, ChevronDown, User, LogOut, Plus,
   Sun, Moon, Shield,
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTheme } from "@/components/shared/theme-provider"
 import NotificationBell from "@/components/shared/notification-bell"
 
@@ -16,41 +16,95 @@ export function Header() {
   const { data: session } = useSession()
   const { theme, toggleTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-50" style={{ background: "#0B2A55" }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "py-2"
+          : "py-3"
+      }`}
+    >
+      <div
+        className={`mx-auto max-w-7xl px-4 sm:px-6 transition-all duration-500 ${
+          scrolled
+            ? "px-4 sm:px-8"
+            : "px-4 sm:px-6"
+        }`}
+      >
+        <div
+          className={`flex items-center justify-between h-14 rounded-2xl px-4 sm:px-5 transition-all duration-500 ${
+            scrolled
+              ? "bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-[0_2px_24px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_24px_rgba(0,0,0,0.3)] border border-white/50 dark:border-white/5"
+              : "bg-[#0B2A55]"
+          }`}
+        >
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0 group">
-            <div className="h-10 w-auto max-w-[140px] sm:max-w-[180px] rounded-lg overflow-hidden ring-2 ring-orange-400/60 group-hover:ring-orange-400 transition-all shadow-lg shadow-orange-500/10">
+            <div className={`h-9 w-auto max-w-[130px] sm:max-w-[160px] rounded-lg overflow-hidden transition-all duration-300 ${
+              scrolled
+                ? "ring-1 ring-orange-400/40 group-hover:ring-orange-400 shadow-sm shadow-orange-500/5"
+                : "ring-2 ring-orange-400/60 group-hover:ring-orange-400 shadow-lg shadow-orange-500/10"
+            }`}>
               <img src="/logo.png" alt="Servicios" className="h-full w-full object-contain" />
             </div>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              href="/"
+              className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+                scrolled
+                  ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
               Inicio
             </Link>
-            <Link href="/buscar" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
+            <Link
+              href="/buscar"
+              className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+                scrolled
+                  ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
               Buscar
             </Link>
             {session?.user && (
-              <>
-                <Link href="/presupuestos" className="text-sm text-white/80 hover:text-white font-medium transition-colors">
-                  Presupuestos
-                </Link>
-              </>
+              <Link
+                href="/presupuestos"
+                className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+                  scrolled
+                    ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                    : "text-white/70 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                Presupuestos
+              </Link>
             )}
           </nav>
 
           {/* Right section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Theme toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className={`p-2 rounded-lg transition-all duration-200 ${
+                scrolled
+                  ? "text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                  : "text-white/60 hover:text-white hover:bg-white/10"
+              }`}
               aria-label={theme === "dark" ? "Modo claro" : "Modo oscuro"}
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -60,42 +114,52 @@ export function Header() {
               <div className="hidden md:flex items-center gap-1">
                 <Link
                   href="/servicios/nuevo"
-                  className="h-9 px-3 text-sm font-semibold btn-orange shadow-md inline-flex items-center gap-1.5"
+                  className="h-8 px-3 text-sm font-semibold btn-glow shadow-md inline-flex items-center gap-1.5 active:scale-[0.97]"
                 >
-                  <Plus className="h-4 w-4" /> Publicar
+                  <Plus className="h-3.5 w-3.5" /> Publicar
                 </Link>
-                <NotificationBell />
+                <div className={scrolled ? "" : "[&_button]:text-white/70 [&_button]:hover:text-white"}>
+                  <NotificationBell />
+                </div>
                 <Link
                   href="/chat"
-                  className="p-2 text-white/70 hover:text-white transition-colors"
+                  className={`p-2 rounded-lg transition-all duration-200 ${
+                    scrolled
+                      ? "text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                      : "text-white/60 hover:text-white hover:bg-white/10"
+                  }`}
                   aria-label="Mensajes"
                 >
-                  <MessageSquare className="h-5 w-5" />
+                  <MessageSquare className="h-4.5 w-4.5" />
                 </Link>
                 <div className="relative group">
-                  <button className="flex items-center gap-2 px-2 py-1.5 text-white/80 hover:text-white transition-colors">
+                  <button className={`flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all duration-200 ${
+                    scrolled
+                      ? "text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-zinc-800"
+                      : "text-white/80 hover:text-white hover:bg-white/10"
+                  }`}>
                     <Avatar src={session.user.image} fallback={session.user.name || "U"} size="sm" />
-                    <span className="text-sm font-medium max-w-[100px] truncate text-white/80">{session.user.name}</span>
-                    <ChevronDown className="h-3 w-3 text-white/60" />
+                    <span className="text-sm font-medium max-w-[100px] truncate">{session.user.name}</span>
+                    <ChevronDown className="h-3 w-3 opacity-50" />
                   </button>
                   <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div className="dark:bg-zinc-800 bg-white rounded-xl shadow-xl border dark:border-zinc-700 border-stone-200 py-2 min-w-[180px]">
-                      <Link href="/perfil" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
+                    <div className="glass-card rounded-xl py-2 min-w-[180px] animate-scale-in">
+                      <Link href="/perfil" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
                         <User className="h-4 w-4" /> Mi perfil
                       </Link>
-                      <Link href="/presupuestos" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
+                      <Link href="/presupuestos" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
                         <FileText className="h-4 w-4" /> Presupuestos
                       </Link>
-                      <Link href="/chat" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
+                      <Link href="/chat" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
                         <MessageSquare className="h-4 w-4" /> Mensajes
                       </Link>
                       {session.user.role === "ADMIN" && (
-                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm dark:text-zinc-300 dark:hover:bg-zinc-700 text-stone-700 hover:bg-stone-50 transition-colors">
-                          <Shield className="h-4 w-4 text-orange-600" /> Administración
+                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
+                          <Shield className="h-4 w-4 text-orange-500" /> Administración
                         </Link>
                       )}
-                      <hr className="my-1 dark:border-zinc-700 border-stone-100" />
-                      <button onClick={() => signOut()} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                      <hr className="my-1 border-stone-100 dark:border-zinc-700" />
+                      <button onClick={() => signOut()} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                         <LogOut className="h-4 w-4" /> Cerrar sesión
                       </button>
                     </div>
@@ -106,13 +170,17 @@ export function Header() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="text-sm text-white/80 hover:text-white font-medium transition-colors px-3 py-2"
+                  className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+                    scrolled
+                      ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white"
+                      : "text-white/70 hover:text-white"
+                  }`}
                 >
                   Iniciar sesión
                 </Link>
                 <Link
                   href="/register"
-                  className="btn-orange h-9 px-4 text-sm font-semibold shadow-md"
+                  className="btn-glow h-8 px-4 text-sm font-semibold shadow-md active:scale-[0.97]"
                 >
                   Crear cuenta
                 </Link>
@@ -121,11 +189,25 @@ export function Header() {
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden p-2 -mr-2 rounded-lg hover:bg-white/10 transition-colors"
+              className={`md:hidden p-2 -mr-1 rounded-lg transition-all duration-200 ${
+                scrolled
+                  ? "text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-zinc-800"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             >
-              {menuOpen ? <X className="h-5 w-5 text-white" /> : <Menu className="h-5 w-5 text-white" />}
+              <div className="relative w-5 h-5">
+                <span className={`absolute left-0 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
+                  menuOpen ? "top-2 rotate-45" : "top-0.5 rotate-0"
+                }`} />
+                <span className={`absolute left-0 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
+                  menuOpen ? "opacity-0 scale-x-0" : "top-2 opacity-100 scale-x-100"
+                }`} />
+                <span className={`absolute left-0 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${
+                  menuOpen ? "top-2 -rotate-45" : "top-3.5 rotate-0"
+                }`} />
+              </div>
             </button>
           </div>
         </div>
@@ -133,51 +215,51 @@ export function Header() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-white/10" style={{ background: "#0B2A55" }}>
-          <div className="px-4 py-4 space-y-1">
-            <Link href="/" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+        <div className="md:hidden mx-4 mt-2">
+          <div className="glass-card rounded-2xl p-4 space-y-1 animate-scale-in">
+            <Link href="/" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
               Inicio
             </Link>
-            <Link href="/buscar" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+            <Link href="/buscar" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
               Buscar
             </Link>
             {session?.user && (
               <>
-                <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
                   Presupuestos
                 </Link>
-                <Link href="/servicios/nuevo" className="block px-3 py-2.5 text-sm font-medium text-white btn-orange text-center rounded-lg" onClick={() => setMenuOpen(false)}>
+                <Link href="/servicios/nuevo" className="block px-3 py-2.5 text-sm font-medium text-white btn-glow text-center rounded-xl" onClick={() => setMenuOpen(false)}>
                   Publicar servicio
                 </Link>
               </>
             )}
-            <hr className="my-3 border-white/10" />
+            <hr className="my-2 border-stone-100 dark:border-zinc-700" />
             {session?.user ? (
               <>
-                <Link href="/perfil" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/perfil" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
                   Mi perfil
                 </Link>
-                <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
                   Presupuestos
                 </Link>
-                <Link href="/chat" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/chat" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
                   Mensajes
                 </Link>
                 {session.user.role === "ADMIN" && (
-                  <Link href="/admin" className="block px-3 py-2.5 text-sm text-orange-300 font-medium rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                  <Link href="/admin" className="block px-3 py-2.5 text-sm text-orange-600 dark:text-orange-400 font-medium rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors" onClick={() => setMenuOpen(false)}>
                     Administración
                   </Link>
                 )}
-                <button onClick={() => { signOut(); setMenuOpen(false); }} className="block w-full text-left px-3 py-2.5 text-sm text-red-300 rounded-lg hover:bg-white/10 transition-colors">
+                <button onClick={() => { signOut(); setMenuOpen(false); }} className="block w-full text-left px-3 py-2.5 text-sm text-red-500 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                   Cerrar sesión
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="block px-3 py-2.5 text-sm text-white/80 rounded-lg hover:bg-white/10 transition-colors" onClick={() => setMenuOpen(false)}>
+                <Link href="/login" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
                   Iniciar sesión
                 </Link>
-                <Link href="/register" className="block px-3 py-2.5 text-sm font-medium text-white btn-orange text-center rounded-lg" onClick={() => setMenuOpen(false)}>
+                <Link href="/register" className="block px-3 py-2.5 text-sm font-medium text-white btn-glow text-center rounded-xl" onClick={() => setMenuOpen(false)}>
                   Crear cuenta
                 </Link>
               </>
