@@ -16,7 +16,7 @@ export function Pagination({ page, pages, total, label = "resultados" }: Props) 
   if (pages <= 1) return null
 
   function goTo(p: number) {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParams?.toString())
     params.set("page", String(p))
     router.push(`?${params.toString()}`)
   }

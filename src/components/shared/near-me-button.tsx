@@ -13,7 +13,7 @@ export function NearMeButton() {
     setLoading(true)
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const params = new URLSearchParams(searchParams.toString())
+        const params = new URLSearchParams(searchParams?.toString())
         params.set("lat", pos.coords.latitude.toString())
         params.set("lng", pos.coords.longitude.toString())
         params.set("radio", "50")
@@ -24,7 +24,7 @@ export function NearMeButton() {
     )
   }
 
-  const hasCoords = searchParams.has("lat") && searchParams.has("lng")
+  const hasCoords = searchParams?.has("lat") && searchParams?.has("lng")
 
   return (
     <button

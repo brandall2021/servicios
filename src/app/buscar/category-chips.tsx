@@ -12,7 +12,7 @@ export function CategoryChips({ categorias, selected }: CategoryChipsProps) {
   const searchParams = useSearchParams()
 
   function selectCategory(value: string) {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParams?.toString())
     if (value) {
       params.set("categoria", value)
     } else {

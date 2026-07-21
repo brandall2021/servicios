@@ -14,8 +14,8 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const providerMsg = searchParams.get("registered") === "provider"
-  const registeredMsg = searchParams.get("registered") === "true"
+  const providerMsg = searchParams?.get("registered") === "provider"
+  const registeredMsg = searchParams?.get("registered") === "true"
 
   useEffect(() => {
     if (providerMsg || registeredMsg) {

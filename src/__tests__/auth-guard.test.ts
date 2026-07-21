@@ -23,6 +23,8 @@ import {
   PUBLIC_PROVIDER_SELECT,
 } from "@/lib/auth-guard"
 
+const mockAuth = vi.mocked(auth)
+
 describe("auth-guard", () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -74,27 +76,27 @@ describe("auth-guard", () => {
 
   describe("requireAdmin", () => {
     it("returns unauthorized when no session", async () => {
-      vi.mocked(auth).mockResolvedValue(null)
+      mockAuth.mockResolvedValue(null as any)
       const res = await requireAdmin()
       expect(res).not.toBeNull()
       if (res) expect(res.status).toBe(401)
     })
 
     it("returns forbidden when role is not ADMIN", async () => {
-      vi.mocked(auth).mockResolvedValue({
+      mockAuth.mockResolvedValue({
         user: { id: "1", role: "CLIENT", name: "Test" },
         expires: "",
-      })
+      } as any)
       const res = await requireAdmin()
       expect(res).not.toBeNull()
       if (res) expect(res.status).toBe(403)
     })
 
     it("returns null when user is ADMIN", async () => {
-      vi.mocked(auth).mockResolvedValue({
+      mockAuth.mockResolvedValue({
         user: { id: "1", role: "ADMIN", name: "Admin" },
         expires: "",
-      })
+      } as any)
       const res = await requireAdmin()
       expect(res).toBeNull()
     })
@@ -102,23 +104,23 @@ describe("auth-guard", () => {
 
   describe("isAdmin", () => {
     it("returns false when no session", async () => {
-      vi.mocked(auth).mockResolvedValue(null)
+      mockAuth.mockResolvedValue(null as any)
       expect(await isAdmin()).toBe(false)
     })
 
     it("returns false when role is CLIENT", async () => {
-      vi.mocked(auth).mockResolvedValue({
+      mockAuth.mockResolvedValue({
         user: { id: "1", role: "CLIENT" },
         expires: "",
-      })
+      } as any)
       expect(await isAdmin()).toBe(false)
     })
 
     it("returns true when role is ADMIN", async () => {
-      vi.mocked(auth).mockResolvedValue({
+      mockAuth.mockResolvedValue({
         user: { id: "1", role: "ADMIN" },
         expires: "",
-      })
+      } as any)
       expect(await isAdmin()).toBe(true)
     })
   })
