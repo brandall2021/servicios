@@ -2,10 +2,11 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Briefcase, Star, AlertTriangle, FileText, ScrollText } from "lucide-react"
+import { Users, Briefcase, Star, AlertTriangle, FileText, ScrollText, UserCheck, Clock3 } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 import Link from "next/link"
 import { AdminDashboardChart } from "./dashboard-chart"
+import { Prisma } from "@prisma/client"
 
 export default async function AdminPage() {
   const session = await auth()
@@ -23,13 +24,16 @@ export default async function AdminPage() {
     totalOpiniones,
     totalReports,
     reportsPendientes,
+    providerRequests,
+    pendingBudgets,
     totalBaneados,
     totalPresupuestos,
     totalAuditLogs,
     monthlyRegistrations,
     servicesByCategory,
     recentReports,
-    recentUsers,
+    recentProviderRequests,
+    recentBudgets,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.user.count({ where: { role: "CLIENT" } }),
@@ -39,15 +43,18 @@ export default async function AdminPage() {
     prisma.opinion.count(),
     prisma.report.count(),
     prisma.report.count({ where: { estado: "PENDIENTE" } }),
+    prisma.user.count({ where: { solicitudProveedor: true } }),
+    prisma.budgetRequest.count({ where: { status: { in: ["PENDIENTE", "REVISION"] } } }),
     prisma.user.count({ where: { baneado: true } }),
     prisma.budgetRequest.count(),
     prisma.auditLog.count(),
-    prisma.user.groupBy({
-      by: ["createdAt"],
-      where: { createdAt: { gte: sixMonthsAgo } },
-      _count: { id: true },
-      orderBy: { createdAt: "asc" },
-    }),
+    prisma.$queryRaw<{ month: Date; count: number }[]>(Prisma.sql`
+      SELECT date_trunc('month', "createdAt") AS month, COUNT(*)::int AS count
+      FROM "User"
+      WHERE "createdAt" >= ${sixMonthsAgo}
+      GROUP BY 1
+      ORDER BY 1 ASC
+    `),
     Promise.all(
       CATEGORIAS.map(async (cat) => {
         const count = await prisma.servicio.count({ where: { categoria: cat.value } })
@@ -66,7 +73,17 @@ export default async function AdminPage() {
     prisma.user.findMany({
       orderBy: { createdAt: "desc" },
       take: 5,
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      where: { solicitudProveedor: true },
+      select: { id: true, name: true, email: true, createdAt: true, rubro: true, zone: true },
+    }),
+    prisma.budgetRequest.findMany({
+      where: { status: { in: ["PENDIENTE", "REVISION"] } },
+      include: {
+        cliente: { select: { name: true } },
+        servicio: { select: { titulo: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
     }),
   ])
 
@@ -85,6 +102,23 @@ export default async function AdminPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Link href="/admin/usuarios" className="animate-fade-in" style={{ animationDelay: "0ms" }}>
+          <Card className={`hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group ${providerRequests > 0 ? "ring-2 ring-amber-300/60" : ""}`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium tracking-wider uppercase text-stone-500 dark:text-stone-400">Solicitudes proveedor</p>
+                  <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">{providerRequests.toLocaleString()}</p>
+                </div>
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-colors ${providerRequests > 0 ? "bg-amber-50 dark:bg-amber-900/20 group-hover:bg-amber-100" : "bg-stone-100 dark:bg-zinc-800"}`}>
+                  <UserCheck className={`h-5 w-5 ${providerRequests > 0 ? "text-amber-500" : "text-stone-400"}`} />
+                </div>
+              </div>
+              {providerRequests > 0 && <div className="mt-3 text-xs text-amber-600 dark:text-amber-500 font-medium">{providerRequests} pendientes</div>}
+            </CardContent>
+          </Card>
+        </Link>
+
         <Link href="/admin/usuarios" className="animate-fade-in" style={{ animationDelay: "0ms" }}>
           <Card className="hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 group">
             <CardContent className="p-6">
@@ -173,6 +207,9 @@ export default async function AdminPage() {
                   <FileText className="h-5 w-5 text-blue-600" />
                 </div>
               </div>
+              {pendingBudgets > 0 && (
+                <div className="mt-3 text-xs text-blue-600 dark:text-blue-400 font-medium">{pendingBudgets} pendientes / en revisión</div>
+              )}
             </CardContent>
           </Card>
         </Link>
@@ -224,7 +261,37 @@ export default async function AdminPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Solicitudes de proveedor</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {recentProviderRequests.length === 0 ? (
+              <p className="text-sm text-stone-400 dark:text-stone-500">No hay solicitudes pendientes</p>
+            ) : (
+              <div className="space-y-3">
+                {recentProviderRequests.map((u) => (
+                  <div key={u.id} className="flex items-start justify-between text-sm p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800/50 transition-colors">
+                    <div>
+                      <p className="font-medium text-stone-900 dark:text-stone-100">{u.name}</p>
+                      <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">
+                        {u.rubro || "Sin rubro"}{u.zone ? ` — ${u.zone}` : ""}
+                      </p>
+                    </div>
+                    <Link
+                      href="/admin/usuarios"
+                      className="text-orange-600 hover:text-orange-700 text-xs font-medium shrink-0"
+                    >
+                      Revisar
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Denuncias pendientes</CardTitle>
@@ -257,26 +324,31 @@ export default async function AdminPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Últimos registros</CardTitle>
+            <CardTitle className="text-sm font-semibold tracking-wider uppercase text-stone-500 dark:text-stone-400">Presupuestos en cola</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {recentUsers.map((u) => (
-                <div key={u.id} className="flex items-center justify-between text-sm p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800/50 transition-colors">
-                  <div>
-                    <p className="font-medium text-stone-900 dark:text-stone-100">{u.name}</p>
-                    <p className="text-stone-500 dark:text-stone-400 text-xs">{u.email}</p>
+            {recentBudgets.length === 0 ? (
+              <p className="text-sm text-stone-400 dark:text-stone-500">No hay presupuestos pendientes</p>
+            ) : (
+              <div className="space-y-3">
+                {recentBudgets.map((r) => (
+                  <div key={r.id} className="flex items-start justify-between text-sm p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800/50 transition-colors">
+                    <div>
+                      <p className="font-medium text-stone-900 dark:text-stone-100">{r.servicio.titulo}</p>
+                      <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">
+                        {r.cliente.name} · {r.status}
+                      </p>
+                    </div>
+                    <Link
+                      href="/admin/presupuestos"
+                      className="text-orange-600 hover:text-orange-700 text-xs font-medium shrink-0"
+                    >
+                      Revisar
+                    </Link>
                   </div>
-                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                    u.role === "PROVIDER"
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                      : "bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-stone-300"
-                  }`}>
-                    {u.role === "PROVIDER" ? "Proveedor" : "Cliente"}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -285,7 +357,7 @@ export default async function AdminPage() {
 }
 
 function aggregateByMonth(
-  data: { createdAt: Date; _count: { id: number } }[],
+  data: { month: Date; count: number }[],
   from: Date,
   to: Date
 ): { month: string; count: number }[] {
@@ -294,12 +366,10 @@ function aggregateByMonth(
   while (cursor <= to) {
     const key = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}`
     const label = new Intl.DateTimeFormat("es-AR", { month: "short", year: "2-digit" }).format(cursor)
-    const count = data
-      .filter((d) => {
-        const dk = `${d.createdAt.getFullYear()}-${String(d.createdAt.getMonth() + 1).padStart(2, "0")}`
-        return dk === key
-      })
-      .reduce((sum, d) => sum + d._count.id, 0)
+    const count = data.find((d) => {
+      const dk = `${d.month.getFullYear()}-${String(d.month.getMonth() + 1).padStart(2, "0")}`
+      return dk === key
+    })?.count ?? 0
     months.push({ month: label.replace(".", ""), count })
     cursor.setMonth(cursor.getMonth() + 1)
   }

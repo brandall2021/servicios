@@ -25,7 +25,7 @@ export default async function AdminDenunciasPage() {
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Denuncias</h1>
         <span className="text-sm text-zinc-500 dark:text-zinc-400">{reports.length} denuncias</span>
       </div>
-      <AdminReportList reports={reports as any} />
+      <AdminReportList reports={reports} />
     </div>
   )
 }

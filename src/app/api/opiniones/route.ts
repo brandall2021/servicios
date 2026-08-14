@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -63,17 +64,25 @@ export async function POST(req: Request) {
       )
     }
 
-    const opinion = await prisma.opinion.create({
-      data: {
-        puntuacion,
-        comentario,
-        servicioId,
-        clienteId: session.user.id,
-        fotos: fotos?.length
-          ? { create: fotos.map((archivo: string) => ({ archivo, tipo: "OPINION" })) }
-          : undefined,
-      },
-    })
+    let opinion
+    try {
+      opinion = await prisma.opinion.create({
+        data: {
+          puntuacion,
+          comentario,
+          servicioId,
+          clienteId: session.user.id,
+          fotos: fotos?.length
+            ? { create: fotos.map((archivo: string) => ({ archivo, tipo: "OPINION" })) }
+            : undefined,
+        },
+      })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+        return NextResponse.json({ error: "Servicio no encontrado" }, { status: 404 })
+      }
+      throw error
+    }
 
     await notifyNewOpinion(servicioId, servicio.titulo, servicio.usuarioId, puntuacion)
 

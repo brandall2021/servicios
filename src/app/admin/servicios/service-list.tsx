@@ -21,14 +21,24 @@ export function AdminServiceList({ servicios }: { servicios: Servicio[] }) {
   const [loading, setLoading] = useState<string | null>(null)
 
   async function toggleActivo(servicioId: string, current: boolean) {
+    if (!confirm(current ? "Desactivar este servicio?" : "Activar este servicio?")) return
     setLoading(servicioId)
-    await fetch(`/api/admin/servicios/${servicioId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ activo: !current }),
-    })
-    setLoading(null)
-    router.refresh()
+    try {
+      const res = await fetch(`/api/admin/servicios/${servicioId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activo: !current }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        throw new Error(err?.error || "No se pudo actualizar el servicio")
+      }
+      router.refresh()
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error de red")
+    } finally {
+      setLoading(null)
+    }
   }
 
   return (

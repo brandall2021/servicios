@@ -130,6 +130,12 @@ export default async function ProveedorPage({ params }: Props) {
               )}
 
               <div className="flex flex-wrap gap-2.5 mt-6">
+                {provider.rubro && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-white bg-white/10 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                    <Briefcase className="h-3.5 w-3.5" />
+                    {provider.rubro}
+                  </span>
+                )}
                 {provider.zone && (
                   <span className="inline-flex items-center gap-1.5 text-xs text-white bg-white/10 backdrop-blur-sm rounded-xl px-3 py-1.5">
                     <MapPin className="h-3.5 w-3.5" />

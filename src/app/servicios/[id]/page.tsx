@@ -8,12 +8,13 @@ import { Avatar } from "@/components/ui/avatar"
 import { StarRating } from "@/components/shared/star-rating"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
-import { MapPin, Calendar, Shield, ChevronLeft, MessageSquare, FileText, ArrowUpRight } from "lucide-react"
+import { MapPin, Calendar, Shield, ChevronLeft, MessageSquare, FileText, ArrowUpRight, Clock3, MapPinned } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 import { OpinionForm } from "./opinion-form"
 import { ReportButton } from "./report-button"
 import { auth } from "@/lib/auth"
 import { ContactReveal } from "@/components/shared/contact-reveal"
+import { ServiceGallery } from "./service-gallery"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -87,8 +88,29 @@ export default async function ServicioDetailPage({ params }: Props) {
     ? servicio.opiniones.some((o) => o.clienteId === session.user.id)
     : false
 
+  const whatsappUrl = servicio.usuario.whatsapp
+    ? `https://wa.me/${servicio.usuario.whatsapp.replace(/[^0-9]/g, "")}`
+    : null
+
+  const priceText = (servicio.precioTexto || "").trim()
+  const priceTextLower = priceText.toLowerCase()
+  const priceMode =
+    priceTextLower.includes("cotiz")
+      ? "A cotizar"
+      : priceTextLower.includes("desde")
+        ? "Desde"
+        : priceTextLower.includes("unidad") || priceTextLower.includes("/u")
+          ? "Por unidad"
+          : servicio.precio
+            ? "Precio fijo"
+            : "Consultar"
+
+  const updatedLabel = new Intl.DateTimeFormat("es-AR", { dateStyle: "medium" }).format(
+    new Date(servicio.updatedAt)
+  )
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-28 sm:pb-8">
       <Link
         href="/buscar"
         className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 mb-6 transition-colors"
@@ -100,22 +122,7 @@ export default async function ServicioDetailPage({ params }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           <div className="animate-fade-in">
-            {servicio.fotos.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden">
-                {servicio.fotos.map((foto) => (
-                  <img
-                    key={foto.id}
-                    src={foto.archivo}
-                    alt=""
-                    className="w-full aspect-[4/3] object-cover"
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="w-full aspect-video bg-stone-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center text-stone-300 dark:text-stone-600">
-                Sin imágenes
-              </div>
-            )}
+            <ServiceGallery fotos={servicio.fotos} titulo={servicio.titulo} categoria={servicio.categoria} />
           </div>
 
           <div className="animate-fade-in" style={{ animationDelay: "60ms" }}>
@@ -139,6 +146,21 @@ export default async function ServicioDetailPage({ params }: Props) {
                   <MapPin className="h-4 w-4" /> {servicio.ubicacion}
                 </span>
               )}
+            </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {servicio.usuario.zone && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-stone-700 dark:text-stone-300">
+                  <MapPinned className="h-3.5 w-3.5" /> {servicio.usuario.zone}
+                </span>
+              )}
+              {servicio.usuario.availability && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-stone-700 dark:text-stone-300">
+                  <Clock3 className="h-3.5 w-3.5" /> {servicio.usuario.availability}
+                </span>
+              )}
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-stone-700 dark:text-stone-300">
+                Actualizado {updatedLabel}
+              </span>
             </div>
             <p className="text-stone-600 dark:text-stone-400 leading-relaxed whitespace-pre-line">
               {servicio.descripcion}
@@ -235,8 +257,32 @@ export default async function ServicioDetailPage({ params }: Props) {
                   <p className="text-2xl font-bold gradient-text-animated">
                     ${servicio.precio.toLocaleString("es-AR")}
                   </p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{priceMode}</p>
                 </div>
               )}
+
+              {priceText && (
+                <div className="mb-5 pb-5 border-b border-stone-200/70 dark:border-zinc-700/50">
+                  <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wider font-semibold mb-1">Condición</p>
+                  <p className="text-sm text-stone-700 dark:text-stone-300 leading-relaxed">{priceText}</p>
+                </div>
+              )}
+
+              <div className="mb-5 pb-5 border-b border-stone-200/70 dark:border-zinc-700/50">
+                <p className="text-xs text-stone-500 dark:text-stone-400 uppercase tracking-wider font-semibold mb-2">Cobertura</p>
+                <div className="flex flex-wrap gap-2">
+                  {servicio.ubicacion && (
+                    <span className="inline-flex items-center gap-1.5 rounded-xl bg-stone-100 dark:bg-zinc-800 px-3 py-1.5 text-xs font-medium text-stone-700 dark:text-stone-300">
+                      <MapPin className="h-3.5 w-3.5" /> {servicio.ubicacion}
+                    </span>
+                  )}
+                  {servicio.usuario.zone && (
+                    <span className="inline-flex items-center gap-1.5 rounded-xl bg-stone-100 dark:bg-zinc-800 px-3 py-1.5 text-xs font-medium text-stone-700 dark:text-stone-300">
+                      <MapPinned className="h-3.5 w-3.5" /> {servicio.usuario.zone}
+                    </span>
+                  )}
+                </div>
+              </div>
 
               {(servicio.website || servicio.facebook || servicio.instagram) && (
                 <div className="mb-5 pb-5 border-b border-stone-200/70 dark:border-zinc-700/50">
@@ -335,6 +381,38 @@ export default async function ServicioDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {session?.user && session.user.id !== servicio.usuarioId && (
+        <div className="fixed bottom-4 left-4 right-4 z-40 sm:hidden">
+          <div className="rounded-2xl border border-stone-200/80 dark:border-zinc-700/60 bg-white/95 dark:bg-zinc-950/95 backdrop-blur shadow-[0_10px_30px_rgba(0,0,0,0.14)] p-3 grid grid-cols-3 gap-2">
+            <Link href={`/chat?proveedor=${servicio.usuarioId}&servicio=${servicio.id}`}>
+              <Button className="w-full rounded-xl btn-glow h-11 px-2 text-xs">
+                <MessageSquare className="h-4 w-4" />
+                Consultar
+              </Button>
+            </Link>
+            <Link href={`/presupuestos/solicitar?servicio=${servicio.id}`}>
+              <Button className="w-full rounded-xl h-11 px-2 text-xs" variant="outline">
+                <FileText className="h-4 w-4" />
+                Presupuesto
+              </Button>
+            </Link>
+            {whatsappUrl ? (
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <Button className="w-full rounded-xl h-11 px-2 text-xs" variant="outline">
+                  WhatsApp
+                </Button>
+              </a>
+            ) : (
+              <Link href={`/proveedores/${servicio.usuarioId}`}>
+                <Button className="w-full rounded-xl h-11 px-2 text-xs" variant="outline">
+                  Perfil
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { Avatar } from "@/components/ui/avatar"
-import { Shield, ShieldOff, Ban, CheckCircle, XCircle, Trash2, Plus, Pencil, UserCheck, UserX } from "lucide-react"
+import { Shield, ShieldOff, Ban, Trash2, Plus, Pencil, UserCheck, UserX, Eye, EyeOff, MessageSquare, FileText } from "lucide-react"
 
 const actionIcons: Record<string, React.ReactNode> = {
   cambio_rol: <Shield className="h-4 w-4 text-blue-500" />,
@@ -13,6 +13,12 @@ const actionIcons: Record<string, React.ReactNode> = {
   editar_usuario: <Pencil className="h-4 w-4 text-blue-500" />,
   aprobar_proveedor: <UserCheck className="h-4 w-4 text-green-500" />,
   rechazar_proveedor: <UserX className="h-4 w-4 text-orange-500" />,
+  editar_servicio: <Pencil className="h-4 w-4 text-blue-500" />,
+  activar_servicio: <Eye className="h-4 w-4 text-green-500" />,
+  desactivar_servicio: <EyeOff className="h-4 w-4 text-zinc-500" />,
+  editar_opinion: <MessageSquare className="h-4 w-4 text-blue-500" />,
+  eliminar_opinion: <Trash2 className="h-4 w-4 text-red-600" />,
+  editar_denuncia: <FileText className="h-4 w-4 text-orange-500" />,
 }
 
 const actionLabels: Record<string, string> = {
@@ -24,6 +30,12 @@ const actionLabels: Record<string, string> = {
   editar_usuario: "Edición",
   aprobar_proveedor: "Proveedor aprobado",
   rechazar_proveedor: "Solicitud rechazada",
+  editar_servicio: "Servicio editado",
+  activar_servicio: "Servicio activado",
+  desactivar_servicio: "Servicio desactivado",
+  editar_opinion: "Opinión editada",
+  eliminar_opinion: "Opinión eliminada",
+  editar_denuncia: "Denuncia actualizada",
 }
 
 export default async function AuditoriaPage() {

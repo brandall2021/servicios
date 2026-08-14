@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -72,10 +73,18 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
     }
 
-    const updated = await prisma.budgetRequest.update({
-      where: { id },
-      data: { status: parsed.data.status },
-    })
+    let updated
+    try {
+      updated = await prisma.budgetRequest.update({
+        where: { id },
+        data: { status: parsed.data.status },
+      })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+        return NextResponse.json({ error: "No encontrado" }, { status: 404 })
+      }
+      throw error
+    }
 
     return NextResponse.json(updated)
   } catch {

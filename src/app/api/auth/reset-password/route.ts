@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import crypto from "crypto"
 import bcrypt from "bcryptjs"
@@ -32,14 +33,21 @@ export async function POST(req: Request) {
 
   const hashedPassword = await bcrypt.hash(password, 12)
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      password: hashedPassword,
-      resetToken: null,
-      resetTokenExpiry: null,
-    },
-  })
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return NextResponse.json({ error: "Token inválido o expirado" }, { status: 400 })
+    }
+    throw error
+  }
 
   return NextResponse.json({ message: "Contraseña actualizada correctamente" })
 }

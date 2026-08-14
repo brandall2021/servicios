@@ -22,7 +22,7 @@ const steps = [
   {
     icon: ShieldCheck,
     title: "Contratá",
-    description: "Trabajá con proveedores verificados. Tu satisfacción es lo más importante.",
+    description: "Trabajá con perfiles completos, reputación visible y comunicación directa.",
     color: "purple",
   },
 ]

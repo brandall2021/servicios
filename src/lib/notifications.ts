@@ -14,10 +14,14 @@ export async function createNotification({
   title: string
   message?: string
   link?: string
-}) {
-  return prisma.notification.create({
-    data: { userId, type, title, message, link },
-  })
+}): Promise<unknown | null> {
+  try {
+    return await prisma.notification.create({
+      data: { userId, type, title, message, link },
+    })
+  } catch {
+    return null
+  }
 }
 
 export async function notifyNewMessage(chatId: string, emisorId: string, receptorId: string, contenido: string) {

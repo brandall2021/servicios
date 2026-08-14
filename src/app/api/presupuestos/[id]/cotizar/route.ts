@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -44,22 +45,30 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     const { amount, breakdown, notes, validUntil } = parsed.data
 
-    const quote = await prisma.budgetQuote.create({
-      data: {
-        amount,
-        breakdown,
-        notes,
-        validUntil: validUntil ? new Date(validUntil) : null,
-        version: (lastVersion?.version ?? 0) + 1,
-        requestId: id,
-        proveedorId: session.user.id,
-      },
-    })
+    let quote
+    try {
+      quote = await prisma.budgetQuote.create({
+        data: {
+          amount,
+          breakdown,
+          notes,
+          validUntil: validUntil ? new Date(validUntil) : null,
+          version: (lastVersion?.version ?? 0) + 1,
+          requestId: id,
+          proveedorId: session.user.id,
+        },
+      })
 
-    await prisma.budgetRequest.update({
-      where: { id },
-      data: { status: "COTIZADO" },
-    })
+      await prisma.budgetRequest.update({
+        where: { id },
+        data: { status: "COTIZADO" },
+      })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && (error.code === "P2025" || error.code === "P2003")) {
+        return NextResponse.json({ error: "Solicitud no encontrada" }, { status: 404 })
+      }
+      throw error
+    }
 
     await notifyBudgetQuote(id, request.servicio.titulo, request.clienteId)
 

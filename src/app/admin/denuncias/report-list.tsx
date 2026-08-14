@@ -39,13 +39,22 @@ export function AdminReportList({ reports }: { reports: Report[] }) {
 
   async function cambiarEstado(reportId: string, estado: string) {
     setLoading(reportId)
-    await fetch(`/api/admin/denuncias/${reportId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ estado }),
-    })
-    setLoading(null)
-    router.refresh()
+    try {
+      const res = await fetch(`/api/admin/denuncias/${reportId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        throw new Error(err?.error || "No se pudo actualizar la denuncia")
+      }
+      router.refresh()
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error de red")
+    } finally {
+      setLoading(null)
+    }
   }
 
   return (

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
 import { ServiceCard } from "@/components/shared/service-card"
 import { SearchBar } from "@/components/shared/search-bar"
+import { Pagination } from "@/components/shared/pagination"
 import { CATEGORIAS } from "@/lib/constants"
 import { SortSelect } from "./sort-select"
 import { CategoryChips } from "./category-chips"
@@ -10,7 +11,7 @@ import { FilterSidebar, RadioSelect } from "./filter-sidebar"
 import type { ServicioWithRelations } from "@/types"
 
 interface Props {
-  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string }>
+  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string; page?: string }>
 }
 
 async function getServicios(params: Awaited<Props["searchParams"]>) {
@@ -149,6 +150,12 @@ async function getServicios(params: Awaited<Props["searchParams"]>) {
 export default async function BuscarPage({ searchParams }: Props) {
   const params = await searchParams
   const servicios = await getServicios(params)
+  const page = Math.max(1, parseInt(params.page || "1"))
+  const pageSize = 12
+  const total = servicios.length
+  const pages = Math.max(1, Math.ceil(total / pageSize))
+  const currentPage = Math.min(page, pages)
+  const pagedServicios = servicios.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   const selectedCategoria = params.categoria || ""
 
@@ -188,9 +195,9 @@ export default async function BuscarPage({ searchParams }: Props) {
               <SortSelect />
             </div>
           </div>
-          {servicios.length > 0 ? (
+          {pagedServicios.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {servicios.map((s, i) => (
+              {pagedServicios.map((s, i) => (
                 <ServiceCard key={s.id} servicio={s as ServicioWithRelations} index={i} />
               ))}
             </div>
@@ -202,6 +209,10 @@ export default async function BuscarPage({ searchParams }: Props) {
               <p className="text-stone-700 dark:text-stone-300 font-semibold text-lg mb-1">No encontramos servicios</p>
               <p className="text-stone-500 dark:text-stone-400 text-sm">Probá con otros términos de búsqueda o categoría</p>
             </div>
+          )}
+
+          {total > pageSize && (
+            <Pagination page={currentPage} pages={pages} total={total} label="servicios" />
           )}
         </div>
       </div>

@@ -65,7 +65,7 @@ function LoginForm() {
             )}
             {providerMsg && (
               <div className="mb-6 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200/70 dark:border-blue-800/50 p-3.5 text-sm text-blue-700 dark:text-blue-400">
-                Tu solicitud para ser proveedor fue enviada. Un administrador la revisará.
+                Tu solicitud para ser proveedor fue enviada. Cuando ingreses, completá tu perfil desde <Link href="/onboarding/proveedor" className="underline font-medium">onboarding de proveedor</Link>.
               </div>
             )}
 
@@ -77,6 +77,7 @@ function LoginForm() {
                   name="email"
                   type="email"
                   placeholder="tu@email.com"
+                  autoComplete="email"
                   required
                   className="pl-10"
                 />
@@ -88,6 +89,7 @@ function LoginForm() {
                   name="password"
                   type="password"
                   placeholder="••••••••"
+                  autoComplete="current-password"
                   required
                   className="pl-10"
                 />

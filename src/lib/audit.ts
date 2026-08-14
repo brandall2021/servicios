@@ -10,6 +10,12 @@ type AuditAction =
   | "editar_usuario"
   | "aprobar_proveedor"
   | "rechazar_proveedor"
+  | "editar_servicio"
+  | "activar_servicio"
+  | "desactivar_servicio"
+  | "editar_opinion"
+  | "eliminar_opinion"
+  | "editar_denuncia"
 
 export async function logAdminAction(
   accion: AuditAction,

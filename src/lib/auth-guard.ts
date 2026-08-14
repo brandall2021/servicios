@@ -25,6 +25,7 @@ export const PUBLIC_PROVIDER_SELECT = {
   experience: true,
   certifications: true,
   availability: true,
+  rubro: true,
 } as const
 
 export function unauthorized() {

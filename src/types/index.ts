@@ -77,3 +77,24 @@ export type AdminReportWithRelations = Prisma.ReportGetPayload<{
     usuario: { select: typeof PUBLIC_USER_SELECT }
   }
 }>
+
+export type AdminOpinionWithRelations = Prisma.OpinionGetPayload<{
+  include: {
+    cliente: { select: { id: true; name: true } }
+    servicio: { select: { id: true; titulo: true } }
+    _count: { select: { reportes: true } }
+  }
+}>
+
+export type AdminBudgetRequestWithRelations = Prisma.BudgetRequestGetPayload<{
+  include: {
+    cliente: { select: { id: true; name: true; email: true } }
+    servicio: { select: { id: true; titulo: true } }
+    cotizaciones: {
+      include: {
+        proveedor: { select: { id: true; name: true } }
+      }
+      orderBy: { version: "desc" }
+    }
+  }
+}>

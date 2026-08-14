@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import crypto from "crypto"
 import { prisma } from "@/lib/prisma"
@@ -24,13 +25,20 @@ export async function POST(req: Request) {
   const rawToken = crypto.randomBytes(32).toString("hex")
   const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex")
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      resetToken: hashedToken,
-      resetTokenExpiry: new Date(Date.now() + 3600000), // 1 hora
-    },
-  })
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken: hashedToken,
+        resetTokenExpiry: new Date(Date.now() + 3600000), // 1 hora
+      },
+    })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return NextResponse.json({ message: "Si el email existe, recibirás un enlace de recuperación" })
+    }
+    throw error
+  }
 
   const resetUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/reset-password?token=${rawToken}`
 

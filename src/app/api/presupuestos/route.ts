@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -35,18 +36,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No podés solicitar presupuesto a tu propio servicio" }, { status: 400 })
     }
 
-    const request = await prisma.budgetRequest.create({
-      data: {
-        description,
-        materiales,
-        archivos: archivos || null,
-        servicioId,
-        clienteId: session.user.id,
-      },
-      include: {
-        servicio: { include: { usuario: { select: PUBLIC_USER_SELECT } } },
-      },
-    })
+    let request
+    try {
+      request = await prisma.budgetRequest.create({
+        data: {
+          description,
+          materiales,
+          archivos: archivos || null,
+          servicioId,
+          clienteId: session.user.id,
+        },
+        include: {
+          servicio: { include: { usuario: { select: PUBLIC_USER_SELECT } } },
+        },
+      })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+        return NextResponse.json({ error: "Servicio no encontrado" }, { status: 404 })
+      }
+      throw error
+    }
 
     await notifyNewBudgetRequest(servicioId, servicio.titulo, servicio.usuarioId)
 

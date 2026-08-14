@@ -1,8 +1,42 @@
 import Link from "next/link"
 import { StarRating } from "./star-rating"
-import { MapPin, BadgeCheck, MessageSquare, ArrowUpRight } from "lucide-react"
+import {
+  MapPin,
+  BadgeCheck,
+  MessageSquare,
+  ArrowUpRight,
+  BrickWall,
+  Lightbulb,
+  ShowerHead,
+  Palette,
+  Wrench,
+  Square,
+  Home,
+  GripVertical,
+  Zap,
+  Sprout,
+  Nut,
+  Package,
+  Clock3,
+} from "lucide-react"
 import type { ServicioWithRelations } from "@/types"
 import { CATEGORIAS } from "@/lib/constants"
+import type { LucideIcon } from "lucide-react"
+
+const iconMap: Record<string, LucideIcon> = {
+  materiales: BrickWall,
+  iluminacion: Lightbulb,
+  sanitarios: ShowerHead,
+  pintura: Palette,
+  herramientas: Wrench,
+  pisos: Square,
+  techos: Home,
+  hierro: GripVertical,
+  electricidad: Zap,
+  jardineria: Sprout,
+  ferreteria: Nut,
+  otros: Package,
+}
 
 const catBadgeColors: Record<string, { bg: string; text: string; border: string }> = {
   materiales: { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
@@ -26,12 +60,29 @@ interface ServiceCardProps {
 
 export function ServiceCard({ servicio, index = 0 }: ServiceCardProps) {
   const catInfo = CATEGORIAS.find((c) => c.value === servicio.categoria)
+  const CatIcon = iconMap[servicio.categoria] || Package
   const avgRating =
     servicio.opiniones.length > 0
       ? servicio.opiniones.reduce((a, o) => a + o.puntuacion, 0) / servicio.opiniones.length
       : 0
 
   const badgeColor = catBadgeColors[servicio.categoria] || catBadgeColors.otros
+  const priceText = (servicio.precioTexto || "").trim()
+  const priceTextLower = priceText.toLowerCase()
+  const priceMode =
+    priceTextLower.includes("cotiz")
+      ? "A cotizar"
+      : priceTextLower.includes("desde")
+        ? "Desde"
+        : priceTextLower.includes("unidad") || priceTextLower.includes("/u")
+          ? "Por unidad"
+          : servicio.precio
+            ? "Precio fijo"
+            : "Consultar"
+
+  const priceValue = servicio.precio
+    ? `$${servicio.precio.toLocaleString("es-AR")}`
+    : priceText || "Consultá"
 
   return (
     <div className={`animate-fade-up animate-fade-up-delay-${Math.min(index + 1, 6)}`}>
@@ -52,8 +103,17 @@ export function ServiceCard({ servicio, index = 0 }: ServiceCardProps) {
               </div>
             </div>
           ) : (
-            <div className="aspect-[4/3] bg-gradient-to-br from-stone-100 to-stone-200 dark:from-zinc-700 dark:to-zinc-800 flex items-center justify-center relative overflow-hidden">
-              <span className="text-5xl transition-transform duration-500 group-hover:scale-110">{catInfo?.icon || "📦"}</span>
+            <div className="aspect-[4/3] bg-gradient-to-br from-stone-100 via-orange-50 to-stone-200 dark:from-zinc-700 dark:via-zinc-800 dark:to-zinc-900 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-70 bg-[radial-gradient(circle_at_top,_rgba(255,138,0,0.15),_transparent_55%)]" />
+              <div className="relative flex flex-col items-center gap-3 text-center px-6">
+                <div className="h-14 w-14 rounded-2xl bg-white/90 dark:bg-zinc-900/80 border border-white/70 dark:border-zinc-700/60 shadow-sm flex items-center justify-center">
+                  <CatIcon className="h-7 w-7 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">{catInfo?.label || servicio.categoria}</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">Sin foto de portada</p>
+                </div>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
             </div>
           )}
@@ -63,7 +123,7 @@ export function ServiceCard({ servicio, index = 0 }: ServiceCardProps) {
                 className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap transition-colors duration-200"
                 style={{ backgroundColor: badgeColor.bg, color: badgeColor.text, border: `1px solid ${badgeColor.border}` }}
               >
-                {catInfo?.icon} {catInfo?.label || servicio.categoria}
+                <CatIcon className="h-3.5 w-3.5" /> {catInfo?.label || servicio.categoria}
               </span>
               <div className="flex items-center gap-1 shrink-0">
                 {servicio.distance !== null && servicio.distance !== undefined && (
@@ -82,17 +142,31 @@ export function ServiceCard({ servicio, index = 0 }: ServiceCardProps) {
 
             <div className="flex items-center gap-1.5 mb-2.5 text-xs text-stone-500 dark:text-stone-400">
               <MapPin className="h-3 w-3 shrink-0" />
-              <span className="truncate">{servicio.ubicacion || "Sin ubicación"}</span>
+              <span className="truncate">{servicio.ubicacion || servicio.usuario.zone || "Sin ubicación"}</span>
             </div>
 
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <span className="text-sm font-medium text-stone-500 dark:text-stone-400 truncate">
-                  {servicio.usuario.name}
-                </span>
-                {servicio.usuario.verified && (
-                  <BadgeCheck className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-                )}
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-sm font-medium text-stone-600 dark:text-stone-300 truncate">
+                    {servicio.usuario.name}
+                  </span>
+                  {servicio.usuario.verified && (
+                    <BadgeCheck className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  )}
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-stone-500 dark:text-stone-400">
+                  {servicio.usuario.trabajosRealizados > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 dark:bg-zinc-800 px-2 py-0.5">
+                      {servicio.usuario.trabajosRealizados} trabajos
+                    </span>
+                  )}
+                  {servicio.usuario.availability && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 dark:bg-zinc-800 px-2 py-0.5">
+                      <Clock3 className="h-3 w-3" /> {servicio.usuario.availability}
+                    </span>
+                  )}
+                </div>
               </div>
               {avgRating > 0 && (
                 <StarRating value={avgRating} size="xs" showValue count={servicio.opiniones.length} readonly />
@@ -100,13 +174,14 @@ export function ServiceCard({ servicio, index = 0 }: ServiceCardProps) {
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-zinc-700/50">
-              {servicio.precio ? (
-                <span className="text-lg font-bold gradient-text-animated">
-                  ${servicio.precio.toLocaleString("es-AR")}
+              <div>
+                <span className="block text-[11px] uppercase tracking-wider text-stone-500 dark:text-stone-400 font-semibold">
+                  {priceMode}
                 </span>
-              ) : (
-                <span className="text-sm font-medium text-zinc-400">Consultar precio</span>
-              )}
+                <span className={`block text-lg font-bold ${servicio.precio ? "gradient-text-animated" : "text-stone-900 dark:text-stone-100"}`}>
+                  {priceValue}
+                </span>
+              </div>
               <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 dark:text-orange-400 group-hover:gap-2 transition-all duration-300">
                 <MessageSquare className="h-3.5 w-3.5" />
                 Contactar

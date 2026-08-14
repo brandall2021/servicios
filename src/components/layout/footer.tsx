@@ -49,7 +49,7 @@ export function Footer() {
                 </div>
               </Link>
               <p className="text-xs text-white/50 leading-relaxed max-w-xs">
-                La plataforma que conecta clientes con profesionales verificados en Argentina. Encontrá, compará y contratá con confianza.
+                La plataforma que conecta clientes con profesionales de confianza en Argentina. Encontrá, compará y contratá con confianza.
               </p>
             </div>
             {footerLinks.map((group) => (

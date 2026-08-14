@@ -46,6 +46,16 @@ const statusLabels: Record<string, string> = {
 }
 
 export function AdminPresupuestosList({ requests }: { requests: BudgetRequest[] }) {
+  function parseArchivos(value: string | null) {
+    if (!value) return 0
+    try {
+      const parsed = JSON.parse(value)
+      return Array.isArray(parsed) ? parsed.length : 0
+    } catch {
+      return 0
+    }
+  }
+
   return (
     <div className="space-y-4">
       {requests.length === 0 ? (
@@ -88,10 +98,10 @@ export function AdminPresupuestosList({ requests }: { requests: BudgetRequest[] 
                     </p>
                   )}
 
-                  {r.archivos && JSON.parse(r.archivos).length > 0 && (
+                  {parseArchivos(r.archivos) > 0 && (
                     <p className="text-xs text-zinc-500 mt-1 flex items-center gap-1">
                       <Paperclip className="h-3 w-3" />
-                      <span className="font-medium">{JSON.parse(r.archivos).length} archivo(s) adjunto(s)</span>
+                      <span className="font-medium">{parseArchivos(r.archivos)} archivo(s) adjunto(s)</span>
                     </p>
                   )}
 

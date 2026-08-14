@@ -22,7 +22,7 @@ export default async function AdminServiciosPage() {
         <h1 className="text-2xl font-bold text-zinc-900">Servicios</h1>
         <span className="text-sm text-zinc-500">{servicios.length} servicios</span>
       </div>
-      <AdminServiceList servicios={servicios as any} />
+      <AdminServiceList servicios={servicios} />
     </div>
   )
 }

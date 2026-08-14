@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ServiceCard } from "@/components/shared/service-card"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
-import { PlusCircle, MessageSquare, Shield, FileText } from "lucide-react"
+import { PlusCircle, MessageSquare, Shield, FileText, ArrowRight } from "lucide-react"
 import { ProfileForm } from "./profile-form"
 
 export default async function PerfilPage() {
@@ -36,6 +36,7 @@ export default async function PerfilPage() {
   if (!user) redirect("/login")
 
   const isProvider = user.role === "PROVIDER"
+  const pendingProvider = user.solicitudProveedor && !isProvider
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -52,6 +53,25 @@ export default async function PerfilPage() {
         <div className="lg:col-span-2 space-y-6">
           <Card className="animate-fade-in" style={{ animationDelay: "60ms" }}>
             <CardContent className="p-6">
+              {pendingProvider && (
+                <div className="mb-6 rounded-2xl border border-amber-200/80 bg-amber-50/80 dark:border-amber-900/40 dark:bg-amber-900/15 p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">Solicitud de proveedor pendiente</p>
+                      <p className="text-sm text-amber-800/80 dark:text-amber-100/80 mt-1">
+                        Podés completar tu rubro, zona y documentación mientras un administrador revisa tu cuenta.
+                      </p>
+                    </div>
+                    <Link href="/onboarding/proveedor">
+                      <Button className="rounded-xl gap-2">
+                        Completar onboarding
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center gap-4 mb-6">
                 <Avatar src={user.image} fallback={user.name} size="xl" />
                 <div>
@@ -68,6 +88,9 @@ export default async function PerfilPage() {
                   </Badge>
                   {isProvider && (
                     <p className="text-sm text-stone-500 dark:text-stone-400 mt-1.5">{user._count.servicios} servicios</p>
+                  )}
+                  {user.rubro && (
+                    <p className="text-sm text-stone-500 dark:text-stone-400 mt-1.5">{user.rubro}</p>
                   )}
                 </div>
               </div>

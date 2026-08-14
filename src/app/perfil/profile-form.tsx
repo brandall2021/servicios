@@ -17,6 +17,8 @@ interface ProfileFormProps {
     description: string | null
     experience: string | null
     certifications: string | null
+    rubro: string | null
+    documentacion: string | null
     zone: string | null
     availability: string | null
     whatsapp: string | null
@@ -69,6 +71,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           name="name"
           label="Nombre"
           defaultValue={user.name}
+          autoComplete="name"
           required
         />
         <Input
@@ -76,11 +79,19 @@ export function ProfileForm({ user }: ProfileFormProps) {
           name="phone"
           label="Teléfono"
           defaultValue={user.phone || ""}
+          autoComplete="tel"
         />
       </div>
 
       {isProvider && (
         <>
+          <Input
+            id="rubro"
+            name="rubro"
+            label="Rubro"
+            defaultValue={user.rubro || ""}
+            placeholder="Ej: Electricista, pintor, plomero"
+          />
           <Textarea
             id="description"
             name="description"
@@ -101,6 +112,14 @@ export function ProfileForm({ user }: ProfileFormProps) {
             label="Certificaciones"
             defaultValue={user.certifications || ""}
             rows={3}
+          />
+          <Textarea
+            id="documentacion"
+            name="documentacion"
+            label="Documentación"
+            defaultValue={user.documentacion || ""}
+            rows={3}
+            placeholder="CUIT, matrícula, referencias, links o documentos relevantes"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select
@@ -125,6 +144,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             label="WhatsApp"
             defaultValue={user.whatsapp || ""}
             placeholder="Ej: +54 11 2345-6789"
+            autoComplete="tel"
           />
         </>
       )}
@@ -138,6 +158,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             label="Sitio web"
             defaultValue={user.website || ""}
             placeholder="https://..."
+            autoComplete="url"
           />
           <Input
             id="facebook"
@@ -145,6 +166,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             label="Facebook"
             defaultValue={user.facebook || ""}
             placeholder="https://facebook.com/..."
+            autoComplete="url"
           />
           <Input
             id="instagram"
@@ -152,6 +174,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
             label="Instagram"
             defaultValue={user.instagram || ""}
             placeholder="https://instagram.com/..."
+            autoComplete="url"
           />
         </div>
       </div>

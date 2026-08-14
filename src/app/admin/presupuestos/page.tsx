@@ -2,12 +2,13 @@ import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { AdminPresupuestosList } from "./presupuestos-list"
+import type { AdminBudgetRequestWithRelations } from "@/types"
 
 export default async function AdminPresupuestosPage() {
   const session = await auth()
   if (!session?.user || session.user.role !== "ADMIN") redirect("/")
 
-  const requests = await prisma.budgetRequest.findMany({
+  const requests: AdminBudgetRequestWithRelations[] = await prisma.budgetRequest.findMany({
     include: {
       cliente: { select: { id: true, name: true, email: true } },
       servicio: { select: { id: true, titulo: true } },
@@ -27,7 +28,7 @@ export default async function AdminPresupuestosPage() {
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Presupuestos</h1>
         <span className="text-sm text-zinc-500 dark:text-zinc-400">{requests.length} solicitudes</span>
       </div>
-      <AdminPresupuestosList requests={requests as any} />
+      <AdminPresupuestosList requests={requests} />
     </div>
   )
 }

@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
+import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-guard"
@@ -12,6 +14,7 @@ const updateUserSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   email: z.string().email().optional(),
   phone: z.string().max(30).nullable().optional(),
+  password: z.string().min(6).max(100).optional(),
   solicitudProveedor: z.boolean().optional(),
 })
 
@@ -32,11 +35,28 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   })
   if (!antes) return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 })
 
-  const user = await prisma.user.update({
-    where: { id },
-    data: parsed.data,
-    select: { id: true, name: true, email: true, role: true, verified: true, baneado: true, motivoBaneo: true },
-  })
+  const { password, ...rest } = parsed.data
+  const data = {
+    ...rest,
+    ...(password ? { password: await bcrypt.hash(password, 12) } : {}),
+  }
+
+  let user
+  try {
+    user = await prisma.user.update({
+      where: { id },
+      data,
+      select: { id: true, name: true, email: true, role: true, verified: true, baneado: true, motivoBaneo: true },
+    })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return NextResponse.json({ error: "El email ya está registrado" }, { status: 409 })
+    }
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 })
+    }
+    throw error
+  }
 
   // Audit
   if (parsed.data.role && parsed.data.role !== antes.role) {
@@ -54,6 +74,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (parsed.data.solicitudProveedor === false && antes.solicitudProveedor === true && user.role === "CLIENT") {
     await logAdminAction("rechazar_proveedor", `Rechazada solicitud de ${antes.name}`, id)
   }
+  if (password) {
+    await logAdminAction("editar_usuario", `Actualizada contraseña de ${antes.name}`, id)
+  }
 
   return NextResponse.json(user)
 }
@@ -69,7 +92,14 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   })
   if (!user) return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 })
 
-  await prisma.user.delete({ where: { id } })
+  try {
+    await prisma.user.delete({ where: { id } })
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 })
+    }
+    throw error
+  }
 
   await logAdminAction("eliminar", `Eliminado ${user.name} (${user.email})`, id)
 

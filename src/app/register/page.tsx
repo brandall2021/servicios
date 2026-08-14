@@ -7,13 +7,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { ShoppingBag, Store, ArrowRight, User, Mail, Phone, Lock } from "lucide-react"
+import { ShoppingBag, Store, ArrowRight, User, Mail, Phone, Lock, Check } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [role, setRole] = useState<"CLIENT" | "PROVIDER">("CLIENT")
+  const passwordHelpId = "password-help"
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -91,7 +92,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="text-center">
                   <span className={`text-sm font-semibold block ${role === "CLIENT" ? "text-orange-700 dark:text-orange-400" : "text-stone-700 dark:text-stone-300"}`}>
-                    Comprador
+                    Cliente
                   </span>
                   <span className="text-xs text-stone-400 dark:text-stone-500">Contratar servicios</span>
                 </div>
@@ -114,7 +115,7 @@ export default function RegisterPage() {
                 </div>
                 <div className="text-center">
                   <span className={`text-sm font-semibold block ${role === "PROVIDER" ? "text-orange-700 dark:text-orange-400" : "text-stone-700 dark:text-stone-300"}`}>
-                    Vendedor
+                    Proveedor
                   </span>
                   <span className="text-xs text-stone-400 dark:text-stone-500">Ofrecer servicios</span>
                 </div>
@@ -124,23 +125,31 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="name" name="name" placeholder="Juan Pérez" required className="pl-10" />
+                <Input id="name" name="name" placeholder="Juan Pérez" autoComplete="name" required className="pl-10" />
               </div>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="email" name="email" type="email" placeholder="tu@email.com" required className="pl-10" />
+                <Input id="email" name="email" type="email" placeholder="tu@email.com" autoComplete="email" required className="pl-10" />
               </div>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="phone" name="phone" placeholder="+54 381 1234567" className="pl-10" />
+                <Input id="phone" name="phone" placeholder="+54 381 1234567" autoComplete="tel" className="pl-10" />
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="password" name="password" type="password" placeholder="••••••••" required className="pl-10" />
+                <Input id="password" name="password" type="password" placeholder="••••••••" autoComplete="new-password" minLength={8} pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="Mínimo 8 caracteres, una mayúscula y un número" required className="pl-10" aria-describedby={passwordHelpId} />
+              </div>
+              <div id={passwordHelpId} className="rounded-xl bg-stone-50 dark:bg-zinc-800/60 border border-stone-200/70 dark:border-zinc-700/50 p-3 text-xs text-stone-500 dark:text-stone-400">
+                <p className="font-medium text-stone-700 dark:text-stone-300 mb-1">La contraseña debe tener al menos:</p>
+                <ul className="space-y-1">
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-600" /> 8 caracteres</li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-600" /> una letra mayúscula</li>
+                  <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-green-600" /> un número</li>
+                </ul>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="••••••••" required className="pl-10" />
+                <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="••••••••" autoComplete="new-password" minLength={8} pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="Mínimo 8 caracteres, una mayúscula y un número" required className="pl-10" />
               </div>
               {error && (
                 <div className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200/70 dark:border-red-800/50 p-3.5 text-sm text-red-700 dark:text-red-400">
@@ -150,7 +159,7 @@ export default function RegisterPage() {
               <Button type="submit" className="w-full btn-glow h-11 rounded-xl" disabled={loading}>
                 {loading ? "Creando cuenta..." : (
                   <span className="flex items-center gap-2">
-                    {role === "CLIENT" ? "Crear cuenta como comprador" : "Crear cuenta como vendedor"}
+                    {role === "CLIENT" ? "Crear cuenta como cliente" : "Solicitar cuenta de proveedor"}
                     <ArrowRight className="h-4 w-4" />
                   </span>
                 )}
@@ -160,7 +169,7 @@ export default function RegisterPage() {
             {role === "PROVIDER" && (
               <div className="mt-4 p-3.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200/70 dark:border-blue-800/50">
                 <p className="text-xs text-blue-700 dark:text-blue-400">
-                  Como vendedor vas a poder publicar servicios, recibir presupuestos y conectar con clientes.
+                  Como proveedor vas a poder publicar servicios, recibir presupuestos y conectar con clientes. Después vas a completar tu perfil en pasos guardables.
                 </p>
               </div>
             )}

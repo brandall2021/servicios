@@ -11,6 +11,7 @@ interface ProviderCardProps {
     image: string | null
     description: string | null
     zone: string | null
+    rubro: string | null
     verified: boolean
     avgRating: number
     whatsapp: string | null
@@ -41,6 +42,11 @@ export function ProviderCard({ provider }: ProviderCardProps) {
               {provider.description && (
                 <p className="text-sm text-stone-500 line-clamp-2 mt-1">
                   {provider.description}
+                </p>
+              )}
+              {provider.rubro && (
+                <p className="text-xs font-medium text-orange-600 mt-1">
+                  {provider.rubro}
                 </p>
               )}
               <div className="flex items-center gap-3 mt-2 text-xs text-stone-400">

@@ -37,25 +37,43 @@ export function AdminOpinionesList({ opiniones }: { opiniones: Opinion[] }) {
   async function handleSave() {
     if (!editingOpinion) return
     setSaving(true)
-    await fetch(`/api/admin/opiniones/${editingOpinion.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        comentario: editComentario,
-        puntuacion: editPuntuacion,
-      }),
-    })
-    setSaving(false)
-    setEditModal(false)
-    router.refresh()
+    try {
+      const res = await fetch(`/api/admin/opiniones/${editingOpinion.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          comentario: editComentario,
+          puntuacion: editPuntuacion,
+        }),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        throw new Error(err?.error || "No se pudo actualizar la opinión")
+      }
+      setEditModal(false)
+      router.refresh()
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error de red")
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function deleteOpinion(opinionId: string) {
     if (!confirm("¿Eliminar esta opinión? Esta acción no se puede deshacer.")) return
     setLoading(opinionId)
-    await fetch(`/api/admin/opiniones/${opinionId}`, { method: "DELETE" })
-    setLoading(null)
-    router.refresh()
+    try {
+      const res = await fetch(`/api/admin/opiniones/${opinionId}`, { method: "DELETE" })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        throw new Error(err?.error || "No se pudo eliminar la opinión")
+      }
+      router.refresh()
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error de red")
+    } finally {
+      setLoading(null)
+    }
   }
 
   return (

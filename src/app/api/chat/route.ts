@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -34,18 +35,29 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "No pertenecés a este chat" }, { status: 403 })
       }
       const receptor = receptorId || (chat.creadorId === session.user.id ? chat.participanteId : chat.creadorId)
-      const mensaje = await prisma.mensaje.create({
-        data: {
-          contenido,
-          chatId,
-          emisorId: session.user.id,
-          receptorId: receptor,
-        },
-      })
-      await prisma.chat.update({
-        where: { id: chatId },
-        data: { updatedAt: new Date() },
-      })
+      let mensaje
+      try {
+        mensaje = await prisma.$transaction(async (tx) => {
+          const created = await tx.mensaje.create({
+            data: {
+              contenido,
+              chatId,
+              emisorId: session.user.id,
+              receptorId: receptor,
+            },
+          })
+          await tx.chat.update({
+            where: { id: chatId },
+            data: { updatedAt: new Date() },
+          })
+          return created
+        })
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+          return NextResponse.json({ error: "Chat no encontrado" }, { status: 404 })
+        }
+        throw error
+      }
       await notifyNewMessage(chatId, session.user.id, receptor, contenido || "")
       return NextResponse.json(mensaje, { status: 201 })
     }
@@ -64,12 +76,19 @@ export async function POST(req: Request) {
     })
 
     if (!existingChat) {
-      existingChat = await prisma.chat.create({
-        data: {
-          creadorId: session.user.id,
-          participanteId: receptorId,
-        },
-      })
+      try {
+        existingChat = await prisma.chat.create({
+          data: {
+            creadorId: session.user.id,
+            participanteId: receptorId,
+          },
+        })
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+          return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 })
+        }
+        throw error
+      }
     }
 
     return NextResponse.json(existingChat)

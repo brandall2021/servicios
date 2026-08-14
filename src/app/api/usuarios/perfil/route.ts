@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -15,6 +16,8 @@ const updatePerfilSchema = z.object({
   website: z.string().max(500).nullable().optional(),
   facebook: z.string().max(500).nullable().optional(),
   instagram: z.string().max(500).nullable().optional(),
+  rubro: z.string().max(200).nullable().optional(),
+  documentacion: z.string().max(5000).nullable().optional(),
 })
 
 export async function PUT(req: Request) {
@@ -30,10 +33,18 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "Datos inválidos" }, { status: 400 })
     }
 
-    const user = await prisma.user.update({
-      where: { id: session.user.id },
-      data: parsed.data,
-    })
+    let user
+    try {
+      user = await prisma.user.update({
+        where: { id: session.user.id },
+        data: parsed.data,
+      })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+        return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 })
+      }
+      throw error
+    }
 
     return NextResponse.json({ id: user.id, name: user.name })
   } catch {

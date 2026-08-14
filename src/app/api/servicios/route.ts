@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
@@ -38,26 +39,34 @@ export async function POST(req: Request) {
 
     const { titulo, descripcion, categoria, precio, precioTexto, ubicacion, disponibilidad, website, facebook, instagram, lat, lng, fotos } = parsed.data
 
-    const servicio = await prisma.servicio.create({
-      data: {
-        titulo,
-        descripcion,
-        categoria,
-        precio: precio ? parseFloat(precio) : null,
-        precioTexto,
-        ubicacion,
-        lat: lat ? parseFloat(lat) : null,
-        lng: lng ? parseFloat(lng) : null,
-        disponibilidad,
-        website: website || null,
-        facebook: facebook || null,
-        instagram: instagram || null,
-        usuarioId: session.user.id,
-        fotos: fotos?.length
-          ? { create: fotos.map((archivo: string) => ({ archivo, tipo: "SERVICIO" })) }
-          : undefined,
-      },
-    })
+    let servicio
+    try {
+      servicio = await prisma.servicio.create({
+        data: {
+          titulo,
+          descripcion,
+          categoria,
+          precio: precio ? parseFloat(precio) : null,
+          precioTexto,
+          ubicacion,
+          lat: lat ? parseFloat(lat) : null,
+          lng: lng ? parseFloat(lng) : null,
+          disponibilidad,
+          website: website || null,
+          facebook: facebook || null,
+          instagram: instagram || null,
+          usuarioId: session.user.id,
+          fotos: fotos?.length
+            ? { create: fotos.map((archivo: string) => ({ archivo, tipo: "SERVICIO" })) }
+            : undefined,
+        },
+      })
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+        return NextResponse.json({ error: "Proveedor no encontrado" }, { status: 404 })
+      }
+      throw error
+    }
 
     return NextResponse.json(servicio, { status: 201 })
   } catch {

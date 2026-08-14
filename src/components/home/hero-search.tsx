@@ -2,8 +2,8 @@
 
 import { useState, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Search, ArrowRight } from "lucide-react"
-import { CATEGORIAS } from "@/lib/constants"
 
 export function HeroSearch() {
   const router = useRouter()
@@ -20,7 +20,7 @@ export function HeroSearch() {
   }
 
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32 lg:py-44 noise-overlay">
+    <section className="relative overflow-hidden py-16 sm:py-24 lg:py-40 noise-overlay">
       {/* Gradient background */}
       <div
         className="absolute inset-0"
@@ -29,31 +29,31 @@ export function HeroSearch() {
         }}
       />
       {/* Animated orbs */}
-      <div className="absolute top-20 left-[10%] w-[500px] h-[500px] rounded-full bg-orange-400/20 blur-[120px] animate-float" />
-      <div className="absolute bottom-10 right-[5%] w-[600px] h-[600px] rounded-full bg-blue-400/15 blur-[140px] animate-float" style={{ animationDelay: "-2s" }} />
-      <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-orange-300/10 blur-[100px] animate-float" style={{ animationDelay: "-1s" }} />
+      <div className="absolute top-20 left-[10%] hidden h-[500px] w-[500px] rounded-full bg-orange-400/20 blur-[120px] animate-float sm:block" />
+      <div className="absolute bottom-10 right-[5%] hidden h-[600px] w-[600px] rounded-full bg-blue-400/15 blur-[140px] animate-float sm:block" style={{ animationDelay: "-2s" }} />
+      <div className="absolute top-1/3 right-1/4 hidden h-[300px] w-[300px] rounded-full bg-orange-300/10 blur-[100px] animate-float md:block" style={{ animationDelay: "-1s" }} />
       {/* Dot grid */}
       <div className="absolute inset-0 dot-pattern opacity-30" />
       {/* Content - left aligned asymmetric */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="max-w-3xl">
+        <div className="max-w-2xl">
           <div className="animate-fade-up">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-white/10 text-orange-300 border border-white/10 backdrop-blur-sm mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-white/10 text-orange-300 border border-white/10 backdrop-blur-sm mb-5 sm:mb-6">
               <span className="h-1.5 w-1.5 rounded-full bg-orange-400 animate-pulse" />
               Marketplace de servicios
             </span>
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-[1.08] mb-5 animate-fade-up animate-fade-up-delay-1">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-[1.08] mb-4 sm:mb-5 animate-fade-up animate-fade-up-delay-1">
             Compará precios y encontrá
             <br />
             <span className="gradient-text-animated">
               los mejores servicios
             </span>
           </h1>
-          <p className="text-lg sm:text-xl text-white/60 max-w-xl mb-10 animate-fade-up animate-fade-up-delay-2 leading-relaxed">
-            Corralones, ferreterías, materiales y más. Conectá con proveedores verificados cerca tuyo.
+          <p className="text-base sm:text-xl text-white/60 max-w-xl mb-8 sm:mb-10 animate-fade-up animate-fade-up-delay-2 leading-relaxed">
+            Corralones, ferreterías, materiales y más. Conectá con profesionales de confianza cerca tuyo.
           </p>
-          <form onSubmit={handleSubmit} className="max-w-xl flex gap-3 animate-fade-up animate-fade-up-delay-3">
+          <form onSubmit={handleSubmit} className="max-w-xl flex flex-col sm:flex-row gap-3 animate-fade-up animate-fade-up-delay-3">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
               <input
@@ -74,22 +74,19 @@ export function HeroSearch() {
               </span>
             </button>
           </form>
-          <div className="flex flex-wrap gap-2 mt-7 animate-fade-up animate-fade-up-delay-4">
-            {CATEGORIAS.slice(0, 6).map((cat) => (
-              <button
-                key={cat.value}
-                onClick={() => router.push(`/buscar?categoria=${cat.value}`)}
-                className="px-3.5 py-1.5 text-sm rounded-xl bg-white/8 text-white/70 hover:bg-white/15 hover:text-white border border-white/5 hover:border-white/15 transition-all duration-300 hover:scale-105 active:scale-95 backdrop-blur-sm"
-              >
-                {cat.icon} {cat.label}
-              </button>
-            ))}
-            <button
-              onClick={() => router.push("/buscar")}
-              className="px-3.5 py-1.5 text-sm rounded-xl bg-white/8 text-white/70 hover:bg-white/15 hover:text-white border border-white/5 hover:border-white/15 transition-all duration-300 backdrop-blur-sm"
+          <div className="flex flex-wrap gap-3 mt-7 animate-fade-up animate-fade-up-delay-4">
+            <Link
+              href="#categorias"
+              className="px-4 py-2 text-sm rounded-xl bg-white/10 text-white/85 hover:bg-white/15 hover:text-white border border-white/10 transition-all duration-300 backdrop-blur-sm"
             >
-              + Ver todas
-            </button>
+              Ver categorías
+            </Link>
+            <Link
+              href="/buscar"
+              className="px-4 py-2 text-sm rounded-xl bg-white/8 text-white/70 hover:bg-white/15 hover:text-white border border-white/5 hover:border-white/15 transition-all duration-300 backdrop-blur-sm"
+            >
+              Ir al buscador
+            </Link>
           </div>
         </div>
       </div>

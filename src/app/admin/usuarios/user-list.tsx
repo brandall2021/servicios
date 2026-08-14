@@ -15,6 +15,7 @@ interface User {
   name: string
   email: string
   phone: string | null
+  rubro: string | null
   role: string
   verified: boolean
   baneado: boolean
@@ -23,6 +24,8 @@ interface User {
   createdAt: Date
   _count: { servicios: number; opiniones: number }
 }
+
+export type AdminUserRow = User
 
 interface UserFormData {
   name: string
@@ -42,7 +45,7 @@ const emptyForm: UserFormData = {
   verified: false,
 }
 
-export function AdminUserList({ usuarios }: { usuarios: User[] }) {
+export function AdminUserList({ usuarios }: { usuarios: AdminUserRow[] }) {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
@@ -70,6 +73,28 @@ export function AdminUserList({ usuarios }: { usuarios: User[] }) {
     })
     setFormError("")
     setModalOpen(true)
+  }
+
+  async function runAction(userId: string, action: () => Promise<Response>, successMessage: string) {
+    setLoading(userId)
+    try {
+      const res = await action()
+      if (!res.ok) {
+        let message = successMessage
+        try {
+          const err = await res.json()
+          message = err.error || message
+        } catch {
+          // ignore JSON parse failures and keep the fallback message
+        }
+        throw new Error(message)
+      }
+      router.refresh()
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error de red")
+    } finally {
+      setLoading(null)
+    }
   }
 
   async function handleSave() {
@@ -125,57 +150,46 @@ export function AdminUserList({ usuarios }: { usuarios: User[] }) {
   }
 
   async function toggleVerified(userId: string, current: boolean) {
-    setLoading(userId)
-    await fetch(`/api/admin/usuarios/${userId}`, {
+    if (!confirm(current ? "Quitar la verificación de este usuario?" : "Marcar este usuario como verificado?")) return
+    await runAction(userId, () => fetch(`/api/admin/usuarios/${userId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ verified: !current }),
-    })
-    setLoading(null)
-    router.refresh()
+    }), "No se pudo actualizar la verificación")
   }
 
   async function toggleBan(userId: string, current: boolean) {
-    setLoading(userId)
+    if (!confirm(current ? "Desbloquear este usuario?" : "Bloquear este usuario? No podrá iniciar sesión.")) return
     const motivo = !current ? prompt("Motivo del bloqueo:") : null
-    if (!current && !motivo) { setLoading(null); return }
-    await fetch(`/api/admin/usuarios/${userId}`, {
+    if (!current && !motivo) return
+    await runAction(userId, () => fetch(`/api/admin/usuarios/${userId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ baneado: !current, motivoBaneo: motivo }),
-    })
-    setLoading(null)
-    router.refresh()
+    }), "No se pudo actualizar el bloqueo")
   }
 
   async function approveProvider(userId: string) {
-    setLoading(userId)
-    await fetch(`/api/admin/usuarios/${userId}`, {
+    if (!confirm("Aprobar esta solicitud como proveedor? Se marcará como proveedor verificado.")) return
+    await runAction(userId, () => fetch(`/api/admin/usuarios/${userId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role: "PROVIDER", verified: true, solicitudProveedor: false }),
-    })
-    setLoading(null)
-    router.refresh()
+    }), "No se pudo aprobar el proveedor")
   }
 
   async function rejectProvider(userId: string) {
-    setLoading(userId)
-    await fetch(`/api/admin/usuarios/${userId}`, {
+    if (!confirm("Rechazar esta solicitud de proveedor? Se quitará el estado pendiente.")) return
+    await runAction(userId, () => fetch(`/api/admin/usuarios/${userId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ solicitudProveedor: false }),
-    })
-    setLoading(null)
-    router.refresh()
+    }), "No se pudo rechazar la solicitud")
   }
 
   async function deleteUser(userId: string, name: string) {
     if (!confirm(`¿Eliminar a "${name}"? Esta acción no se puede deshacer.`)) return
-    setLoading(userId)
-    await fetch(`/api/admin/usuarios/${userId}`, { method: "DELETE" })
-    setLoading(null)
-    router.refresh()
+    await runAction(userId, () => fetch(`/api/admin/usuarios/${userId}`, { method: "DELETE" }), "No se pudo eliminar el usuario")
   }
 
   return (
@@ -205,7 +219,10 @@ export function AdminUserList({ usuarios }: { usuarios: User[] }) {
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-2">
                     <Avatar src={null} fallback={u.name} size="sm" />
-                    <span className="font-medium text-zinc-900 dark:text-zinc-100">{u.name}</span>
+                    <div>
+                      <div className="font-medium text-zinc-900 dark:text-zinc-100">{u.name}</div>
+                      {u.rubro && <div className="text-xs text-zinc-500">{u.rubro}</div>}
+                    </div>
                   </div>
                 </td>
                 <td className="py-3 px-4 text-zinc-500">{u.email}</td>
