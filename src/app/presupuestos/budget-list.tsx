@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar } from "@/components/ui/avatar"
 import { FileText, Clock } from "lucide-react"
 
-interface BudgetRequestItem {
+export interface BudgetRequestItem {
   id: string
   description: string | null
   materiales: string | null

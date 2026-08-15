@@ -5,16 +5,29 @@ import { BudgetList } from "./budget-list"
 import Link from "next/link"
 import { FileText, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import type { BudgetRequestItem } from "./budget-list"
 
 export default async function PresupuestosPage() {
   const session = await auth()
   if (!session?.user) redirect("/login")
+
+  type BudgetRequestRow = {
+    id: string
+    description: string | null
+    materiales: string | null
+    status: string
+    createdAt: Date
+    servicio: { id: string; titulo: string; categoria: string }
+    cliente: { id: string; name: string; image: string | null } | null
+    cotizaciones: { amount: number; version: number; proveedor: { id: string; name: string } }[]
+  }
 
   const [misSolicitudes, cotizacionesPendientes] = await Promise.all([
     prisma.budgetRequest.findMany({
       where: { clienteId: session.user.id },
       include: {
         servicio: { select: { id: true, titulo: true, categoria: true } },
+        cliente: { select: { id: true, name: true, image: true } },
         cotizaciones: { orderBy: { version: "desc" }, take: 1, include: { proveedor: { select: { id: true, name: true } } } },
       },
       orderBy: { updatedAt: "desc" },
@@ -29,40 +42,25 @@ export default async function PresupuestosPage() {
           },
           orderBy: { updatedAt: "desc" },
         })
-      : [],
-  ])
+    : [],
+  ]) as [BudgetRequestRow[], BudgetRequestRow[]]
 
   const isProvider = session.user.role === "PROVIDER" || session.user.role === "ADMIN"
 
-  type DateLike = Date | string | null | undefined
-  type QuoteLike = {
-    createdAt: DateLike
-    updatedAt: DateLike
-    validUntil?: DateLike
-    [key: string]: unknown
-  }
-  type RequestLike = {
-    createdAt: DateLike
-    updatedAt: DateLike
-    cotizaciones?: QuoteLike[] | null
-    [key: string]: unknown
-  }
-
-  function serializeDate(value: DateLike) {
-    return value instanceof Date ? value.toISOString() : value ?? null
-  }
-
-  function serializeDates(items: RequestLike[]) {
+  function serializeDates(items: BudgetRequestRow[]): BudgetRequestItem[] {
     return items.map((item) => ({
-      ...item,
-      createdAt: serializeDate(item.createdAt),
-      updatedAt: serializeDate(item.updatedAt),
-      cotizaciones: item.cotizaciones?.map((c) => ({
-        ...c,
-        createdAt: serializeDate(c.createdAt),
-        updatedAt: serializeDate(c.updatedAt),
-        validUntil: serializeDate(c.validUntil),
-      })) ?? [],
+      id: item.id,
+      description: item.description,
+      materiales: item.materiales,
+      status: item.status,
+      createdAt: item.createdAt.toISOString(),
+      servicio: item.servicio,
+      cliente: item.cliente ? { id: item.cliente.id, name: item.cliente.name, image: item.cliente.image } : undefined,
+      cotizaciones: item.cotizaciones.map((c) => ({
+        amount: Number(c.amount),
+        version: c.version,
+        proveedor: c.proveedor,
+      })),
     }))
   }
 
