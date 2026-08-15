@@ -41,7 +41,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      <HeroSearch />
+      <HeroSearch featuredListings={servicios.slice(0, 3)} />
       <CategoryGrid />
       <FeaturedServices servicios={servicios} favoriteIds={favoriteIds} />
       <TrustMetrics />

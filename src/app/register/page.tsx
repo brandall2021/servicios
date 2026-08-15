@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -11,9 +11,10 @@ import { ShoppingBag, Store, ArrowRight, User, Mail, Phone, Lock, Check } from "
 
 export default function RegisterPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [role, setRole] = useState<"CLIENT" | "PROVIDER">("CLIENT")
+  const [role, setRole] = useState<"CLIENT" | "PROVIDER">(() => searchParams?.get("role") === "PROVIDER" ? "PROVIDER" : "CLIENT")
   const passwordHelpId = "password-help"
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

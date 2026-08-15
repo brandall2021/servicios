@@ -11,6 +11,7 @@ import {
   Sun, Moon, Shield,
 } from "lucide-react"
 import { useState, useEffect } from "react"
+import { usePathname, useSearchParams } from "next/navigation"
 import { useTheme } from "@/components/shared/theme-provider"
 import NotificationBell from "@/components/shared/notification-bell"
 
@@ -19,6 +20,26 @@ export function Header() {
   const { theme, toggleTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  function navClass(active: boolean, scrolledStyle = false) {
+    return `text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+      active
+        ? scrolledStyle
+          ? "bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-300"
+          : "bg-white/12 text-white"
+        : scrolledStyle
+          ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+          : "text-white/72 hover:text-white hover:bg-white/10"
+    }`
+  }
+
+  const searchType = searchParams.get("type")
+  const serviceActive = pathname === "/buscar" && searchType === "SERVICE"
+  const productActive = pathname === "/buscar" && searchType === "PRODUCT"
+  const howItWorksActive = pathname === "/" && searchParams.get("section") === "como-funciona"
+  const accountHref = session?.user ? "/perfil" : "/login"
 
   useEffect(() => {
     function onScroll() {
@@ -64,59 +85,29 @@ export function Header() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             <Link
-              href="/"
-              className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
-                scrolled
-                  ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
-              }`}
+              href="/buscar?type=SERVICE"
+              className={navClass(serviceActive, scrolled)}
             >
-              Inicio
+              Servicios
             </Link>
             <Link
-              href="/buscar"
-              className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
-                scrolled
-                  ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
-              }`}
+              href="/buscar?type=PRODUCT"
+              className={navClass(productActive, scrolled)}
             >
-              Buscar
+              Productos
             </Link>
             <Link
-              href="/favoritos"
-              className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
-                scrolled
-                  ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
-              }`}
+              href="/#como-funciona"
+              className={navClass(howItWorksActive, scrolled)}
             >
+              Cómo funciona
+            </Link>
+            <Link href="/favoritos" className={navClass(pathname === "/favoritos", scrolled)}>
               Favoritos
             </Link>
-            {session?.user && (
-              <Link
-                href="/consultas/productos"
-                className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
-                  scrolled
-                    ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                Consultas
-              </Link>
-            )}
-            {session?.user && (
-              <Link
-                href="/presupuestos"
-                className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
-                  scrolled
-                    ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                Presupuestos
-              </Link>
-            )}
+            <Link href={accountHref} className={navClass(pathname === "/perfil" || pathname === "/login", scrolled)}>
+              Cuenta
+            </Link>
           </nav>
 
           {/* Right section */}
@@ -142,9 +133,9 @@ export function Header() {
                 >
                   <Plus className="h-3.5 w-3.5" /> Publicar
                 </Link>
-                <div className={scrolled ? "" : "[&_button]:text-white/70 [&_button]:hover:text-white"}>
-                  <NotificationBell />
-                </div>
+              <div className={scrolled ? "" : "[&_button]:text-white/70 [&_button]:hover:text-white"}>
+                <NotificationBell />
+              </div>
                 <Link
                   href="/chat"
                   className={`p-2 rounded-lg transition-all duration-200 ${
@@ -251,24 +242,22 @@ export function Header() {
       {menuOpen && (
         <div className="md:hidden mx-4 mt-2">
           <div className="glass-card rounded-2xl p-4 space-y-1 animate-scale-in">
-            <Link href="/" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
-              Inicio
+            <Link href="/buscar?type=SERVICE" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+              Servicios
             </Link>
-            <Link href="/buscar" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
-              Buscar
+            <Link href="/buscar?type=PRODUCT" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+              Productos
+            </Link>
+            <Link href="/#como-funciona" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+              Cómo funciona
             </Link>
             <Link href="/favoritos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
               Favoritos
             </Link>
             {session?.user && (
-              <Link href="/consultas/productos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
-                Consultas
-              </Link>
-            )}
-            {session?.user && (
               <>
-                <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
-                  Presupuestos
+                <Link href="/perfil" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+                  Cuenta
                 </Link>
                 <Link href="/servicios/nuevo" className="block px-3 py-2.5 text-sm font-medium text-white btn-glow text-center rounded-xl" onClick={() => setMenuOpen(false)}>
                   Publicar servicio

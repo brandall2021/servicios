@@ -36,7 +36,7 @@ const stepColors: Record<string, { bg: string; icon: string; ring: string }> = {
 
 export function TrustMetrics() {
   return (
-    <section className="relative overflow-hidden bg-stone-50/80 dark:bg-zinc-900/80 border-y border-stone-200/60 dark:border-zinc-800">
+    <section id="como-funciona" className="relative overflow-hidden bg-stone-50/80 dark:bg-zinc-900/80 border-y border-stone-200/60 dark:border-zinc-800">
       <div className="absolute inset-0 dot-pattern opacity-20" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <div className="text-center mb-14">
