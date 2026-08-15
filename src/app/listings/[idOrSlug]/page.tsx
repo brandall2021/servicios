@@ -149,7 +149,10 @@ export default async function ListingDetailPage({ params }: Props) {
   return (
     <>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-28 sm:pb-10">
-      <Link href="/buscar" className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 mb-6 transition-colors">
+      <Link
+        href={`/buscar?type=${listing.type}`}
+        className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 mb-6 transition-colors"
+      >
         <ArrowLeft className="h-4 w-4" />
         Volver a resultados
       </Link>

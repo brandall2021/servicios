@@ -1,4 +1,5 @@
 import { MarketplaceCard } from "@/components/shared/marketplace-card"
+import Link from "next/link"
 import { SearchBar } from "@/components/shared/search-bar"
 import { Pagination } from "@/components/shared/pagination"
 import { CATEGORIAS } from "@/lib/constants"
@@ -134,17 +135,30 @@ export default async function BuscarPage({ searchParams }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8 animate-fade-in">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-stone-50 mb-4">
-          {params.q ? `Resultados para "${params.q}"` : "Buscar servicios y productos"}
-        </h1>
+      <div className="mb-8 animate-fade-in rounded-[32px] border border-stone-200/70 bg-stone-50/80 p-5 sm:p-7 shadow-[0_12px_40px_rgba(3,15,37,0.05)] dark:border-zinc-800 dark:bg-zinc-900/55">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold tracking-[0.24em] uppercase text-orange-700 dark:text-orange-300">Buscar</p>
+            <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-stone-50">
+              {params.q ? `Resultados para "${params.q}"` : "Explorá servicios y productos"}
+            </h1>
+            <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">
+              Filtrá por categoría, cercanía, reputación y precio sin perder contexto.
+            </p>
+          </div>
+          <Link href="/buscar" className="inline-flex items-center gap-2 rounded-full border border-stone-200/70 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-orange-200 hover:text-orange-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-stone-200 dark:hover:border-orange-800 dark:hover:text-orange-300">
+            Ver todo
+          </Link>
+        </div>
         <SearchBar />
       </div>
 
-      <CategoryChips
-        categorias={CATEGORIAS}
-        selected={selectedCategoria}
-      />
+      <div className="mb-6 rounded-[28px] border border-stone-200/70 bg-white/90 px-4 py-4 shadow-[0_8px_30px_rgba(3,15,37,0.04)] dark:border-zinc-800 dark:bg-zinc-900/55">
+        <CategoryChips
+          categorias={CATEGORIAS}
+          selected={selectedCategoria}
+        />
+      </div>
 
       <div className="flex gap-6 mt-6">
         <FilterSidebar

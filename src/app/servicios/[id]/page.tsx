@@ -136,7 +136,7 @@ export default async function ServicioDetailPage({ params }: Props) {
     <>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-28 sm:pb-8">
       <Link
-        href="/buscar"
+        href="/buscar?type=SERVICE"
         className="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 mb-6 transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />

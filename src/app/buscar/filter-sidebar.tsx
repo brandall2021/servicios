@@ -21,7 +21,7 @@ function navigateWithParam(key: string, value: string) {
 export function FilterSidebar({ verificado, puntMin, precioMin, precioMax, proveedor }: FilterSidebarProps) {
   return (
     <aside className="hidden lg:block w-64 shrink-0">
-      <div className="sticky top-24 space-y-6">
+      <div className="sticky top-24 space-y-6 rounded-[28px] border border-stone-200/70 bg-white/90 p-4 shadow-[0_12px_36px_rgba(3,15,37,0.05)] dark:border-zinc-800 dark:bg-zinc-900/55">
         <div>
           <h3 className="font-semibold text-xs tracking-widest uppercase text-stone-500 dark:text-stone-400 mb-3">Categorías</h3>
           <div className="space-y-0.5">
