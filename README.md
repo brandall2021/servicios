@@ -24,6 +24,7 @@ Plataforma digital que conecta clientes con profesionales en Argentina. Permite 
 - Calificar servicios con 1-5 estrellas, comentarios y fotos
 - Aceptar, rechazar o solicitar revisión de cotizaciones
 - Recibir **notificaciones** de mensajes, opiniones, presupuestos y cotizaciones
+- Recibir notificaciones push del navegador sobre actividad nueva
 - Guardar favoritos y comparar servicios/proveedores desde el marketplace unificado
 - Consultar productos y sus cotizaciones desde `/consultas/productos`
 
@@ -52,6 +53,7 @@ Plataforma digital que conecta clientes con profesionales en Argentina. Permite 
 - `/buscar` mezcla servicios y productos con filtros, paginación y ordenamiento
 - Detalle genérico en `/listings/[idOrSlug]`
 - Favoritos, comparador, reservas, promociones y consultas de productos
+- Mapa de ubicación en los detalles cuando hay coordenadas guardadas
 - Paneles para proveedor: `/proveedor/metricas` y `/proveedor/promociones`
 
 ### Generales

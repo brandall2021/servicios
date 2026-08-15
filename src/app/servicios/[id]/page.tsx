@@ -20,6 +20,7 @@ import { FavoriteToggleButton } from "@/components/shared/favorite-toggle-button
 import { CompareToggleButton } from "@/components/shared/compare-toggle-button"
 import { logCommercialEvent } from "@/lib/commercial-events"
 import { CompareTray } from "@/components/shared/compare-tray"
+import { ListingMap } from "@/components/shared/listing-map"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -205,6 +206,13 @@ export default async function ServicioDetailPage({ params }: Props) {
               <span className="font-medium">Disponibilidad:</span> {servicio.disponibilidad}
             </div>
           )}
+
+          <ListingMap
+            title={servicio.titulo}
+            latitude={servicio.lat}
+            longitude={servicio.lng}
+            locationLabel={servicio.ubicacion || servicio.usuario.zone}
+          />
 
           <section className="animate-fade-in" style={{ animationDelay: "180ms" }}>
             <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-6">

@@ -40,10 +40,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
     setMessage("")
 
     const formData = new FormData(e.currentTarget)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data: Record<string, any> = {}
+    const data: Record<string, string> = {}
     formData.forEach((value, key) => {
-      data[key] = value
+      data[key] = value.toString()
     })
 
     const res = await fetch("/api/usuarios/perfil", {

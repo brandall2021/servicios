@@ -51,9 +51,23 @@ export function ChatView({
   useEffect(() => {
     if (!activeChatId) return
     const id = activeChatId
-    fetch(`/api/chat/${id}`).then((res) => {
-      if (res.ok) res.json().then(setMessages)
-    })
+    let alive = true
+
+    const loadMessages = () => {
+      fetch(`/api/chat/${id}`).then((res) => {
+        if (res.ok) res.json().then((data) => {
+          if (alive) setMessages(data)
+        })
+      })
+    }
+
+    loadMessages()
+    const interval = window.setInterval(loadMessages, 10_000)
+
+    return () => {
+      alive = false
+      window.clearInterval(interval)
+    }
   }, [activeChatId])
 
   useEffect(() => {

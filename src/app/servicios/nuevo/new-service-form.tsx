@@ -53,19 +53,19 @@ export function NewServiceForm() {
     setError("")
 
     const formData = new FormData(e.currentTarget)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data: Record<string, any> = {}
+    const data: Record<string, string> = {}
     formData.forEach((value, key) => {
-      data[key] = value
+      data[key] = value.toString()
     })
 
-    if (data.precio) data.precio = parseFloat(data.precio)
-    if (photos.length > 0) data.fotos = photos
+    const payload: Record<string, string | number | string[]> = { ...data }
+    if (payload.precio) payload.precio = parseFloat(String(payload.precio))
+    if (photos.length > 0) payload.fotos = photos
 
     const res = await fetch("/api/servicios", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     })
 
     const result = await res.json()

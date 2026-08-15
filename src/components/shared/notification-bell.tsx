@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import { useState, useEffect, useRef } from "react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
@@ -19,23 +21,48 @@ export default function NotificationBell() {
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([])
   const [noLeidas, setNoLeidas] = useState(0)
   const [open, setOpen] = useState(false)
+  const [browserPermission, setBrowserPermission] = useState<NotificationPermission | "unsupported">(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) return "unsupported"
+    return Notification.permission
+  })
   const ref = useRef<HTMLDivElement>(null)
+  const seenIdsRef = useRef(new Set<string>())
+  const initialLoadRef = useRef(true)
+
+  async function loadNotifications() {
+    const response = await fetch("/api/notificaciones")
+    const data = await response.json()
+    const next = data.notificaciones || []
+    setNotificaciones(next)
+    setNoLeidas(data.noLeidas || 0)
+
+    if (initialLoadRef.current) {
+      initialLoadRef.current = false
+      seenIdsRef.current = new Set(next.map((n: Notificacion) => n.id))
+      return
+    }
+
+    if (typeof window === "undefined" || !("Notification" in window) || Notification.permission !== "granted") return
+
+    const previousIds = seenIdsRef.current
+    const incoming = next.filter((n: Notificacion) => !previousIds.has(n.id) && !n.read)
+
+    for (const notification of incoming.slice(0, 3)) {
+      new Notification(notification.title, {
+        body: notification.message || undefined,
+        icon: "/favicon.png",
+        tag: notification.id,
+      })
+    }
+
+    seenIdsRef.current = new Set(next.map((n: Notificacion) => n.id))
+  }
 
   useEffect(() => {
     if (!session?.user) return
-    fetch("/api/notificaciones")
-      .then((r) => r.json())
-      .then((d) => {
-        setNotificaciones(d.notificaciones || [])
-        setNoLeidas(d.noLeidas || 0)
-      })
+    loadNotifications().catch(() => {})
     const interval = setInterval(() => {
-      fetch("/api/notificaciones")
-        .then((r) => r.json())
-        .then((d) => {
-          setNotificaciones(d.notificaciones || [])
-          setNoLeidas(d.noLeidas || 0)
-        })
+      loadNotifications().catch(() => {})
     }, 30000)
     return () => clearInterval(interval)
   }, [session])
@@ -83,14 +110,27 @@ export default function NotificationBell() {
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border z-50 max-h-96 overflow-y-auto">
           <div className="p-3 border-b flex items-center justify-between">
             <span className="font-semibold text-sm">Notificaciones</span>
-            {noLeidas > 0 && (
-              <button
-                onClick={() => marcarLeida("todas")}
-                className="text-xs text-orange-600 hover:underline"
-              >
-                Marcar todas leídas
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              {browserPermission !== "granted" && browserPermission !== "unsupported" && (
+                <button
+                  onClick={async () => {
+                    const permission = await Notification.requestPermission()
+                    setBrowserPermission(permission)
+                  }}
+                  className="text-xs text-stone-500 hover:text-stone-700"
+                >
+                  Activar navegador
+                </button>
+              )}
+              {noLeidas > 0 && (
+                <button
+                  onClick={() => marcarLeida("todas")}
+                  className="text-xs text-orange-600 hover:underline"
+                >
+                  Marcar todas leídas
+                </button>
+              )}
+            </div>
           </div>
           {notificaciones.length === 0 ? (
             <p className="p-4 text-sm text-gray-500 text-center">Sin notificaciones</p>

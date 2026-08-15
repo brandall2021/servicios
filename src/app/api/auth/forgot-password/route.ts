@@ -42,8 +42,6 @@ export async function POST(req: Request) {
 
   const resetUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/reset-password?token=${rawToken}`
 
-  console.log(`[PASSWORD RESET] Enlace para ${email}: ${resetUrl}`)
-
   return NextResponse.json({
     message: "Si el email existe, recibirás un enlace de recuperación",
     ...(process.env.NODE_ENV === "development" && { resetUrl }),

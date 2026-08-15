@@ -20,6 +20,7 @@ import { logCommercialEvent } from "@/lib/commercial-events"
 import { CompareTray } from "@/components/shared/compare-tray"
 import { ListingMedia } from "@/components/shared/listing-media"
 import { MarketplacePrice } from "@/components/shared/marketplace-price"
+import { ListingMap } from "@/components/shared/listing-map"
 
 interface Props {
   params: Promise<{ idOrSlug: string }>
@@ -311,6 +312,13 @@ export default async function ListingDetailPage({ params }: Props) {
               </CardContent>
             </Card>
           )}
+
+          <ListingMap
+            title={listing.title}
+            latitude={listing.latitude}
+            longitude={listing.longitude}
+            locationLabel={listing.locationText || listing.city || listing.provider.zone}
+          />
 
           {promotions.length > 0 && (
             <Card className="animate-fade-in border-orange-200 bg-orange-50/60 dark:border-orange-900/40 dark:bg-orange-900/10">
