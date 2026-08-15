@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Lock, CheckCircle, AlertTriangle } from "lucide-react"
 
 function ResetForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams?.get("token") || ""
 

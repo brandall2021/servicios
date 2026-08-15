@@ -1,9 +1,9 @@
-import { BookingStatus, ListingStatus, ListingType, Prisma } from "@prisma/client"
+import { BookingStatus, ListingStatus, ListingType } from "@prisma/client"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { hasBookingOverlap, parseDateTime } from "@/lib/marketplace/bookings"
+import { parseDateTime } from "@/lib/marketplace/bookings"
 import { logCommercialEvent } from "@/lib/commercial-events"
 
 const createSchema = z.object({

@@ -1,13 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+/* eslint-disable @next/next/no-img-element */
+
+import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { ArrowLeft, FileText, Plus, X, Upload, File, Image, Loader2 } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { ArrowLeft, FileText, Plus, X, Upload, File, Loader2 } from "lucide-react"
 
 interface ArchivoSubido {
   nombre: string

@@ -1,11 +1,13 @@
 "use client"
 
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
 import { Avatar } from "../ui/avatar"
 import {
   MessageSquare, FileText,
-  Menu, X, ChevronDown, User, LogOut, Plus,
+  ChevronDown, User, LogOut, Plus,
   Sun, Moon, Shield,
 } from "lucide-react"
 import { useState, useEffect } from "react"
@@ -55,7 +57,7 @@ export function Header() {
                 ? "ring-1 ring-orange-400/40 group-hover:ring-orange-400 shadow-sm shadow-orange-500/5"
                 : "ring-2 ring-orange-400/60 group-hover:ring-orange-400 shadow-lg shadow-orange-500/10"
             }`}>
-              <img src="/logo.png" alt="Servicios" className="h-full w-full object-contain" />
+              <img src="/logo.png" alt="Servicios" className="h-full w-auto object-contain" />
             </div>
           </Link>
 

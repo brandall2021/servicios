@@ -72,6 +72,8 @@ export function HeroSearch() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
               <input
                 type="text"
+                autoComplete="off"
+                suppressHydrationWarning
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Buscá materiales, corralones, ferreterías..."

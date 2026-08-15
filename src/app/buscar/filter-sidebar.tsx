@@ -56,6 +56,7 @@ export function FilterSidebar({ verificado, puntMin, precioMin, precioMax, prove
               type="checkbox"
               defaultChecked={verificado === "true"}
               onChange={(e) => navigateWithParam("verificado", e.target.checked ? "true" : "")}
+              suppressHydrationWarning
               className="rounded border-stone-300 dark:border-zinc-600 text-orange-600 focus:ring-orange-500/30"
             />
             Solo verificados
@@ -80,6 +81,8 @@ export function FilterSidebar({ verificado, puntMin, precioMin, precioMax, prove
             <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Precio mínimo</label>
             <input
               type="number"
+              autoComplete="off"
+              suppressHydrationWarning
               defaultValue={precioMin || ""}
               placeholder="$0"
               onBlur={(e) => navigateWithParam("precio_min", e.target.value)}
@@ -91,6 +94,8 @@ export function FilterSidebar({ verificado, puntMin, precioMin, precioMax, prove
             <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Precio máximo</label>
             <input
               type="number"
+              autoComplete="off"
+              suppressHydrationWarning
               defaultValue={precioMax || ""}
               placeholder="$999999"
               onBlur={(e) => navigateWithParam("precio_max", e.target.value)}
@@ -102,6 +107,8 @@ export function FilterSidebar({ verificado, puntMin, precioMin, precioMax, prove
             <label className="text-xs text-stone-500 dark:text-stone-400 block mb-1.5">Nombre del proveedor</label>
             <input
               type="text"
+              autoComplete="off"
+              suppressHydrationWarning
               defaultValue={proveedor || ""}
               placeholder="Buscar por nombre..."
               onBlur={(e) => navigateWithParam("proveedor", e.target.value)}

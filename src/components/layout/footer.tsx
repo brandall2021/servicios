@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link"
 
 const footerLinks = [
@@ -45,7 +46,7 @@ export function Footer() {
             <div className="col-span-2 sm:col-span-1">
               <Link href="/" className="flex items-center mb-4 group">
                 <div className="h-8 w-auto max-w-[110px] rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:ring-orange-400/40 transition-all">
-                  <img src="/logo.png" alt="Servicios" className="h-full w-full object-contain" />
+                  <img src="/logo.png" alt="Servicios" className="h-full w-auto object-contain" />
                 </div>
               </Link>
               <p className="text-xs text-white/50 leading-relaxed max-w-xs">

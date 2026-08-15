@@ -9,7 +9,7 @@ import { Avatar } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, FileText, CheckCircle, XCircle, RefreshCw, DollarSign, Package, Calendar, Paperclip, File, Image } from "lucide-react"
+import { ArrowLeft, FileText, CheckCircle, XCircle, RefreshCw, DollarSign, Package, Calendar, Paperclip, File, Image as ImageIcon } from "lucide-react"
 
 interface ArchivoAdjunto {
   nombre: string
@@ -51,8 +51,9 @@ const statusStyles: Record<string, { label: string; variant: "warning" | "defaul
   REVISION: { label: "En revisión", variant: "secondary" },
 }
 
-export function BudgetDetail({ request, currentUserId: _currentUserId, isProvider }: { request: BudgetRequestDetail; currentUserId: string; isProvider: boolean }) {
+export function BudgetDetail({ request, currentUserId, isProvider }: { request: BudgetRequestDetail; currentUserId: string; isProvider: boolean }) {
   const router = useRouter()
+  void currentUserId
   const st = statusStyles[request.status] || { label: request.status, variant: "secondary" }
   const materiales = request.materiales ? (JSON.parse(request.materiales) as string[]) : []
   const archivos: ArchivoAdjunto[] = request.archivos ? (JSON.parse(request.archivos) as ArchivoAdjunto[]) : []
@@ -165,7 +166,7 @@ export function BudgetDetail({ request, currentUserId: _currentUserId, isProvide
                         className="inline-flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 hover:bg-stone-100 hover:border-stone-300 transition-colors"
                       >
                         {a.tipo.startsWith("image/") ? (
-                          <Image className="h-4 w-4 text-orange-600" />
+                          <ImageIcon className="h-4 w-4 text-orange-600" />
                         ) : (
                           <File className="h-4 w-4 text-blue-600" />
                         )}

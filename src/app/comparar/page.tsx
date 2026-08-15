@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth"
 import { getMarketplaceListingsByIds } from "@/lib/marketplace/detail"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Check, CircleAlert } from "lucide-react"
+import { ArrowLeft, Check } from "lucide-react"
 
 interface Props {
   searchParams: Promise<{ ids?: string }>
@@ -165,7 +165,6 @@ export default async function CompararPage({ searchParams }: Props) {
 }
 
 function Row({ label, values, highlight }: { label: string; values: string[]; highlight?: string }) {
-  const best = values[0]
   return (
     <tr className="border-t border-stone-200/70 dark:border-zinc-700/50">
       <th className="sticky left-0 z-10 bg-white px-5 py-4 text-sm font-medium text-stone-600 dark:bg-zinc-900 dark:text-stone-300">{label}</th>

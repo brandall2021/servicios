@@ -6,7 +6,9 @@ export default function RootError({
 }: {
   error: Error & { digest?: string }
   reset: () => void
-}) {
+  }) {
+  void error
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="text-center max-w-md">

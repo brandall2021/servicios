@@ -6,7 +6,9 @@ export default function PresupuestosError({
 }: {
   error: Error & { digest?: string }
   reset: () => void
-}) {
+  }) {
+  void error
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-20 text-center">
       <h2 className="text-lg font-semibold text-stone-900 mb-2">Error al cargar presupuestos</h2>

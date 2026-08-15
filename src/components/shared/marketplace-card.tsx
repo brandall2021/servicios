@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowUpRight, Clock3, MapPin, MessageSquare } from "lucide-react"
+import { Clock3, MapPin, MessageSquare } from "lucide-react"
 import { StarRating } from "./star-rating"
 import { CATEGORIAS } from "@/lib/constants"
 import type { MarketplaceListingDTO } from "@/lib/marketplace/listings"
@@ -19,8 +19,26 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
   const href = listing.type === "SERVICE" ? `/servicios/${listing.id}` : `/listings/${listing.slug}`
   return (
     <div className={`animate-fade-up animate-fade-up-delay-${Math.min(index + 1, 6)}`}>
-      <Link href={href} className="block group">
-        <div className="card-premium">
+      <div className="card-premium relative">
+        <div className="absolute top-3 right-3 z-20 flex gap-2">
+          <FavoriteToggleButton
+            type="LISTING"
+            targetId={listing.id}
+            initialSaved={favoriteSaved}
+            returnTo={href}
+            compact
+            className="h-8 w-8 justify-center rounded-full border-white/70 bg-white/90 px-0 text-stone-700 shadow-sm backdrop-blur-sm"
+          />
+          <CompareToggleButton
+            id={listing.id}
+            type={listing.type}
+            providerId={listing.provider.id}
+            compact
+            className="h-8 w-8 justify-center rounded-full border-white/70 bg-white/90 px-0 text-stone-700 shadow-sm backdrop-blur-sm"
+          />
+        </div>
+
+        <Link href={href} className="group block">
           <ListingMedia
             src={listing.media[0]?.archivo}
             alt={listing.title}
@@ -29,32 +47,6 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
             featured={listing.featured}
             className="aspect-[4/3]"
           />
-          {listing.media[0] && (
-            <>
-              <div className="absolute top-3 right-3 z-10 flex gap-2">
-                <FavoriteToggleButton
-                  type="LISTING"
-                  targetId={listing.id}
-                  initialSaved={favoriteSaved}
-                  returnTo={`/listings/${listing.slug}`}
-                  compact
-                  className="h-8 w-8 justify-center rounded-full border-white/70 bg-white/90 px-0 text-stone-700 shadow-sm backdrop-blur-sm"
-                />
-                <CompareToggleButton
-                  id={listing.id}
-                  type={listing.type}
-                  providerId={listing.provider.id}
-                  compact
-                  className="h-8 w-8 justify-center rounded-full border-white/70 bg-white/90 px-0 text-stone-700 shadow-sm backdrop-blur-sm"
-                />
-              </div>
-              <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
-                <div className="h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                  <ArrowUpRight className="h-4 w-4 text-stone-700" />
-                </div>
-              </div>
-            </>
-          )}
 
           <div className="p-4">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1 text-base mb-1.5 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-200">
@@ -103,8 +95,8 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
               </span>
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   )
 }

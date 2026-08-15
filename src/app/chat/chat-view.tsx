@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Avatar } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Send, MessageSquare } from "lucide-react"
 import { TextToolbar, renderMarkdown } from "@/components/shared/text-toolbar"

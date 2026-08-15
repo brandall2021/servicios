@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { Package, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -18,7 +19,7 @@ export function ListingMedia({ src, alt, type, categoryLabel, featured, classNam
   if (src) {
     return (
       <div className={cn("relative overflow-hidden bg-stone-100 dark:bg-zinc-800", className)}>
-        <img src={src} alt={alt} className="h-full w-full object-cover" />
+        <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
         <div className="absolute top-3 left-3 z-10 flex gap-2">
           <Badge variant="secondary" className="backdrop-blur-sm bg-white/85 text-stone-700 border-white/60">

@@ -39,6 +39,8 @@ export function SearchBar() {
           <Search className="h-4.5 w-4.5 text-stone-400 shrink-0" />
         <input
           type="text"
+          autoComplete="off"
+          suppressHydrationWarning
           placeholder="¿Qué necesitás?"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -62,6 +64,8 @@ export function SearchBar() {
           <MapPin className="h-4 w-4 text-stone-400 shrink-0" />
         <input
           type="text"
+          autoComplete="off"
+          suppressHydrationWarning
           placeholder="Ubicación"
           value={ubicacion}
           onChange={(e) => setUbicacion(e.target.value)}

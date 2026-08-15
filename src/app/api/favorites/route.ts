@@ -12,12 +12,6 @@ const bodySchema = z.object({
   targetId: z.string().min(1),
 })
 
-function favoriteWhere(type: FavoriteType, userId: string, targetId: string) {
-  return type === FavoriteType.PROVIDER
-    ? { userId_providerId: { userId, providerId: targetId } }
-    : { userId_listingId: { userId, listingId: targetId } }
-}
-
 export async function GET(req: Request) {
   const session = await auth()
   if (!session?.user) return NextResponse.json({ error: "No autorizado" }, { status: 401 })
@@ -51,7 +45,7 @@ export async function POST(req: Request) {
   } else {
     const listingTarget = target as MarketplaceListingDTO
     if (listingTarget.provider.id === session.user.id) {
-    return NextResponse.json({ error: "No podés guardar tu propia publicación" }, { status: 400 })
+      return NextResponse.json({ error: "No podés guardar tu propia publicación" }, { status: 400 })
     }
   }
 

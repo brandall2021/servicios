@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useMemo, useState } from "react"
 import { ZoomIn } from "lucide-react"
 import { Modal } from "@/components/ui/modal"

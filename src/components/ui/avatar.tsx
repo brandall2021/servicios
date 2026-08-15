@@ -1,4 +1,5 @@
 import { type HTMLAttributes } from "react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
@@ -22,10 +23,12 @@ export function Avatar({ src, alt, fallback, size = "md", className, ...props }:
         className={cn("relative overflow-hidden rounded-full", sizeClasses[size], className)}
         {...props}
       >
-        <img
+        <Image
           src={src}
           alt={alt || "Avatar"}
-          className="h-full w-full object-cover"
+          fill
+          sizes="96px"
+          className="object-cover"
         />
       </div>
     )

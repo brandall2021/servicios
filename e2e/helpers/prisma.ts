@@ -2,6 +2,11 @@ import { PrismaClient, ListingStatus, ListingType, PriceType, FulfillmentType, I
 import { Prisma } from "@prisma/client"
 
 const prisma = new PrismaClient()
+const fixtureTag = `${process.pid}-${Math.random().toString(36).slice(2, 8)}`
+const serviceSlug = `playwright-service-demo-${fixtureTag}`
+const productSlug = `playwright-product-demo-${fixtureTag}`
+const serviceCategorySlug = `servicios-demo-${fixtureTag}`
+const productCategorySlug = `productos-demo-${fixtureTag}`
 
 const placeholderSvg = (label: string) =>
   `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#fff7ed"/><stop offset="100%" stop-color="#e7e5e4"/></linearGradient></defs><rect width="1200" height="900" fill="url(#g)"/><text x="60" y="120" fill="#c2410c" font-family="Arial, sans-serif" font-size="56" font-weight="700">${label}</text></svg>`)}`
@@ -26,19 +31,19 @@ export async function ensureVisualFixtures(): Promise<VisualFixtures> {
   }
 
   const serviceCategory = await prisma.category.upsert({
-    where: { type_slug: { type: ListingType.SERVICE, slug: "servicios-demo" } },
+    where: { type_slug: { type: ListingType.SERVICE, slug: serviceCategorySlug } },
     update: { active: true, name: "Servicios demo" },
-    create: { type: ListingType.SERVICE, slug: "servicios-demo", name: "Servicios demo", icon: "🛠️", active: true, sortOrder: 999 },
+    create: { type: ListingType.SERVICE, slug: serviceCategorySlug, name: "Servicios demo", icon: "🛠️", active: true, sortOrder: 999 },
   })
 
   const productCategory = await prisma.category.upsert({
-    where: { type_slug: { type: ListingType.PRODUCT, slug: "productos-demo" } },
+    where: { type_slug: { type: ListingType.PRODUCT, slug: productCategorySlug } },
     update: { active: true, name: "Productos demo" },
-    create: { type: ListingType.PRODUCT, slug: "productos-demo", name: "Productos demo", icon: "📦", active: true, sortOrder: 999 },
+    create: { type: ListingType.PRODUCT, slug: productCategorySlug, name: "Productos demo", icon: "📦", active: true, sortOrder: 999 },
   })
 
   const service = await prisma.listing.upsert({
-    where: { slug: "playwright-service-demo" },
+    where: { slug: serviceSlug },
     update: {
       status: ListingStatus.PUBLISHED,
       featured: true,
@@ -51,7 +56,7 @@ export async function ensureVisualFixtures(): Promise<VisualFixtures> {
     create: {
       type: ListingType.SERVICE,
       status: ListingStatus.PUBLISHED,
-      slug: "playwright-service-demo",
+      slug: serviceSlug,
       title: "Servicio demo Playwright",
       description: "Publicación de prueba para capturas visuales.",
       categoryId: serviceCategory.id,
@@ -69,7 +74,7 @@ export async function ensureVisualFixtures(): Promise<VisualFixtures> {
   })
 
   const product = await prisma.listing.upsert({
-    where: { slug: "playwright-product-demo" },
+    where: { slug: productSlug },
     update: {
       status: ListingStatus.PUBLISHED,
       featured: false,
@@ -82,7 +87,7 @@ export async function ensureVisualFixtures(): Promise<VisualFixtures> {
     create: {
       type: ListingType.PRODUCT,
       status: ListingStatus.PUBLISHED,
-      slug: "playwright-product-demo",
+      slug: productSlug,
       title: "Producto demo Playwright",
       description: "Publicación de producto para capturas visuales.",
       categoryId: productCategory.id,
@@ -140,9 +145,10 @@ export async function cleanupVisualFixtures() {
   await prisma.productInquiryItem.deleteMany({ where: { titleSnapshot: "Producto demo Playwright" } }).catch(() => {})
   await prisma.productInquiry.deleteMany({ where: { notes: { contains: "Consulta demo" } } }).catch(() => {})
   await prisma.booking.deleteMany({ where: { notes: { contains: "Turno de prueba" } } }).catch(() => {})
-  await prisma.listingMedia.deleteMany({ where: { listing: { slug: { in: ["playwright-service-demo", "playwright-product-demo"] } } } }).catch(() => {})
-  await prisma.serviceDetails.deleteMany({ where: { listing: { slug: "playwright-service-demo" } } }).catch(() => {})
-  await prisma.productDetails.deleteMany({ where: { listing: { slug: "playwright-product-demo" } } }).catch(() => {})
-  await prisma.listing.deleteMany({ where: { slug: { in: ["playwright-service-demo", "playwright-product-demo"] } } }).catch(() => {})
-  await prisma.category.deleteMany({ where: { slug: { in: ["servicios-demo", "productos-demo"] } } }).catch(() => {})
+  await prisma.listingMedia.deleteMany({ where: { listing: { slug: { startsWith: "playwright-" } } } }).catch(() => {})
+  await prisma.serviceDetails.deleteMany({ where: { listing: { slug: { startsWith: "playwright-service-demo-" } } } }).catch(() => {})
+  await prisma.productDetails.deleteMany({ where: { listing: { slug: { startsWith: "playwright-product-demo-" } } } }).catch(() => {})
+  await prisma.listing.deleteMany({ where: { slug: { startsWith: "playwright-" } } }).catch(() => {})
+  await prisma.category.deleteMany({ where: { slug: { startsWith: "servicios-demo-" } } }).catch(() => {})
+  await prisma.category.deleteMany({ where: { slug: { startsWith: "productos-demo-" } } }).catch(() => {})
 }
