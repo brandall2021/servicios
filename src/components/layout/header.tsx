@@ -81,6 +81,28 @@ export function Header() {
             >
               Buscar
             </Link>
+            <Link
+              href="/favoritos"
+              className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+                scrolled
+                  ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                  : "text-white/70 hover:text-white hover:bg-white/10"
+              }`}
+            >
+              Favoritos
+            </Link>
+            {session?.user && (
+              <Link
+                href="/consultas/productos"
+                className={`text-sm font-medium px-3 py-2 rounded-lg transition-all duration-200 ${
+                  scrolled
+                    ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-zinc-800"
+                    : "text-white/70 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                Consultas
+              </Link>
+            )}
             {session?.user && (
               <Link
                 href="/presupuestos"
@@ -153,6 +175,16 @@ export function Header() {
                       <Link href="/chat" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
                         <MessageSquare className="h-4 w-4" /> Mensajes
                       </Link>
+                      {(session.user.role === "PROVIDER" || session.user.role === "ADMIN") && (
+                        <>
+                          <Link href="/proveedor/metricas" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
+                            <Shield className="h-4 w-4 text-orange-500" /> Métricas
+                          </Link>
+                          <Link href="/proveedor/promociones" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
+                            <Plus className="h-4 w-4 text-orange-500" /> Promociones
+                          </Link>
+                        </>
+                      )}
                       {session.user.role === "ADMIN" && (
                         <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors">
                           <Shield className="h-4 w-4 text-orange-500" /> Administración
@@ -223,6 +255,14 @@ export function Header() {
             <Link href="/buscar" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
               Buscar
             </Link>
+            <Link href="/favoritos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+              Favoritos
+            </Link>
+            {session?.user && (
+              <Link href="/consultas/productos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+                Consultas
+              </Link>
+            )}
             {session?.user && (
               <>
                 <Link href="/presupuestos" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
@@ -245,6 +285,16 @@ export function Header() {
                 <Link href="/chat" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
                   Mensajes
                 </Link>
+                {(session.user.role === "PROVIDER" || session.user.role === "ADMIN") && (
+                  <>
+                    <Link href="/proveedor/metricas" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+                      Métricas
+                    </Link>
+                    <Link href="/proveedor/promociones" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
+                      Promociones
+                    </Link>
+                  </>
+                )}
                 {session.user.role === "ADMIN" && (
                   <Link href="/admin" className="block px-3 py-2.5 text-sm text-orange-600 dark:text-orange-400 font-medium rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors" onClick={() => setMenuOpen(false)}>
                     Administración

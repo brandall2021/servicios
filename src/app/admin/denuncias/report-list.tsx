@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { AlertTriangle, CheckCircle, Clock, Eye, Link as LinkIcon } from "lucide-react"
+import { AlertTriangle, CheckCircle, Eye, Link as LinkIcon } from "lucide-react"
 import Link from "next/link"
 
 interface Report {
@@ -95,7 +95,7 @@ export function AdminReportList({ reports }: { reports: Report[] }) {
                       <span>Usuario reportado: {r.usuario.name}</span>
                     )}
                     {r.opinion && (
-                      <span>Opinión: "{r.opinion.comentario}" ({r.opinion.puntuacion}★)</span>
+                      <span>Opinión: &quot;{r.opinion.comentario}&quot; ({r.opinion.puntuacion}★)</span>
                     )}
                   </div>
                 </div>

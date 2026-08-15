@@ -7,7 +7,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowRight, Mail, Lock } from "lucide-react"
+import { Mail, Lock } from "lucide-react"
 
 function LoginForm() {
   const router = useRouter()
@@ -16,12 +16,13 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const providerMsg = searchParams?.get("registered") === "provider"
   const registeredMsg = searchParams?.get("registered") === "true"
+  const returnTo = searchParams?.get("returnTo") || "/"
 
   useEffect(() => {
     if (providerMsg || registeredMsg) {
       window.history.replaceState({}, "", "/login")
     }
-  }, [])
+  }, [providerMsg, registeredMsg])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -39,7 +40,7 @@ function LoginForm() {
       setError("Email o contraseña incorrectos")
       setLoading(false)
     } else {
-      router.push("/")
+      router.push(returnTo)
       router.refresh()
     }
   }
@@ -69,37 +70,39 @@ function LoginForm() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  autoComplete="email"
-                  required
-                  className="pl-10"
-                />
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  required
-                  className="pl-10"
-                />
-              </div>
+              <form onSubmit={handleSubmit} className="space-y-4">
+               <div className="relative">
+                 <Mail className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                 <Input
+                   id="email"
+                   name="email"
+                   type="email"
+                   label="Email"
+                   placeholder="tu@email.com"
+                   autoComplete="email"
+                   required
+                   className="pl-10"
+                 />
+               </div>
+               <div className="relative">
+                 <Lock className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                 <Input
+                   id="password"
+                   name="password"
+                   type="password"
+                   label="Contraseña"
+                   placeholder="••••••••"
+                   autoComplete="current-password"
+                   required
+                   className="pl-10"
+                 />
+               </div>
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400">
                   <input type="checkbox" className="rounded border-stone-300 dark:border-zinc-600 text-orange-600 focus:ring-orange-500/30" />
                   Recordarme
                 </label>
-                <Link href="/forgot-password" className="text-xs text-orange-600 hover:text-orange-700 transition-colors">
+                <Link href="/forgot-password" className="text-xs text-orange-700 hover:text-orange-800 transition-colors">
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
@@ -117,16 +120,16 @@ function LoginForm() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-stone-200/70 dark:border-zinc-700/50" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white dark:bg-zinc-900 px-3 text-stone-400 tracking-wider">o continuá con</span>
-              </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white dark:bg-zinc-900 px-3 text-stone-500 tracking-wider">o continuá con</span>
+                </div>
             </div>
 
             <Button
               type="button"
               variant="outline"
               className="w-full h-11 rounded-xl"
-              onClick={() => signIn("google", { redirectTo: "/" })}
+              onClick={() => signIn("google", { redirectTo: returnTo })}
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -139,9 +142,9 @@ function LoginForm() {
 
             <p className="text-center text-sm text-stone-500 dark:text-stone-400 mt-6">
               ¿No tenés cuenta?{" "}
-              <Link href="/register" className="text-orange-600 hover:text-orange-700 font-medium transition-colors">
-                Crear cuenta
-              </Link>
+                <Link href="/register" className="text-orange-700 hover:text-orange-800 font-medium transition-colors">
+                  Crear cuenta
+                </Link>
             </p>
           </CardContent>
         </Card>

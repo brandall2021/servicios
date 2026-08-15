@@ -18,7 +18,7 @@ interface ArchivoSubido {
 export default function SolicitarPresupuestoPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const servicioId = searchParams?.get("servicio")
+  const servicioId = searchParams?.get("servicio") || searchParams?.get("servicioId")
 
   const [description, setDescription] = useState("")
   const [materiales, setMateriales] = useState<string[]>([""])

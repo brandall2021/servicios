@@ -9,20 +9,20 @@ export function EmptyServicesState() {
         <Search className="h-6 w-6 text-stone-400" />
       </div>
       <h3 className="text-lg font-semibold text-stone-900 mb-1">
-        No hay servicios publicados aún
+        No hay publicaciones todavía
       </h3>
       <p className="text-sm text-stone-500 text-center max-w-sm mb-6">
-        Sé el primero en ofrecer tu servicio o explorá nuestras categorías para encontrar lo que buscás.
+        Sé el primero en publicar o explorá las categorías para encontrar lo que buscás.
       </p>
       <div className="flex items-center gap-3">
-        <Link href="/buscar">
+        <Link href="/buscar?type=ALL">
           <Button variant="outline" className="rounded-xl">
             Explorar categorías
           </Button>
         </Link>
         <Link href="/register">
           <Button>
-            Publicar servicio
+            Publicar
             <ArrowRight className="h-4 w-4 ml-1.5" />
           </Button>
         </Link>

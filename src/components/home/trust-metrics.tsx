@@ -63,7 +63,7 @@ export function TrustMetrics() {
                   <Icon className={`h-5 w-5 ${sc.icon}`} />
                 </div>
                 <div className="inline-flex items-center gap-2.5 mb-2">
-                  <span className={`text-xs font-bold ${sc.icon} tabular-nums bg-white dark:bg-zinc-800 px-2 py-0.5 rounded-md shadow-sm`}>
+                  <span className={`text-xs font-bold ${step.color === "blue" ? "text-blue-700 dark:text-blue-300" : step.color === "cyan" ? "text-cyan-700 dark:text-cyan-300" : step.color === "orange" ? "text-orange-700 dark:text-orange-300" : "text-purple-700 dark:text-purple-300"} tabular-nums bg-white dark:bg-zinc-800 px-2 py-0.5 rounded-md shadow-sm`}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="font-semibold text-stone-900 dark:text-stone-100">{step.title}</h3>

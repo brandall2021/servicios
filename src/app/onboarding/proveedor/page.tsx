@@ -40,7 +40,7 @@ export default async function ProveedorOnboardingPage() {
       <ProviderOnboardingForm user={user} />
 
       <div className="mt-4 text-sm text-stone-500 dark:text-stone-400">
-        <Link href="/perfil" className="text-orange-600 hover:text-orange-700 font-medium">
+        <Link href="/perfil" className="text-orange-700 hover:text-orange-800 font-medium">
           Volver al perfil
         </Link>
       </div>

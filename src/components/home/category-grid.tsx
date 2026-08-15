@@ -55,16 +55,10 @@ export function CategoryGrid() {
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mt-1.5">
             Arrancá por rubro
           </h2>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1.5 max-w-xl">
+          <p className="text-sm text-stone-600 dark:text-stone-400 mt-1.5 max-w-xl">
             Acceso directo a cada categoría. El hero queda para buscar, esta grilla para explorar.
           </p>
         </div>
-        <Link
-          href="/buscar"
-          className="hidden sm:inline-flex text-sm font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 transition-colors"
-        >
-          Ver todas &rarr;
-        </Link>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {CATEGORIAS.map((cat, i) => {
@@ -73,7 +67,7 @@ export function CategoryGrid() {
           return (
             <Link
               key={cat.value}
-              href={`/buscar?categoria=${cat.value}`}
+              href={`/buscar?type=SERVICE&categoria=${cat.value}`}
               className={`group relative flex flex-col items-center gap-3 p-5 rounded-2xl bg-white dark:bg-zinc-800/80 border border-stone-200/70 dark:border-zinc-700/50 hover:border-orange-200/80 hover:bg-orange-50/30 dark:hover:bg-zinc-700/50 transition-all duration-500 hover:shadow-[0_8px_32px_rgba(255,138,0,0.1)] active:scale-[0.97] animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 6)}`}
             >
               <div
@@ -82,7 +76,7 @@ export function CategoryGrid() {
               >
                 <Icon className="h-5 w-5 transition-all duration-300 group-hover:text-orange-600" style={{ color: color.icon }} />
               </div>
-              <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 group-hover:text-orange-700 dark:group-hover:text-orange-400 text-center transition-colors duration-300">
+              <span className="text-xs sm:text-sm font-medium text-stone-800 dark:text-stone-200 group-hover:text-orange-700 dark:group-hover:text-orange-300 text-center transition-colors duration-300">
                 {cat.label}
               </span>
               {/* Hover glow */}
@@ -92,7 +86,7 @@ export function CategoryGrid() {
         })}
       </div>
       <div className="mt-6 text-center sm:hidden">
-        <Link href="/buscar" className="text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors">
+        <Link href="/buscar?type=SERVICE" className="text-sm font-medium text-orange-700 hover:text-orange-800 transition-colors">
           Ver todas las categorías &rarr;
         </Link>
       </div>

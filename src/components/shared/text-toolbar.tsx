@@ -60,6 +60,7 @@ export function TextToolbar({ textareaId }: TextToolbarProps) {
           type="button"
           onClick={() => applyFormat(fmt.key)}
           title={fmt.label}
+          aria-label={fmt.label}
           className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
         >
           {fmt.icon}

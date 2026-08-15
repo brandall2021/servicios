@@ -36,6 +36,15 @@ interface UserFormData {
   verified: boolean
 }
 
+type UserUpdateBody = {
+  name: string
+  email: string
+  role: string
+  phone: string | null
+  verified: boolean
+  password?: string
+}
+
 const emptyForm: UserFormData = {
   name: "",
   email: "",
@@ -111,7 +120,7 @@ export function AdminUserList({ usuarios }: { usuarios: AdminUserRow[] }) {
     setSaving(true)
     try {
       if (editingUser) {
-        const body: Record<string, any> = {
+        const body: UserUpdateBody = {
           name: form.name,
           email: form.email,
           role: form.role,

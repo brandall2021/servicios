@@ -222,7 +222,7 @@ export function ChatView({
                     }
                   }}
                 />
-                <Button type="submit" disabled={!newMessage.trim() || sending} size="icon" className="shrink-0">
+                <Button type="submit" disabled={!newMessage.trim() || sending} size="icon" className="shrink-0" aria-label="Enviar mensaje">
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

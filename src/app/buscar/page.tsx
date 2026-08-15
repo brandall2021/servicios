@@ -1,155 +1,127 @@
-import { Prisma } from "@prisma/client"
-import { prisma } from "@/lib/prisma"
-import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
-import { ServiceCard } from "@/components/shared/service-card"
+import { MarketplaceCard } from "@/components/shared/marketplace-card"
 import { SearchBar } from "@/components/shared/search-bar"
 import { Pagination } from "@/components/shared/pagination"
 import { CATEGORIAS } from "@/lib/constants"
 import { SortSelect } from "./sort-select"
 import { CategoryChips } from "./category-chips"
 import { FilterSidebar, RadioSelect } from "./filter-sidebar"
-import type { ServicioWithRelations } from "@/types"
+import { searchMarketplaceListings } from "@/lib/marketplace/search"
+import type { MarketplaceListingDTO } from "@/lib/marketplace/listings"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
+import { CompareTray } from "@/components/shared/compare-tray"
+import { logCommercialEvent } from "@/lib/commercial-events"
 
 interface Props {
-  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string; page?: string }>
+  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string; page?: string; type?: string }>
 }
 
-async function getServicios(params: Awaited<Props["searchParams"]>) {
+function toRadians(value: number) {
+  return (value * Math.PI) / 180
+}
+
+function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number) {
+  const r = 6371
+  const dLat = toRadians(bLat - aLat)
+  const dLng = toRadians(bLng - aLng)
+  const lat1 = toRadians(aLat)
+  const lat2 = toRadians(bLat)
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2)
+  return 2 * r * Math.asin(Math.min(1, Math.sqrt(h)))
+}
+
+type ListingWithDistance = MarketplaceListingDTO & { distance: number | null }
+
+function applyLocalFilters(listings: MarketplaceListingDTO[], params: Awaited<Props["searchParams"]>): ListingWithDistance[] {
   const lat = params.lat ? parseFloat(params.lat) : null
   const lng = params.lng ? parseFloat(params.lng) : null
   const radio = params.radio ? parseFloat(params.radio) : null
-  const hasCoords = lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)
-
-  async function fetchServicios(where: Record<string, unknown>, orderBy: Record<string, string>) {
-    return prisma.servicio.findMany({
-      where,
-      include: {
-        usuario: { select: { ...PUBLIC_PROVIDER_SELECT, verified: true } },
-        fotos: { take: 1 },
-        opiniones: {
-          select: { puntuacion: true },
-        },
-        _count: { select: { opiniones: true } },
-      },
-      orderBy,
-      take: 50,
-    })
-  }
-
   const puntMin = params.punt_min ? parseFloat(params.punt_min) : null
   const precioMin = params.precio_min ? parseFloat(params.precio_min) : null
   const precioMax = params.precio_max ? parseFloat(params.precio_max) : null
+  const hasCoords = lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng) && radio !== null && !isNaN(radio)
 
-  function buildWhere(): Record<string, unknown> {
-    const w: Record<string, unknown> = { activo: true }
+  let result: ListingWithDistance[] = listings.map((listing) => ({ ...listing, distance: null }))
 
-    if (params.q) {
-      w.OR = [
-        { titulo: { contains: params.q, mode: "insensitive" } },
-        { descripcion: { contains: params.q, mode: "insensitive" } },
-      ]
-    }
-    if (params.categoria) w.categoria = params.categoria
-    if (params.ubicacion) w.ubicacion = { contains: params.ubicacion, mode: "insensitive" }
-    if (params.proveedor) {
-      w.usuario = {
-        name: { contains: params.proveedor, mode: "insensitive" },
-      }
-    }
-    if (params.verificado === "true") {
-      w.usuario = { ...(w.usuario as object || {}), verified: true }
-    }
-    if (precioMin !== null || precioMax !== null) {
-      const precioFilter: Record<string, unknown> = {}
-      if (precioMin !== null) precioFilter.gte = precioMin
-      if (precioMax !== null) precioFilter.lte = precioMax
-      w.precio = precioFilter
-    }
-
-    return w
+  if (puntMin !== null) {
+    result = result.filter((listing) => listing.ratingAverage >= puntMin)
   }
 
-  const buildOrderBy = (): Record<string, string> => {
-    if (params.sort === "precio_asc") return { precio: "asc" }
-    if (params.sort === "precio_desc") return { precio: "desc" }
-    if (params.sort === "rating") return {} // handled post-filter
-    return { createdAt: "desc" }
+  if (precioMin !== null || precioMax !== null) {
+    result = result.filter((listing) => {
+      if (precioMin !== null && (listing.price === null || listing.price < precioMin)) return false
+      if (precioMax !== null && (listing.price === null || listing.price > precioMax)) return false
+      return true
+    })
   }
 
-  if (hasCoords && radio !== null && !isNaN(radio)) {
-    const conditions: Prisma.Sql[] = [
-      Prisma.sql`s.activo = true`,
-      Prisma.sql`s.lat IS NOT NULL`,
-      Prisma.sql`s.lng IS NOT NULL`,
-    ]
+  if (params.proveedor) {
+    const needle = params.proveedor.toLowerCase()
+    result = result.filter((listing) =>
+      [listing.provider.name, listing.provider.tradeName].some((value) => (value || "").toLowerCase().includes(needle))
+    )
+  }
 
-    if (params.categoria) conditions.push(Prisma.sql`s.categoria = ${params.categoria}`)
-    if (params.q) {
-      const pattern = `%${params.q}%`
-      conditions.push(Prisma.sql`(s.titulo ILIKE ${pattern} OR s.descripcion ILIKE ${pattern})`)
-    }
-    if (precioMin !== null) conditions.push(Prisma.sql`s.precio >= ${precioMin}`)
-    if (precioMax !== null) conditions.push(Prisma.sql`s.precio <= ${precioMax}`)
-
-    const whereClause = Prisma.join(conditions, " AND ")
-    const hav = Prisma.sql`cos(radians(${lat})) * cos(radians(s.lat)) * cos(radians(s.lng) - radians(${lng})) + sin(radians(${lat})) * sin(radians(s.lat))`
-
-    const rows = await prisma.$queryRaw<Array<{ id: string; distance: number }>>(Prisma.sql`
-      SELECT s.id, (6371 * acos(${hav})) AS distance
-      FROM "Servicio" s
-      INNER JOIN "User" u ON s."usuarioId" = u.id
-      WHERE ${whereClause}
-        AND (6371 * acos(${hav})) <= ${radio}
-        ${params.verificado === "true" ? Prisma.sql`AND u.verified = true` : Prisma.empty}
-        ${params.proveedor ? Prisma.sql`AND u.name ILIKE ${"%" + params.proveedor + "%"}` : Prisma.empty}
-      ORDER BY distance ASC
-      LIMIT 50
-    `)
-
-    const ids = rows.map((r) => r.id)
-    if (ids.length === 0) return []
-
-    const servicios = await fetchServicios({ id: { in: ids } }, {})
-    const distanceMap = new Map(rows.map((r) => [r.id, r.distance]))
-    return servicios
-      .map((s) => ({ ...s, distance: distanceMap.get(s.id) ?? null }))
+  if (hasCoords && lat !== null && lng !== null && radio !== null) {
+    result = result
+      .map((listing) => {
+        const itemLat = listing.latitude
+        const itemLng = listing.longitude
+        if (itemLat === null || itemLng === null) return { ...listing, distance: null }
+        return { ...listing, distance: distanceKm(lat, lng, itemLat, itemLng) }
+      })
+      .filter((listing) => listing.distance === null || listing.distance <= radio)
       .sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity))
   }
 
-  const orderBy = buildOrderBy()
-  let servicios = await fetchServicios(buildWhere(), orderBy)
-
-  // Post-filter by rating
-  if (puntMin !== null) {
-    servicios = servicios.filter((s) => {
-      const avg =
-        s.opiniones.length > 0
-          ? s.opiniones.reduce((a: number, o: { puntuacion: number }) => a + o.puntuacion, 0) / s.opiniones.length
-          : 0
-      return avg >= puntMin
-    })
-  }
-
   if (params.sort === "rating") {
-    servicios.sort((a, b) => {
-      const avgA =
-        a.opiniones.length > 0
-          ? a.opiniones.reduce((acc: number, o: { puntuacion: number }) => acc + o.puntuacion, 0) / a.opiniones.length
-          : 0
-      const avgB =
-        b.opiniones.length > 0
-          ? b.opiniones.reduce((acc: number, o: { puntuacion: number }) => acc + o.puntuacion, 0) / b.opiniones.length
-          : 0
-      return avgB - avgA
-    })
+    result = [...result].sort((a, b) => b.ratingAverage - a.ratingAverage)
   }
 
-  return servicios.map((s) => ({ ...s, distance: null }))
+  return result
 }
 
 export default async function BuscarPage({ searchParams }: Props) {
   const params = await searchParams
-  const servicios = await getServicios(params)
+  const session = await auth()
+  const type = params.type === "SERVICE" || params.type === "PRODUCT" ? params.type : "ALL"
+  const favoriteIds = session?.user
+    ? await prisma.favorite.findMany({
+        where: { userId: session.user.id, listingId: { not: null } },
+        select: { listingId: true },
+      }).then((rows) => rows.map((row) => row.listingId).filter((id): id is string => Boolean(id)))
+    : []
+  const { items } = await searchMarketplaceListings({
+    type,
+    q: params.q || "",
+    category: params.categoria || "",
+    province: params.ubicacion || "",
+    city: params.ubicacion || "",
+    minPrice: params.precio_min ? Number(params.precio_min) : null,
+    maxPrice: params.precio_max ? Number(params.precio_max) : null,
+    priceType: "ALL",
+    verified: params.verificado === "true" ? true : params.verificado === "false" ? false : null,
+    sort: (params.sort === "precio_asc" ? "price_asc" : params.sort === "precio_desc" ? "price_desc" : params.sort === "rating" ? "rating" : params.sort === "newest" ? "newest" : "relevance"),
+    cursor: null,
+    limit: null,
+  })
+  const servicios = applyLocalFilters(items, params)
+
+  if (session?.user && (params.q || params.categoria || params.ubicacion)) {
+    await logCommercialEvent({
+      type: "SEARCH_PERFORMED",
+      userId: session.user.id,
+      sessionId: session.user.id,
+      metadata: {
+        q: params.q || "",
+        categoria: params.categoria || "",
+        ubicacion: params.ubicacion || "",
+        type,
+      },
+    })
+  }
   const page = Math.max(1, parseInt(params.page || "1"))
   const pageSize = 12
   const total = servicios.length
@@ -158,12 +130,13 @@ export default async function BuscarPage({ searchParams }: Props) {
   const pagedServicios = servicios.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   const selectedCategoria = params.categoria || ""
+  const resultLabel = type === "SERVICE" ? "servicio" : type === "PRODUCT" ? "producto" : "listado"
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8 animate-fade-in">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 mb-4">
-          {params.q ? `Resultados para "${params.q}"` : "Buscar servicios"}
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-stone-50 mb-4">
+          {params.q ? `Resultados para "${params.q}"` : "Buscar servicios y productos"}
         </h1>
         <SearchBar />
       </div>
@@ -185,7 +158,7 @@ export default async function BuscarPage({ searchParams }: Props) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <p className="text-sm text-stone-500 dark:text-stone-400">
-              {servicios.length} {servicios.length === 1 ? "servicio encontrado" : "servicios encontrados"}
+              {servicios.length} {servicios.length === 1 ? `${resultLabel} encontrado` : `${resultLabel}s encontrados`}
               {params.lat && params.lng && " (ordenados por cercanía)"}
             </p>
             <div className="flex items-center gap-2">
@@ -198,7 +171,7 @@ export default async function BuscarPage({ searchParams }: Props) {
           {pagedServicios.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
               {pagedServicios.map((s, i) => (
-                <ServiceCard key={s.id} servicio={s as ServicioWithRelations} index={i} />
+                <MarketplaceCard key={s.id} listing={s} index={i} favoriteSaved={favoriteIds.includes(s.id)} />
               ))}
             </div>
           ) : (
@@ -206,16 +179,17 @@ export default async function BuscarPage({ searchParams }: Props) {
               <div className="h-16 w-16 rounded-2xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🔍</span>
               </div>
-              <p className="text-stone-700 dark:text-stone-300 font-semibold text-lg mb-1">No encontramos servicios</p>
-              <p className="text-stone-500 dark:text-stone-400 text-sm">Probá con otros términos de búsqueda o categoría</p>
+              <p className="text-stone-700 dark:text-stone-300 font-semibold text-lg mb-1">No encontramos {resultLabel}s</p>
+              <p className="text-stone-500 dark:text-stone-400 text-sm">Probá con otros términos de búsqueda, tipo o categoría</p>
             </div>
           )}
 
           {total > pageSize && (
-            <Pagination page={currentPage} pages={pages} total={total} label="servicios" />
+            <Pagination page={currentPage} pages={pages} total={total} label={`${resultLabel}s`} />
           )}
         </div>
       </div>
+      <CompareTray />
     </div>
   )
 }

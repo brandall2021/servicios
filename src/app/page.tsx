@@ -1,47 +1,51 @@
-import { prisma } from "@/lib/prisma"
 import { HeroSearch } from "@/components/home/hero-search"
 import { CategoryGrid } from "@/components/home/category-grid"
 import { FeaturedServices } from "@/components/home/featured-services"
 import { TrustMetrics } from "@/components/home/trust-metrics"
-import { PUBLIC_PROVIDER_SELECT, PUBLIC_USER_SELECT } from "@/lib/auth-guard"
-import type { ServicioWithRelations } from "@/types"
+import { CompareTray } from "@/components/shared/compare-tray"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/prisma"
+import { searchMarketplaceListings } from "@/lib/marketplace/search"
+import type { MarketplaceListingDTO } from "@/lib/marketplace/listings"
 
-async function getDestacados(): Promise<ServicioWithRelations[]> {
-  const servicios = await prisma.servicio.findMany({
-    where: { activo: true },
-    include: {
-      usuario: { select: PUBLIC_PROVIDER_SELECT },
-      fotos: { take: 1 },
-      opiniones: {
-        select: {
-          id: true,
-          puntuacion: true,
-          comentario: true,
-          createdAt: true,
-          cliente: { select: PUBLIC_USER_SELECT },
-          fotos: { select: { id: true, archivo: true, tipo: true } },
-        },
-        take: 5,
-      },
-      _count: { select: { opiniones: true } },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 6,
+async function getDestacados(): Promise<MarketplaceListingDTO[]> {
+  const { items } = await searchMarketplaceListings({
+    type: "ALL",
+    q: "",
+    category: "",
+    province: "",
+    city: "",
+    minPrice: null,
+    maxPrice: null,
+    priceType: "ALL",
+    verified: null,
+    sort: "relevance",
+    cursor: null,
+    limit: 6,
   })
-  return servicios as unknown as ServicioWithRelations[]
+  return items
 }
 
 export default async function HomePage() {
+  const session = await auth()
   const [servicios] = await Promise.all([
     getDestacados(),
-  ]) as [ServicioWithRelations[]]
+  ]) as [MarketplaceListingDTO[]]
+
+  const favoriteIds = session?.user
+    ? await prisma.favorite.findMany({
+        where: { userId: session.user.id, listingId: { not: null } },
+        select: { listingId: true },
+      }).then((rows) => rows.map((row) => row.listingId).filter((id): id is string => Boolean(id)))
+    : []
 
   return (
     <div>
       <HeroSearch />
       <CategoryGrid />
-      <FeaturedServices servicios={servicios} />
+      <FeaturedServices servicios={servicios} favoriteIds={favoriteIds} />
       <TrustMetrics />
+      <CompareTray />
     </div>
   )
 }

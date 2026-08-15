@@ -1,10 +1,8 @@
 "use client"
 
 export default function BuscarError({
-  error,
   reset,
 }: {
-  error: Error & { digest?: string }
   reset: () => void
 }) {
   return (
@@ -13,7 +11,7 @@ export default function BuscarError({
       <p className="text-sm text-stone-500 mb-6">No pudimos cargar los resultados. Intentalo de nuevo.</p>
       <button
         onClick={reset}
-        className="h-10 px-6 bg-orange-600 text-white rounded-xl text-sm font-medium hover:bg-orange-700 transition-colors"
+        className="h-10 px-6 bg-orange-700 text-white rounded-xl text-sm font-medium hover:bg-orange-800 transition-colors"
       >
         Reintentar
       </button>

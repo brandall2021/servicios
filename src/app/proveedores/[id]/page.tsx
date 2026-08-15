@@ -11,6 +11,7 @@ import Link from "next/link"
 import { MapPin, Shield, Clock, Award, ChevronLeft, MessageSquare, Briefcase, Star } from "lucide-react"
 import { auth } from "@/lib/auth"
 import { ContactReveal } from "@/components/shared/contact-reveal"
+import { FavoriteToggleButton } from "@/components/shared/favorite-toggle-button"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -79,6 +80,12 @@ export default async function ProveedorPage({ params }: Props) {
 
   const whatsappUrl = provider.whatsapp
     ? `https://wa.me/${provider.whatsapp.replace(/[^0-9]/g, "")}`
+    : null
+
+  const favorite = session?.user
+    ? await prisma.favorite.findFirst({
+        where: { userId: session.user.id, providerId: provider.id },
+      })
     : null
 
   return (
@@ -201,6 +208,13 @@ export default async function ProveedorPage({ params }: Props) {
                   Contactar
                 </Button>
               </Link>
+              <FavoriteToggleButton
+                type="PROVIDER"
+                targetId={provider.id}
+                initialSaved={Boolean(favorite)}
+                returnTo={`/proveedores/${provider.id}`}
+                className="w-full justify-center"
+              />
               {whatsappUrl && (
                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
                   <Button

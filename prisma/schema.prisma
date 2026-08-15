@@ -41,6 +41,95 @@ enum BudgetStatus {
   REVISION
 }
 
+enum ListingType {
+  SERVICE
+  PRODUCT
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  PAUSED
+  REJECTED
+  ARCHIVED
+}
+
+enum PriceType {
+  FIXED
+  FROM
+  PER_UNIT
+  QUOTE
+}
+
+enum FavoriteType {
+  LISTING
+  PROVIDER
+}
+
+enum ProviderApplicationStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum QuoteRequestStatus {
+  PENDING
+  QUOTED
+  REVISION_REQUESTED
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum InquiryStatus {
+  DRAFT
+  SENT
+  RESPONDED
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED_BY_CLIENT
+  CANCELLED_BY_PROVIDER
+  COMPLETED
+  NO_SHOW
+}
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  PROMOTIONAL_PRICE
+  BENEFIT
+}
+
+enum FulfillmentType {
+  PICKUP
+  DELIVERY
+  BOTH
+}
+
+enum ProviderKind {
+  PERSONA
+  EMPRESA
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  SUSPENDED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String
@@ -68,6 +157,23 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  providerProfile ProviderProfile?
+  providerApplications ProviderApplication[]
+  providerApplicationsReviewed ProviderApplication[] @relation("ProviderApplicationReviewer")
+  providerApplicationEvents ProviderApplicationEvent[] @relation("ProviderApplicationActor")
+  listings Listing[]
+  favorites Favorite[] @relation("FavoriteUser")
+  favoriteProviders Favorite[] @relation("FavoriteProvider")
+  quoteRequestsAsClient QuoteRequest[] @relation("QuoteRequestClient")
+  quotesAsProvider Quote[] @relation("QuoteProvider")
+  quoteRequestHistory QuoteRequestHistory[] @relation("QuoteRequestActor")
+  productInquiriesAsClient ProductInquiry[] @relation("ProductInquiryClient")
+  productInquiriesAsProvider ProductInquiry[] @relation("ProductInquiryProvider")
+  productInquiryQuotes ProductInquiryQuote[] @relation("ProductInquiryQuoteProvider")
+  bookingsAsClient Booking[] @relation("BookingClient")
+  bookingsAsProvider Booking[] @relation("BookingProvider")
+  promotions Promotion[] @relation("PromotionProvider")
+
   servicios    Servicio[]
   opiniones    Opinion[]
   mensajesEnviados   Mensaje[]  @relation("MensajeEmisor")
@@ -84,6 +190,366 @@ model User {
 
   resetToken            String?  @unique
   resetTokenExpiry      DateTime?
+}
+
+model Category {
+  id        String      @id @default(cuid())
+  type      ListingType
+  name      String
+  slug      String
+  icon      String?
+  active    Boolean     @default(true)
+  sortOrder Int         @default(0)
+  parentId  String?
+  parent    Category?   @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[]  @relation("CategoryTree")
+  listings  Listing[]
+
+  @@unique([type, slug])
+  @@index([type, active, sortOrder])
+}
+
+model ProviderProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  kind               ProviderKind
+  tradeName          String
+  description        String?
+  taxId              String?
+  phone              String?
+  whatsapp           String?
+  website            String?
+  facebook           String?
+  instagram          String?
+  coverageText       String?
+  province           String?
+  city               String?
+  coverageRadiusKm   Int?
+  offersServices     Boolean            @default(true)
+  offersProducts     Boolean            @default(false)
+  verificationStatus VerificationStatus  @default(UNVERIFIED)
+  verifiedAt         DateTime?
+  responseTimeMinutes Int?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listings           Listing[]
+}
+
+model ProviderApplication {
+  id               String                   @id @default(cuid())
+  userId           String                   @unique
+  status           ProviderApplicationStatus @default(PENDING)
+  submittedAt      DateTime                 @default(now())
+  reviewedAt       DateTime?
+  reviewedById     String?
+  rejectionReason  String?
+  suspensionReason String?
+  documents        Json?
+
+  user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy       User?                    @relation("ProviderApplicationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  events           ProviderApplicationEvent[]
+
+  @@index([status, submittedAt])
+}
+
+model ProviderApplicationEvent {
+  id             String   @id @default(cuid())
+  applicationId  String
+  actorId        String?
+  action         String
+  note           String?
+  payload        Json?
+  createdAt      DateTime @default(now())
+
+  application    ProviderApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  actor          User?              @relation("ProviderApplicationActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([applicationId, createdAt])
+}
+
+model Listing {
+  id            String        @id @default(cuid())
+  type          ListingType
+  status        ListingStatus  @default(DRAFT)
+  title         String
+  slug          String         @unique
+  description   String
+  categoryId    String
+  providerId    String
+  providerProfileId String?
+  featured      Boolean        @default(false)
+  priceType     PriceType
+  price         Decimal?       @db.Decimal(12, 2)
+  currency      String         @default("ARS")
+  priceUnit     String?
+  locationText  String?
+  latitude      Decimal?       @db.Decimal(9, 6)
+  longitude     Decimal?       @db.Decimal(9, 6)
+  publishedAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  category      Category       @relation(fields: [categoryId], references: [id])
+  provider      User           @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerProfile ProviderProfile? @relation(fields: [providerProfileId], references: [id], onDelete: SetNull)
+  service       ServiceDetails?
+  product       ProductDetails?
+  media         ListingMedia[]
+  quoteRequests QuoteRequest[]
+  productInquiryItems ProductInquiryItem[] @relation("ProductInquiryItemListing")
+  bookings      Booking[]
+  promotions    Promotion[]
+
+  @@index([type, status, categoryId])
+  @@index([providerId, status])
+  @@index([providerProfileId, status])
+  @@index([status, publishedAt])
+  @@index([price])
+}
+
+model Favorite {
+  id         String       @id @default(cuid())
+  userId     String
+  type       FavoriteType
+  listingId  String?
+  providerId String?
+  createdAt  DateTime     @default(now())
+
+  user       User         @relation("FavoriteUser", fields: [userId], references: [id], onDelete: Cascade)
+  provider   User?        @relation("FavoriteProvider", fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+  @@unique([userId, providerId])
+  @@index([userId, type, createdAt])
+}
+
+model CommercialEvent {
+  id          String   @id @default(cuid())
+  type        String
+  userId      String
+  sessionId   String
+  providerId  String?
+  listingId   String?
+  requestId   String?
+  metadata    Json?
+  occurredAt  DateTime @default(now())
+
+  @@index([type, occurredAt])
+  @@index([userId, occurredAt])
+  @@index([providerId, occurredAt])
+  @@index([listingId, occurredAt])
+}
+
+model ServiceDetails {
+  listingId        String  @id
+  modality         String?
+  coverageRadiusKm Int?
+  durationText     String?
+  availabilityText String?
+  includesText     String?
+  excludesText     String?
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model ProductDetails {
+  listingId      String          @id
+  sku            String?
+  brand          String?
+  unit           String
+  stockQuantity  Decimal?        @db.Decimal(12, 3)
+  trackStock     Boolean         @default(false)
+  minimumOrder   Decimal?        @db.Decimal(12, 3)
+  fulfillment    FulfillmentType @default(PICKUP)
+  deliveryText   String?
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([sku])
+  @@index([brand])
+}
+
+model ListingMedia {
+  id         String   @id @default(cuid())
+  listingId  String
+  archivo    String
+  mimeType   String?
+  size       Int?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, sortOrder])
+}
+
+model QuoteRequest {
+  id             String             @id @default(cuid())
+  listingId      String
+  clientId       String
+  status         QuoteRequestStatus  @default(PENDING)
+  description    String?
+  quantity       Decimal?           @db.Decimal(12, 3)
+  unit           String?
+  fulfillment    FulfillmentType?
+  desiredDate    DateTime?
+  locationText   String?
+  attachments    Json?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  listing        Listing            @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  client         User               @relation("QuoteRequestClient", fields: [clientId], references: [id], onDelete: Cascade)
+  quotes         Quote[]
+  history        QuoteRequestHistory[]
+
+  @@index([listingId, status])
+  @@index([clientId, status])
+}
+
+model Quote {
+  id            String   @id @default(cuid())
+  requestId     String
+  providerId    String
+  version       Int
+  amount        Decimal  @db.Decimal(12, 2)
+  currency      String   @default("ARS")
+  breakdown     String?
+  conditions    String?
+  validUntil    DateTime?
+  estimatedReadyAt DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  request       QuoteRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  provider      User         @relation("QuoteProvider", fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([requestId, version])
+  @@index([providerId, createdAt])
+}
+
+model QuoteRequestHistory {
+  id           String            @id @default(cuid())
+  requestId    String
+  fromStatus   QuoteRequestStatus?
+  toStatus     QuoteRequestStatus
+  action       String
+  note         String?
+  payload      Json?
+  actorId      String
+  createdAt    DateTime          @default(now())
+
+  request      QuoteRequest      @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actor        User              @relation("QuoteRequestActor", fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([requestId, createdAt])
+  @@index([actorId, createdAt])
+}
+
+model ProductInquiry {
+  id              String         @id @default(cuid())
+  clientId        String
+  providerId      String
+  status          InquiryStatus   @default(DRAFT)
+  deliveryMethod  FulfillmentType?
+  deliveryAddress String?
+  notes           String?
+  expiresAt       DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  client          User           @relation("ProductInquiryClient", fields: [clientId], references: [id], onDelete: Cascade)
+  provider        User           @relation("ProductInquiryProvider", fields: [providerId], references: [id], onDelete: Cascade)
+  items           ProductInquiryItem[]
+  quotes          ProductInquiryQuote[]
+
+  @@index([clientId, status, updatedAt])
+  @@index([providerId, status, updatedAt])
+}
+
+model ProductInquiryItem {
+  id            String   @id @default(cuid())
+  inquiryId     String
+  listingId     String
+  quantity      Decimal  @db.Decimal(12, 3)
+  requestedUnit String?
+  priceSnapshot Decimal? @db.Decimal(12, 2)
+  titleSnapshot String
+  notes         String?
+
+  inquiry       ProductInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  listing       Listing        @relation("ProductInquiryItemListing", fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([inquiryId, listingId])
+}
+
+model ProductInquiryQuote {
+  id               String   @id @default(cuid())
+  inquiryId        String
+  providerId       String
+  version          Int
+  amount           Decimal  @db.Decimal(12, 2)
+  currency         String   @default("ARS")
+  breakdown        String?
+  conditions       String?
+  validUntil       DateTime?
+  estimatedReadyAt DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  inquiry          ProductInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  provider         User           @relation("ProductInquiryQuoteProvider", fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([inquiryId, version])
+  @@index([providerId, createdAt])
+}
+
+model Booking {
+  id                String        @id @default(cuid())
+  listingId         String
+  clientId          String
+  providerId        String
+  status            BookingStatus @default(PENDING)
+  startsAt          DateTime
+  endsAt            DateTime
+  timezone          String
+  notes             String?
+  cancellationReason String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  listing           Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  client            User          @relation("BookingClient", fields: [clientId], references: [id], onDelete: Cascade)
+  provider          User          @relation("BookingProvider", fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([providerId, startsAt, endsAt])
+  @@index([clientId, startsAt])
+}
+
+model Promotion {
+  id           String         @id @default(cuid())
+  providerId   String
+  listingId    String?
+  type         PromotionType
+  name         String
+  code         String?
+  value        Decimal?       @db.Decimal(12, 2)
+  startsAt     DateTime
+  endsAt       DateTime
+  usageLimit   Int?
+  perUserLimit Int?
+  active       Boolean        @default(true)
+  terms        String?
+  createdAt    DateTime       @default(now())
+
+  provider     User           @relation("PromotionProvider", fields: [providerId], references: [id], onDelete: Cascade)
+  listing      Listing?       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, code])
+  @@index([listingId, active, startsAt, endsAt])
 }
 
 model Servicio {

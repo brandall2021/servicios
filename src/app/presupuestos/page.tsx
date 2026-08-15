@@ -34,17 +34,34 @@ export default async function PresupuestosPage() {
 
   const isProvider = session.user.role === "PROVIDER" || session.user.role === "ADMIN"
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function serializeDates(items: any[]) {
-    return items.map((item: any) => ({
+  type DateLike = Date | string | null | undefined
+  type QuoteLike = {
+    createdAt: DateLike
+    updatedAt: DateLike
+    validUntil?: DateLike
+    [key: string]: unknown
+  }
+  type RequestLike = {
+    createdAt: DateLike
+    updatedAt: DateLike
+    cotizaciones?: QuoteLike[] | null
+    [key: string]: unknown
+  }
+
+  function serializeDate(value: DateLike) {
+    return value instanceof Date ? value.toISOString() : value ?? null
+  }
+
+  function serializeDates(items: RequestLike[]) {
+    return items.map((item) => ({
       ...item,
-      createdAt: item.createdAt?.toISOString?.() ?? item.createdAt,
-      updatedAt: item.updatedAt?.toISOString?.() ?? item.updatedAt,
-      cotizaciones: item.cotizaciones?.map?.((c: any) => ({
+      createdAt: serializeDate(item.createdAt),
+      updatedAt: serializeDate(item.updatedAt),
+      cotizaciones: item.cotizaciones?.map((c) => ({
         ...c,
-        createdAt: c.createdAt?.toISOString?.() ?? c.createdAt,
-        updatedAt: c.updatedAt?.toISOString?.() ?? c.updatedAt,
-        validUntil: c.validUntil?.toISOString?.() ?? c.validUntil ?? null,
+        createdAt: serializeDate(c.createdAt),
+        updatedAt: serializeDate(c.updatedAt),
+        validUntil: serializeDate(c.validUntil),
       })) ?? [],
     }))
   }

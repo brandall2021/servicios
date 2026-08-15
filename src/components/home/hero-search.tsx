@@ -8,14 +8,18 @@ import { Search, ArrowRight } from "lucide-react"
 export function HeroSearch() {
   const router = useRouter()
   const [query, setQuery] = useState("")
+  const [type, setType] = useState("ALL")
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     const q = query.trim()
+    const params = new URLSearchParams()
+    if (type !== "ALL") params.set("type", type)
     if (q) {
-      router.push(`/buscar?q=${encodeURIComponent(q)}`)
+      params.set("q", q)
+      router.push(`/buscar?${params.toString()}`)
     } else {
-      router.push("/buscar")
+      router.push(params.toString() ? `/buscar?${params.toString()}` : "/buscar")
     }
   }
 
@@ -50,10 +54,20 @@ export function HeroSearch() {
               los mejores servicios
             </span>
           </h1>
-          <p className="text-base sm:text-xl text-white/60 max-w-xl mb-8 sm:mb-10 animate-fade-up animate-fade-up-delay-2 leading-relaxed">
-            Corralones, ferreterías, materiales y más. Conectá con profesionales de confianza cerca tuyo.
+          <p className="text-base sm:text-xl text-white/80 max-w-xl mb-8 sm:mb-10 animate-fade-up animate-fade-up-delay-2 leading-relaxed">
+            Corralones, ferreterías, materiales y más. Buscá servicios o productos cerca tuyo.
           </p>
-          <form onSubmit={handleSubmit} className="max-w-xl flex flex-col sm:flex-row gap-3 animate-fade-up animate-fade-up-delay-3">
+          <form onSubmit={handleSubmit} className="max-w-2xl flex flex-col sm:flex-row gap-3 animate-fade-up animate-fade-up-delay-3">
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              aria-label="Tipo de búsqueda"
+              className="h-13 sm:w-40 px-4 rounded-2xl border-0 bg-white/95 backdrop-blur-sm text-stone-900 text-base shadow-[0_8px_32px_rgba(0,0,0,0.12)] focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+            >
+              <option value="ALL">Servicios + productos</option>
+              <option value="SERVICE">Servicios</option>
+              <option value="PRODUCT">Productos</option>
+            </select>
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
               <input
@@ -77,13 +91,13 @@ export function HeroSearch() {
           <div className="flex flex-wrap gap-3 mt-7 animate-fade-up animate-fade-up-delay-4">
             <Link
               href="#categorias"
-              className="px-4 py-2 text-sm rounded-xl bg-white/10 text-white/85 hover:bg-white/15 hover:text-white border border-white/10 transition-all duration-300 backdrop-blur-sm"
+              className="px-4 py-2 text-sm rounded-xl bg-white/10 text-white hover:bg-white/15 border border-white/10 transition-all duration-300 backdrop-blur-sm"
             >
               Ver categorías
             </Link>
             <Link
               href="/buscar"
-              className="px-4 py-2 text-sm rounded-xl bg-white/8 text-white/70 hover:bg-white/15 hover:text-white border border-white/5 hover:border-white/15 transition-all duration-300 backdrop-blur-sm"
+              className="px-4 py-2 text-sm rounded-xl bg-white/8 text-white hover:bg-white/15 border border-white/5 hover:border-white/15 transition-all duration-300 backdrop-blur-sm"
             >
               Ir al buscador
             </Link>

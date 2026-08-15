@@ -1,6 +1,6 @@
 # Servicios — Plataforma de Servicios Profesionales
 
-Plataforma digital que conecta clientes con profesionales verificados en Argentina. Permite publicar servicios, solicitar presupuestos, chatear, calificar y gestionar todo desde un panel administrativo.
+Plataforma digital que conecta clientes con profesionales en Argentina. Permite publicar servicios y productos, comparar opciones, solicitar presupuestos, chatear, calificar y gestionar todo desde un panel administrativo.
 
 ## Stack
 
@@ -24,6 +24,8 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 - Calificar servicios con 1-5 estrellas, comentarios y fotos
 - Aceptar, rechazar o solicitar revisión de cotizaciones
 - Recibir **notificaciones** de mensajes, opiniones, presupuestos y cotizaciones
+- Guardar favoritos y comparar servicios/proveedores desde el marketplace unificado
+- Consultar productos y sus cotizaciones desde `/consultas/productos`
 
 ### Para proveedores
 - Perfil público con descripción, experiencia, certificaciones y zona de trabajo
@@ -33,6 +35,7 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 - Chat interno con clientes
 - Ver y responder opiniones
 - **Notificaciones** en tiempo real (polling cada 30s)
+- Gestionar promociones y ver métricas comerciales
 
 ### Para administradores
 - **Dashboard** con estadísticas de uso: usuarios, servicios, opiniones, denuncias, presupuestos
@@ -44,6 +47,12 @@ Plataforma digital que conecta clientes con profesionales verificados en Argenti
 - **Gestión de denuncias**: revisar y resolver reportes de usuarios
 - **Gestión de presupuestos**: visualizar todas las solicitudes con sus cotizaciones
 - **Panel de categorías**: distribución de servicios por categoría
+
+### Marketplace unificado
+- `/buscar` mezcla servicios y productos con filtros, paginación y ordenamiento
+- Detalle genérico en `/listings/[idOrSlug]`
+- Favoritos, comparador, reservas, promociones y consultas de productos
+- Paneles para proveedor: `/proveedor/metricas` y `/proveedor/promociones`
 
 ### Generales
 - **Modo oscuro** con persistencia en localStorage y detección de preferencia del sistema
@@ -106,6 +115,8 @@ npm run dev
 | `npm run start` | Servir build de producción |
 | `npm run lint` | ESLint |
 | `npm run seed` | Poblar base de datos |
+| `npm run e2e` | Playwright end-to-end |
+| `npm run e2e:headed` | Playwright en modo visible |
 
 ## Estructura del proyecto
 
@@ -171,6 +182,13 @@ prisma/
 - **BudgetRequest** — Solicitud de presupuesto con descripción, materiales y archivos
 - **BudgetQuote** — Cotización con monto, desglose, versión y estado enum (`BudgetStatus`)
 - **Notification** — Notificaciones por tipo (mensaje, opinión, presupuesto, cotización, admin) con leído/no leído
+
+## Verificación
+
+- `npm run build`
+- `npm run lint`
+- `npx playwright test e2e/visual.spec.ts --project=chromium-1440`
+- `npx playwright test e2e/accessibility.spec.ts`
 
 ## Deploy en Dokploy
 

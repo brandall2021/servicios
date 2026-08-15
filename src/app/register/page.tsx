@@ -94,7 +94,7 @@ export default function RegisterPage() {
                   <span className={`text-sm font-semibold block ${role === "CLIENT" ? "text-orange-700 dark:text-orange-400" : "text-stone-700 dark:text-stone-300"}`}>
                     Cliente
                   </span>
-                  <span className="text-xs text-stone-400 dark:text-stone-500">Contratar servicios</span>
+                  <span className="text-xs text-stone-600 dark:text-stone-300">Contratar servicios</span>
                 </div>
               </button>
               <button
@@ -117,27 +117,27 @@ export default function RegisterPage() {
                   <span className={`text-sm font-semibold block ${role === "PROVIDER" ? "text-orange-700 dark:text-orange-400" : "text-stone-700 dark:text-stone-300"}`}>
                     Proveedor
                   </span>
-                  <span className="text-xs text-stone-400 dark:text-stone-500">Ofrecer servicios</span>
+                  <span className="text-xs text-stone-600 dark:text-stone-300">Ofrecer servicios</span>
                 </div>
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="name" name="name" placeholder="Juan Pérez" autoComplete="name" required className="pl-10" />
+                <User className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                <Input id="name" name="name" label="Nombre" placeholder="Juan Pérez" autoComplete="name" required className="pl-10" />
               </div>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="email" name="email" type="email" placeholder="tu@email.com" autoComplete="email" required className="pl-10" />
+                <Mail className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                <Input id="email" name="email" label="Email" type="email" placeholder="tu@email.com" autoComplete="email" required className="pl-10" />
               </div>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="phone" name="phone" placeholder="+54 381 1234567" autoComplete="tel" className="pl-10" />
+                <Phone className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                <Input id="phone" name="phone" label="Teléfono" placeholder="+54 381 1234567" autoComplete="tel" className="pl-10" />
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="password" name="password" type="password" placeholder="••••••••" autoComplete="new-password" minLength={8} pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="Mínimo 8 caracteres, una mayúscula y un número" required className="pl-10" aria-describedby={passwordHelpId} />
+                <Lock className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                <Input id="password" name="password" label="Contraseña" type="password" placeholder="••••••••" autoComplete="new-password" minLength={8} pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="Mínimo 8 caracteres, una mayúscula y un número" required className="pl-10" aria-describedby={passwordHelpId} />
               </div>
               <div id={passwordHelpId} className="rounded-xl bg-stone-50 dark:bg-zinc-800/60 border border-stone-200/70 dark:border-zinc-700/50 p-3 text-xs text-stone-500 dark:text-stone-400">
                 <p className="font-medium text-stone-700 dark:text-stone-300 mb-1">La contraseña debe tener al menos:</p>
@@ -148,8 +148,8 @@ export default function RegisterPage() {
                 </ul>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
-                <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="••••••••" autoComplete="new-password" minLength={8} pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="Mínimo 8 caracteres, una mayúscula y un número" required className="pl-10" />
+                <Lock className="absolute left-3 top-[2.35rem] h-4 w-4 text-stone-400" />
+                <Input id="confirmPassword" name="confirmPassword" label="Confirmar contraseña" type="password" placeholder="••••••••" autoComplete="new-password" minLength={8} pattern="(?=.*[A-Z])(?=.*[0-9]).{8,}" title="Mínimo 8 caracteres, una mayúscula y un número" required className="pl-10" />
               </div>
               {error && (
                 <div className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200/70 dark:border-red-800/50 p-3.5 text-sm text-red-700 dark:text-red-400">
@@ -178,9 +178,9 @@ export default function RegisterPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-stone-200/70 dark:border-zinc-700/50" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white dark:bg-zinc-900 px-3 text-stone-400 tracking-wider">o registrate con</span>
-              </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white dark:bg-zinc-900 px-3 text-stone-500 tracking-wider">o registrate con</span>
+                </div>
             </div>
 
             <Button
@@ -200,9 +200,9 @@ export default function RegisterPage() {
 
             <p className="text-center text-sm text-stone-500 dark:text-stone-400 mt-6">
               ¿Ya tenés cuenta?{" "}
-              <Link href="/login" className="text-orange-600 hover:text-orange-700 font-medium transition-colors">
-                Iniciar sesión
-              </Link>
+                <Link href="/login" className="text-orange-700 hover:text-orange-800 font-medium transition-colors">
+                  Iniciar sesión
+                </Link>
             </p>
           </CardContent>
         </Card>

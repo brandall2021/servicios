@@ -15,6 +15,10 @@ import { ReportButton } from "./report-button"
 import { auth } from "@/lib/auth"
 import { ContactReveal } from "@/components/shared/contact-reveal"
 import { ServiceGallery } from "./service-gallery"
+import { FavoriteToggleButton } from "@/components/shared/favorite-toggle-button"
+import { CompareToggleButton } from "@/components/shared/compare-toggle-button"
+import { logCommercialEvent } from "@/lib/commercial-events"
+import { CompareTray } from "@/components/shared/compare-tray"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -64,6 +68,23 @@ export default async function ServicioDetailPage({ params }: Props) {
 
   if (!servicio || !servicio.activo) notFound()
 
+  const favorite = session?.user
+    ? await prisma.favorite.findFirst({
+        where: { userId: session.user.id, listingId: servicio.id },
+      })
+    : null
+
+  if (session?.user) {
+    await logCommercialEvent({
+      type: "LISTING_VIEWED",
+      userId: session.user.id,
+      sessionId: session.user.id,
+      providerId: servicio.usuarioId,
+      listingId: servicio.id,
+      metadata: { type: "SERVICE" },
+    })
+  }
+
   const catInfo = CATEGORIAS.find((c) => c.value === servicio.categoria)
   const avgRating =
     servicio.opiniones.length > 0
@@ -110,6 +131,7 @@ export default async function ServicioDetailPage({ params }: Props) {
   )
 
   return (
+    <>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-28 sm:pb-8">
       <Link
         href="/buscar"
@@ -147,8 +169,8 @@ export default async function ServicioDetailPage({ params }: Props) {
                 </span>
               )}
             </div>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {servicio.usuario.zone && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {servicio.usuario.zone && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-stone-700 dark:text-stone-300">
                   <MapPinned className="h-3.5 w-3.5" /> {servicio.usuario.zone}
                 </span>
@@ -158,13 +180,22 @@ export default async function ServicioDetailPage({ params }: Props) {
                   <Clock3 className="h-3.5 w-3.5" /> {servicio.usuario.availability}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-stone-700 dark:text-stone-300">
-                Actualizado {updatedLabel}
-              </span>
-            </div>
-            <p className="text-stone-600 dark:text-stone-400 leading-relaxed whitespace-pre-line">
-              {servicio.descripcion}
-            </p>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-stone-700 dark:text-stone-300">
+                  Actualizado {updatedLabel}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-5">
+                <FavoriteToggleButton
+                  type="LISTING"
+                  targetId={servicio.id}
+                  initialSaved={Boolean(favorite)}
+                  returnTo={`/servicios/${servicio.id}`}
+                />
+                <CompareToggleButton id={servicio.id} type="SERVICE" providerId={servicio.usuarioId} />
+              </div>
+              <p className="text-stone-600 dark:text-stone-400 leading-relaxed whitespace-pre-line">
+                {servicio.descripcion}
+              </p>
           </div>
 
           {servicio.disponibilidad && (
@@ -414,5 +445,7 @@ export default async function ServicioDetailPage({ params }: Props) {
         </div>
       )}
     </div>
+    <CompareTray />
+    </>
   )
 }

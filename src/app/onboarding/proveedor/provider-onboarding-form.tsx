@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select } from "@/components/ui/select"
 import { PROVINCIAS_ARGENTINA } from "@/lib/constants"
-import { Check, Save, ArrowRight } from "lucide-react"
+import { Check, ArrowRight } from "lucide-react"
 
 type User = {
   id: string
@@ -29,52 +29,52 @@ type FormState = {
   documentacion: string
 }
 
-const EMPTY_FORM: FormState = {
-  rubro: "",
-  zone: "",
-  availability: "",
-  whatsapp: "",
-  documentacion: "",
-}
-
 export function ProviderOnboardingForm({ user }: { user: User }) {
   const storageKey = useMemo(() => `servicios:onboarding:provider:${user.id}`, [user.id])
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
-  const [form, setForm] = useState<FormState>(EMPTY_FORM)
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem(storageKey)
-    if (!saved) {
-      setForm({
+  const [form, setForm] = useState<FormState>(() => {
+    if (typeof window === "undefined") {
+      return {
         rubro: user.rubro || "",
         zone: user.zone || "",
         availability: user.availability || "",
         whatsapp: user.whatsapp || "",
         documentacion: user.documentacion || "",
-      })
-      return
+      }
     }
+
+    const saved = window.localStorage.getItem(storageKey)
+    if (!saved) {
+      return {
+        rubro: user.rubro || "",
+        zone: user.zone || "",
+        availability: user.availability || "",
+        whatsapp: user.whatsapp || "",
+        documentacion: user.documentacion || "",
+      }
+    }
+
     try {
       const parsed = JSON.parse(saved) as Partial<FormState>
-      setForm({
+      return {
         rubro: parsed.rubro ?? user.rubro ?? "",
         zone: parsed.zone ?? user.zone ?? "",
         availability: parsed.availability ?? user.availability ?? "",
         whatsapp: parsed.whatsapp ?? user.whatsapp ?? "",
         documentacion: parsed.documentacion ?? user.documentacion ?? "",
-      })
+      }
     } catch {
-      setForm({
+      return {
         rubro: user.rubro || "",
         zone: user.zone || "",
         availability: user.availability || "",
         whatsapp: user.whatsapp || "",
         documentacion: user.documentacion || "",
-      })
+      }
     }
-  }, [storageKey, user.availability, user.documentacion, user.id, user.rubro, user.whatsapp, user.zone])
+  })
 
   useEffect(() => {
     window.localStorage.setItem(storageKey, JSON.stringify(form))
@@ -120,19 +120,19 @@ export function ProviderOnboardingForm({ user }: { user: User }) {
   return (
     <Card className="border-stone-200/70 dark:border-zinc-700/50 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.03)]">
       <CardContent className="p-6 sm:p-8 space-y-6">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-stone-400">
-          <span className={step >= 1 ? "text-orange-600" : ""}>01 Rubro</span>
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-stone-500 dark:text-stone-400">
+          <span className={step >= 1 ? "text-orange-700 dark:text-orange-300" : ""}>01 Rubro</span>
           <span>•</span>
-          <span className={step >= 2 ? "text-orange-600" : ""}>02 Zona</span>
+          <span className={step >= 2 ? "text-orange-700 dark:text-orange-300" : ""}>02 Zona</span>
           <span>•</span>
-          <span className={step >= 3 ? "text-orange-600" : ""}>03 Documentación</span>
+          <span className={step >= 3 ? "text-orange-700 dark:text-orange-300" : ""}>03 Documentación</span>
         </div>
 
         {step === 1 && (
           <div className="space-y-4">
             <div>
               <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">Paso 1: tu rubro</h2>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">Contá a qué te dedicás para que te encuentren mejor.</p>
+              <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">Contá a qué te dedicás para que te encuentren mejor.</p>
             </div>
             <Input
               id="rubro"
@@ -150,7 +150,7 @@ export function ProviderOnboardingForm({ user }: { user: User }) {
           <div className="space-y-4">
             <div>
               <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">Paso 2: zona y contacto</h2>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">Guardamos dónde trabajás y cómo responder rápido.</p>
+              <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">Guardamos dónde trabajás y cómo responder rápido.</p>
             </div>
             <Select
               id="zone"
@@ -185,7 +185,7 @@ export function ProviderOnboardingForm({ user }: { user: User }) {
           <div className="space-y-4">
             <div>
               <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">Paso 3: documentación</h2>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">Dejá datos, enlaces o referencias para revisión.</p>
+              <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">Dejá datos, enlaces o referencias para revisión.</p>
             </div>
             <Textarea
               id="documentacion"
@@ -210,7 +210,7 @@ export function ProviderOnboardingForm({ user }: { user: User }) {
         )}
 
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-stone-500 dark:text-stone-400">
             Podés guardar ahora y volver después. El progreso queda en este navegador.
           </p>
           <Button onClick={nextStep} disabled={saving} className="rounded-xl gap-2">

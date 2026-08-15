@@ -10,10 +10,12 @@ export function SearchBar() {
   const [query, setQuery] = useState("")
   const [categoria, setCategoria] = useState("")
   const [ubicacion, setUbicacion] = useState("")
+  const [type, setType] = useState("ALL")
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     const params = new URLSearchParams()
+    if (type !== "ALL") params.set("type", type)
     if (query) params.set("q", query)
     if (categoria) params.set("categoria", categoria)
     if (ubicacion) params.set("ubicacion", ubicacion)
@@ -23,20 +25,31 @@ export function SearchBar() {
   return (
     <form onSubmit={handleSearch} className="w-full max-w-4xl mx-auto">
       <div className="flex flex-col sm:flex-row gap-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-stone-200/70 dark:border-zinc-700/50 p-2">
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          aria-label="Tipo de búsqueda"
+          className="h-10 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-sm bg-stone-50 dark:bg-zinc-800 text-stone-950 dark:text-stone-100 outline-none focus:border-orange-500 transition-colors"
+        >
+          <option value="ALL">Todo</option>
+          <option value="SERVICE">Servicios</option>
+          <option value="PRODUCT">Productos</option>
+        </select>
         <div className="flex-1 flex items-center gap-2.5 px-3">
           <Search className="h-4.5 w-4.5 text-stone-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="¿Qué servicio necesitas?"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 h-10 bg-transparent outline-none text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400"
-          />
+        <input
+          type="text"
+          placeholder="¿Qué necesitás?"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="flex-1 h-10 bg-transparent outline-none text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-500"
+        />
         </div>
         <select
           value={categoria}
           onChange={(e) => setCategoria(e.target.value)}
-          className="h-10 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-sm bg-stone-50 dark:bg-zinc-800 text-stone-600 dark:text-stone-400 outline-none focus:border-orange-500 transition-colors"
+          aria-label="Categoría"
+          className="h-10 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl text-sm bg-stone-50 dark:bg-zinc-800 text-stone-950 dark:text-stone-100 outline-none focus:border-orange-500 transition-colors"
         >
           <option value="">Todas las categorías</option>
           {CATEGORIAS.map((cat) => (
@@ -47,13 +60,13 @@ export function SearchBar() {
         </select>
         <div className="flex items-center gap-2 px-3 border border-stone-200/70 dark:border-zinc-700/50 rounded-xl bg-stone-50 dark:bg-zinc-800">
           <MapPin className="h-4 w-4 text-stone-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Ubicación"
-            value={ubicacion}
-            onChange={(e) => setUbicacion(e.target.value)}
-            className="h-10 bg-transparent outline-none text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 w-28"
-          />
+        <input
+          type="text"
+          placeholder="Ubicación"
+          value={ubicacion}
+          onChange={(e) => setUbicacion(e.target.value)}
+          className="h-10 bg-transparent outline-none text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-500 w-28"
+        />
         </div>
         <button
           type="submit"
