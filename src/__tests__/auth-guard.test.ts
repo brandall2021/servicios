@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest"
 // Mock next/server
 vi.mock("next/server", () => ({
   NextResponse: {
@@ -21,9 +21,10 @@ import {
   PUBLIC_PROVIDER_SELECT,
 } from "@/lib/auth-guard"
 
-type AuthSession = Awaited<ReturnType<typeof auth>>
+import type { Session } from "next-auth"
 
-const mockAuth = vi.mocked(auth)
+const mockAuth = auth as unknown as Mock<() => Promise<AuthSession>>
+type AuthSession = Session | null
 
 describe("auth-guard", () => {
   beforeEach(() => {

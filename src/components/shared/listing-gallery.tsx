@@ -44,7 +44,7 @@ export function ListingGallery({ media, title, type, categoryLabel, featured }: 
       <div className="relative overflow-hidden rounded-3xl border border-stone-200/70 dark:border-zinc-700/50 bg-stone-100 dark:bg-zinc-800">
         <button type="button" className="block w-full text-left" onClick={() => setZoomOpen(true)} aria-label="Ampliar imagen">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={current.archivo} alt={title} className="w-full aspect-[16/9] object-cover" />
+          <img src={current.archivo} alt={title} loading="lazy" className="w-full aspect-[16/9] object-cover" />
         </button>
 
         <div className="absolute top-3 left-3 z-10 flex gap-2">
@@ -111,7 +111,7 @@ export function ListingGallery({ media, title, type, categoryLabel, featured }: 
               )}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={image.archivo} alt="" className="h-16 w-16 object-cover" />
+              <img src={image.archivo} alt="" loading="lazy" className="h-16 w-16 object-cover" />
             </button>
           ))}
         </div>
@@ -121,7 +121,7 @@ export function ListingGallery({ media, title, type, categoryLabel, featured }: 
         <div className="space-y-3">
           <div className="overflow-hidden rounded-xl bg-stone-100 dark:bg-zinc-800">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.archivo} alt={title} className="w-full max-h-[70vh] object-contain bg-black/5" />
+            <img src={current.archivo} alt={title} loading="lazy" className="w-full max-h-[70vh] object-contain bg-black/5" />
           </div>
           {images.length > 1 && (
             <>
