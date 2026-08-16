@@ -49,6 +49,19 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  useEffect(() => {
+    if (!menuOpen) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false)
+    }
+    document.addEventListener("keydown", onKey)
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.body.style.overflow = ""
+    }
+  }, [menuOpen])
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -238,8 +251,14 @@ export function Header() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden mx-4 mt-2">
-          <div className="glass-card rounded-2xl p-4 space-y-1 animate-scale-in">
+        <>
+          <div
+            className="fixed inset-0 z-[-1] bg-black/40 backdrop-blur-sm md:hidden animate-fade-in"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="md:hidden mx-4 mt-2">
+            <div className="glass-card rounded-2xl p-4 space-y-1 animate-scale-in">
             <Link href="/buscar?type=SERVICE" className="block px-3 py-2.5 text-sm text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors" onClick={() => setMenuOpen(false)}>
               Servicios
             </Link>
@@ -304,7 +323,8 @@ export function Header() {
               </>
             )}
           </div>
-        </div>
+          </div>
+        </>
       )}
     </header>
   )

@@ -27,6 +27,7 @@ const publicPages = [
 
 async function waitForScreenshotReady(page: Parameters<typeof login>[0]) {
   await page.waitForLoadState("domcontentloaded")
+  await page.waitForTimeout(900)
 }
 
 for (const pageDef of publicPages) {

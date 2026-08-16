@@ -3,35 +3,29 @@ import Link from "next/link"
 
 const footerLinks = [
   {
-    title: "Plataforma",
+    title: "Explorar",
     links: [
-      { label: "Explorar servicios", href: "/buscar" },
-      { label: "Ser proveedor", href: "/register" },
+      { label: "Servicios", href: "/buscar?type=SERVICE" },
+      { label: "Productos", href: "/buscar?type=PRODUCT" },
       { label: "Categorías", href: "/buscar" },
+      { label: "Cómo funciona", href: "/#como-funciona" },
     ],
   },
   {
-    title: "Ayuda",
+    title: "Proveedores",
     links: [
-      { label: "Centro de ayuda", href: "/buscar" },
-      { label: "Seguridad", href: "/buscar" },
-      { label: "Términos y condiciones", href: "/buscar" },
+      { label: "Ser proveedor", href: "/register" },
+      { label: "Publicar servicio", href: "/servicios/nuevo" },
+      { label: "Métricas", href: "/proveedor/metricas" },
     ],
   },
   {
-    title: "Compañía",
+    title: "Cuenta",
     links: [
-      { label: "Sobre nosotros", href: "/buscar" },
-      { label: "Blog", href: "/buscar" },
-      { label: "Contacto", href: "/buscar" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacidad", href: "/buscar" },
-      { label: "Términos de uso", href: "/buscar" },
-      { label: "Cookies", href: "/buscar" },
+      { label: "Favoritos", href: "/favoritos" },
+      { label: "Presupuestos", href: "/presupuestos" },
+      { label: "Mensajes", href: "/chat" },
+      { label: "Iniciar sesión", href: "/login" },
     ],
   },
 ]
@@ -43,7 +37,7 @@ export function Footer() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         <div className="py-14 sm:py-18">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
-            <div className="col-span-2 sm:col-span-1">
+            <div className="col-span-2 sm:col-span-2">
               <Link href="/" className="flex items-center mb-4 group" aria-label="Servicios, ir al inicio">
                 <img src="/brand/logo-horizontal-light.svg" alt="Servicios" className="h-8 w-auto max-w-[110px] transition-opacity duration-200 group-hover:opacity-90" />
               </Link>
