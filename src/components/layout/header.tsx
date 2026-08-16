@@ -72,14 +72,12 @@ export function Header() {
           }`}
         >
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0 group">
-            <div className={`h-9 w-auto max-w-[130px] sm:max-w-[160px] rounded-lg overflow-hidden transition-all duration-300 ${
-              scrolled
-                ? "ring-1 ring-orange-400/40 group-hover:ring-orange-400 shadow-sm shadow-orange-500/5"
-                : "ring-2 ring-orange-400/60 group-hover:ring-orange-400 shadow-lg shadow-orange-500/10"
-            }`}>
-              <img src="/logo.png" alt="Servicios" className="h-full w-auto object-contain" />
-            </div>
+          <Link href="/" className="flex items-center shrink-0 group" aria-label="Servicios, ir al inicio">
+            <img
+              src={scrolled && theme === "light" ? "/brand/logo-horizontal.svg" : "/brand/logo-horizontal-light.svg"}
+              alt="Servicios"
+              className="h-9 w-auto max-w-[130px] sm:max-w-[160px] transition-opacity duration-200 group-hover:opacity-90"
+            />
           </Link>
 
           {/* Desktop nav */}

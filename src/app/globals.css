@@ -22,21 +22,31 @@
   --text-secondary: #78716c;
   --border: #e7e5e4;
   --noise-opacity: 0.03;
+
+  /* Surface tokens (light) */
+  --surface: #ffffff;
+  --surface-subtle: #f5f4f2;
+  --surface-elevated: #ffffff;
 }
 
 .dark {
-  --background: #0f0f0f;
-  --foreground: #e5e5e5;
-  --card: #1a1a1a;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --muted: #a09a96;
-  --subtle: #2a2a2a;
-  --bg-page: #0f0f0f;
-  --bg-muted: #1a1a1a;
-  --text-primary: #e5e5e5;
-  --text-secondary: #a09a96;
-  --border: #2a2a2a;
+  --background: #09111b;
+  --foreground: #f5f8fb;
+  --card: #111d2a;
+  --card-border: rgba(245, 248, 251, 0.08);
+  --muted: #a9b7c7;
+  --subtle: #2a3d52;
+  --bg-page: #09111b;
+  --bg-muted: #111d2a;
+  --text-primary: #f5f8fb;
+  --text-secondary: #a9b7c7;
+  --border: #2a3d52;
   --noise-opacity: 0.04;
+
+  /* Surface tokens (dark navy) */
+  --surface: #111d2a;
+  --surface-subtle: #172535;
+  --surface-elevated: #1d2d3f;
 }
 
 @theme inline {
@@ -49,6 +59,9 @@
   --color-brand-light: #fff3e0;
   --color-navy: #0B2A55;
   --color-navy-light: #163B70;
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-elevated: var(--surface-elevated);
 }
 
 body {
@@ -68,37 +81,37 @@ body {
   color: #e5e5e5;
 }
 
-.dark .text-zinc-900 { color: #e5e5e5; }
-.dark .text-zinc-800 { color: #d4d4d8; }
-.dark .text-zinc-700 { color: #c0c0c0; }
-.dark .text-zinc-600 { color: #a1a1aa; }
-.dark .text-zinc-500 { color: #a1a1aa; }
-.dark .text-zinc-400 { color: #d4d4d8; }
-.dark .text-zinc-300 { color: #e4e4e7; }
-.dark .text-stone-900 { color: #e5e5e5; }
-.dark .text-stone-800 { color: #e5e5e5; }
-.dark .text-stone-700 { color: #d6d3d1; }
-.dark .text-stone-600 { color: #a8a29e; }
-.dark .text-stone-500 { color: #a8a29e; }
-.dark .text-stone-400 { color: #d6d3d1; }
-.dark .text-neutral-500 { color: #a1a1aa; }
-.dark .text-neutral-400 { color: #d4d4d8; }
-.dark .text-gray-500 { color: #a1a1aa; }
-.dark .text-gray-400 { color: #d4d4d8; }
+.dark .text-zinc-900 { color: #f5f8fb; }
+.dark .text-zinc-800 { color: #e6edf5; }
+.dark .text-zinc-700 { color: #d6e0eb; }
+.dark .text-zinc-600 { color: #c2cfdd; }
+.dark .text-zinc-500 { color: #a9b7c7; }
+.dark .text-zinc-400 { color: #d6e0eb; }
+.dark .text-zinc-300 { color: #e6edf5; }
+.dark .text-stone-900 { color: #f5f8fb; }
+.dark .text-stone-800 { color: #e6edf5; }
+.dark .text-stone-700 { color: #d6e0eb; }
+.dark .text-stone-600 { color: #c2cfdd; }
+.dark .text-stone-500 { color: #a9b7c7; }
+.dark .text-stone-400 { color: #d6e0eb; }
+.dark .text-neutral-500 { color: #a9b7c7; }
+.dark .text-neutral-400 { color: #d6e0eb; }
+.dark .text-gray-500 { color: #a9b7c7; }
+.dark .text-gray-400 { color: #d6e0eb; }
 .dark .text-orange-600 { color: #ffa733; }
 
-.dark .bg-white { background-color: #1a1a1a; }
-.dark .bg-zinc-50 { background-color: #1a1a1a; }
-.dark .bg-zinc-100 { background-color: #232323; }
-.dark .bg-stone-50 { background-color: #1a1a1a; }
-.dark .bg-stone-100 { background-color: #232323; }
-.dark .bg-gray-50 { background-color: #1a1a1a; }
-.dark .bg-gray-100 { background-color: #232323; }
-.dark .bg-red-50 { background-color: #2a1515; }
-.dark .bg-green-50 { background-color: #152a15; }
-.dark .border-stone-200 { border-color: #2a2a2a; }
-.dark .border-zinc-200 { border-color: #2a2a2a; }
-.dark .border-zinc-100 { border-color: #2a2a2a; }
+.dark .bg-white { background-color: #111d2a; }
+.dark .bg-zinc-50 { background-color: #111d2a; }
+.dark .bg-zinc-100 { background-color: #172535; }
+.dark .bg-stone-50 { background-color: #111d2a; }
+.dark .bg-stone-100 { background-color: #172535; }
+.dark .bg-gray-50 { background-color: #111d2a; }
+.dark .bg-gray-100 { background-color: #172535; }
+.dark .bg-red-50 { background-color: #2b1b1d; }
+.dark .bg-green-50 { background-color: #14251b; }
+.dark .border-stone-200 { border-color: #2a3d52; }
+.dark .border-zinc-200 { border-color: #2a3d52; }
+.dark .border-zinc-100 { border-color: #2a3d52; }
 
 /* ─── Noise texture overlay ─── */
 .noise-overlay::before {
@@ -210,33 +223,24 @@ body {
   100% { background-position: 200% 0; }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
 .animate-fade-up {
-  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.6s ease forwards;
+  animation: fade-in 0.3s ease forwards;
 }
 
 .animate-scale-in {
-  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.animate-fade-up-delay-1 { animation-delay: 0.08s; opacity: 0; }
-.animate-fade-up-delay-2 { animation-delay: 0.16s; opacity: 0; }
-.animate-fade-up-delay-3 { animation-delay: 0.24s; opacity: 0; }
-.animate-fade-up-delay-4 { animation-delay: 0.32s; opacity: 0; }
-.animate-fade-up-delay-5 { animation-delay: 0.40s; opacity: 0; }
-.animate-fade-up-delay-6 { animation-delay: 0.48s; opacity: 0; }
+.animate-fade-up-delay-1 { animation-delay: 0.06s; opacity: 0; }
+.animate-fade-up-delay-2 { animation-delay: 0.12s; opacity: 0; }
+.animate-fade-up-delay-3 { animation-delay: 0.18s; opacity: 0; }
+.animate-fade-up-delay-4 { animation-delay: 0.24s; opacity: 0; }
+.animate-fade-up-delay-5 { animation-delay: 0.30s; opacity: 0; }
+.animate-fade-up-delay-6 { animation-delay: 0.36s; opacity: 0; }
 
 /* ─── Scrollbar hide ─── */
 .scrollbar-none {
@@ -266,8 +270,8 @@ body {
 }
 
 .dark .glass-card {
-  background: rgba(26, 26, 26, 0.7);
-  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(17, 29, 42, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.2),
     0 4px 12px rgba(0, 0, 0, 0.15),
@@ -276,16 +280,16 @@ body {
 
 /* ─── Glass card dark ─── */
 .glass-card-dark {
-  background: rgba(15, 15, 15, 0.6);
+  background: rgba(9, 17, 27, 0.6);
   backdrop-filter: blur(20px) saturate(150%);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.3),
     0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-/* ─── Card premium with shimmer ─── */
+/* ─── Card premium (no shimmer) ─── */
 .card-premium {
   position: relative;
   border-radius: 16px;
@@ -294,39 +298,17 @@ body {
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.06),
     0 8px 24px rgba(0, 0, 0, 0.04);
-  transition: all 0.5s var(--ease-out-expo);
+  transition: all 0.22s var(--ease-out-expo);
   overflow: hidden;
 }
 
-.card-premium::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 138, 0, 0.04),
-    transparent
-  );
-  transition: left 0.8s var(--ease-out-expo);
-  pointer-events: none;
-  z-index: 1;
-}
-
 .card-premium:hover {
-  transform: translateY(-6px);
+  transform: translateY(-3px);
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.06),
-    0 20px 48px rgba(0, 0, 0, 0.08),
-    0 0 0 1px rgba(255, 138, 0, 0.15);
-  border-color: rgba(255, 138, 0, 0.2);
-}
-
-.card-premium:hover::before {
-  left: 100%;
+    0 4px 8px rgba(0, 0, 0, 0.05),
+    0 16px 38px rgba(11, 42, 85, 0.12),
+    0 0 0 1px rgba(255, 138, 0, 0.12);
+  border-color: rgba(255, 138, 0, 0.25);
 }
 
 /* ─── Button glow ─── */
@@ -366,26 +348,17 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
-/* ─── Animated gradient text ─── */
+/* ─── Animated gradient text (static gradient, no loop) ─── */
 .gradient-text-animated {
   background: linear-gradient(
     135deg,
     #FF8A00 0%,
-    #FFA733 25%,
-    #FFD700 50%,
-    #FFA733 75%,
-    #FF8A00 100%
+    #FFA733 30%,
+    #e67a00 100%
   );
-  background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
 }
 
 /* ─── Skeleton shimmer ─── */

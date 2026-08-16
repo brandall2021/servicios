@@ -64,8 +64,8 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
                   <span className="text-sm font-medium text-stone-600 dark:text-stone-300 truncate">
                     {listing.provider.tradeName || listing.provider.name}
                   </span>
-                  {listing.provider.verified ? <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">Verificado</span> : <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-500 dark:bg-zinc-800 dark:text-stone-400">Sin verificar</span>}
-                  {listing.featured ? <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">Destacado</span> : <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-500 dark:bg-zinc-800 dark:text-stone-400">Estándar</span>}
+                  {listing.provider.verified ? <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-800 dark:bg-green-900/30 dark:text-green-300">Verificado</span> : <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-600 dark:bg-zinc-800 dark:text-stone-400">Sin verificar</span>}
+                  {listing.featured ? <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">Destacado</span> : <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-600 dark:bg-zinc-800 dark:text-stone-400">Estándar</span>}
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-stone-500 dark:text-stone-400">
                   {listing.provider.trabajosRealizados > 0 && (
@@ -89,7 +89,7 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
               <div>
                 <MarketplacePrice priceType={listing.priceType} price={listing.price} currency={listing.currency} priceUnit={listing.priceUnit} className="text-lg" />
               </div>
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 dark:text-orange-400 group-hover:gap-2 transition-all duration-300">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-orange-700 dark:text-orange-400 group-hover:gap-2 transition-all duration-300">
                 <MessageSquare className="h-3.5 w-3.5" />
                 {listing.type === "SERVICE" ? "Ver" : "Proveedor"}
               </span>

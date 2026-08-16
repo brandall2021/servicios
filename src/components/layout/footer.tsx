@@ -44,10 +44,8 @@ export function Footer() {
         <div className="py-14 sm:py-18">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
             <div className="col-span-2 sm:col-span-1">
-              <Link href="/" className="flex items-center mb-4 group">
-                <div className="h-8 w-auto max-w-[110px] rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:ring-orange-400/40 transition-all">
-                  <img src="/logo.png" alt="Servicios" className="h-full w-auto object-contain" />
-                </div>
+              <Link href="/" className="flex items-center mb-4 group" aria-label="Servicios, ir al inicio">
+                <img src="/brand/logo-horizontal-light.svg" alt="Servicios" className="h-8 w-auto max-w-[110px] transition-opacity duration-200 group-hover:opacity-90" />
               </Link>
               <p className="text-xs text-white/50 leading-relaxed max-w-xs">
                 La plataforma que conecta clientes con profesionales de confianza en Argentina. Encontrá, compará y contratá con confianza.
