@@ -18,7 +18,8 @@ import { FavoriteToggleButton } from "@/components/shared/favorite-toggle-button
 import { CompareToggleButton } from "@/components/shared/compare-toggle-button"
 import { logCommercialEvent } from "@/lib/commercial-events"
 import { CompareTray } from "@/components/shared/compare-tray"
-import { ListingMedia } from "@/components/shared/listing-media"
+import { ListingGallery } from "@/components/shared/listing-gallery"
+import { MobileStickyCta } from "@/components/shared/mobile-sticky-cta"
 import { MarketplacePrice } from "@/components/shared/marketplace-price"
 import { ListingMap } from "@/components/shared/listing-map"
 
@@ -139,7 +140,6 @@ export default async function ListingDetailPage({ params }: Props) {
   }
 
   const catInfo = CATEGORIAS.find((cat) => cat.value === listing.category.id)
-  const mainImage = listing.media[0]?.archivo || null
   const whatsappUrl = listing.provider.whatsapp
     ? `https://wa.me/${listing.provider.whatsapp.replace(/[^0-9]/g, "")}`
     : null
@@ -160,13 +160,12 @@ export default async function ListingDetailPage({ params }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           <section className="overflow-hidden rounded-3xl border border-stone-200/70 dark:border-zinc-700/50 bg-white dark:bg-zinc-900 shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
-            <ListingMedia
-              src={mainImage}
-              alt={listing.title}
+            <ListingGallery
+              media={listing.media}
+              title={listing.title}
               type={listing.type}
               categoryLabel={catInfo?.label || listing.category.name}
               featured={listing.featured}
-              className="aspect-[16/9]"
             />
             <div className="p-6 sm:p-8">
               <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -398,6 +397,14 @@ export default async function ListingDetailPage({ params }: Props) {
         </div>
       </div>
     </div>
+    <MobileStickyCta
+      href={isService ? `/presupuestos/solicitar?servicioId=${listing.id}` : `/consultas/productos?listingId=${listing.id}`}
+      label={isService ? "Solicitar presupuesto" : "Agregar a consulta"}
+      priceType={listing.priceType}
+      price={listing.price}
+      currency={listing.currency}
+      priceUnit={listing.priceUnit}
+    />
     <CompareTray />
     </>
   )
