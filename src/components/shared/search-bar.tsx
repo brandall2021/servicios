@@ -5,12 +5,19 @@ import { useRouter } from "next/navigation"
 import { Search, MapPin, ArrowRight } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
 
-export function SearchBar() {
+interface SearchBarProps {
+  initialQuery?: string
+  initialCategoria?: string
+  initialUbicacion?: string
+  initialType?: string
+}
+
+export function SearchBar({ initialQuery = "", initialCategoria = "", initialUbicacion = "", initialType = "ALL" }: SearchBarProps) {
   const router = useRouter()
-  const [query, setQuery] = useState("")
-  const [categoria, setCategoria] = useState("")
-  const [ubicacion, setUbicacion] = useState("")
-  const [type, setType] = useState("ALL")
+  const [query, setQuery] = useState(initialQuery)
+  const [categoria, setCategoria] = useState(initialCategoria)
+  const [ubicacion, setUbicacion] = useState(initialUbicacion)
+  const [type, setType] = useState(initialType === "SERVICE" || initialType === "PRODUCT" ? initialType : "ALL")
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()

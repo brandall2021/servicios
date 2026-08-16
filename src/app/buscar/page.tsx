@@ -1,11 +1,14 @@
 import { MarketplaceCard } from "@/components/shared/marketplace-card"
 import Link from "next/link"
+import { SearchX } from "lucide-react"
 import { SearchBar } from "@/components/shared/search-bar"
 import { Pagination } from "@/components/shared/pagination"
 import { CATEGORIAS } from "@/lib/constants"
 import { SortSelect } from "./sort-select"
 import { CategoryChips } from "./category-chips"
 import { FilterSidebar, RadioSelect } from "./filter-sidebar"
+import { MapViewToggle, type MapViewMode } from "@/components/search/map-view-toggle"
+import { SearchMap } from "@/components/search/search-map"
 import { searchMarketplaceListings } from "@/lib/marketplace/search"
 import type { MarketplaceListingDTO } from "@/lib/marketplace/listings"
 import { auth } from "@/lib/auth"
@@ -14,7 +17,7 @@ import { CompareTray } from "@/components/shared/compare-tray"
 import { logCommercialEvent } from "@/lib/commercial-events"
 
 interface Props {
-  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string; page?: string; type?: string }>
+  searchParams: Promise<{ q?: string; categoria?: string; ubicacion?: string; lat?: string; lng?: string; radio?: string; sort?: string; verificado?: string; punt_min?: string; precio_min?: string; precio_max?: string; proveedor?: string; page?: string; type?: string; vista?: string }>
 }
 
 function toRadians(value: number) {
@@ -132,6 +135,18 @@ export default async function BuscarPage({ searchParams }: Props) {
 
   const selectedCategoria = params.categoria || ""
   const resultLabel = type === "SERVICE" ? "servicio" : type === "PRODUCT" ? "producto" : "listado"
+  const viewMode: MapViewMode = params.vista === "mapa" ? "map" : "grid"
+  const hasActiveFilters = Boolean(
+    params.q ||
+      params.categoria ||
+      params.ubicacion ||
+      params.verificado ||
+      params.punt_min ||
+      params.precio_min ||
+      params.precio_max ||
+      params.proveedor ||
+      params.type
+  )
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -150,7 +165,12 @@ export default async function BuscarPage({ searchParams }: Props) {
             Ver todo
           </Link>
         </div>
-        <SearchBar />
+        <SearchBar
+          initialQuery={params.q || ""}
+          initialCategoria={params.categoria || ""}
+          initialUbicacion={params.ubicacion || ""}
+          initialType={type}
+        />
       </div>
 
       <div className="mb-6 rounded-[28px] border border-stone-200/70 bg-white/90 px-4 py-4 shadow-[0_8px_30px_rgba(3,15,37,0.04)] dark:border-zinc-800 dark:bg-zinc-900/55">
@@ -180,21 +200,38 @@ export default async function BuscarPage({ searchParams }: Props) {
                 <RadioSelect radio={params.radio || "50"} />
               )}
               <SortSelect />
+              <MapViewToggle mode={viewMode} />
             </div>
           </div>
-          {pagedServicios.length > 0 ? (
+          {pagedServicios.length > 0 && viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
               {pagedServicios.map((s, i) => (
                 <MarketplaceCard key={s.id} listing={s} index={i} favoriteSaved={favoriteIds.includes(s.id)} />
               ))}
             </div>
+          ) : pagedServicios.length > 0 && viewMode === "map" ? (
+            <div className="animate-fade-in">
+              <SearchMap listings={pagedServicios} />
+            </div>
           ) : (
-            <div className="text-center py-20 animate-fade-in">
+            <div className="rounded-[28px] border border-dashed border-stone-200 dark:border-zinc-700/60 text-center py-20 animate-fade-in">
               <div className="h-16 w-16 rounded-2xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🔍</span>
+                <SearchX className="h-7 w-7 text-stone-400 dark:text-stone-500" />
               </div>
-              <p className="text-stone-700 dark:text-stone-300 font-semibold text-lg mb-1">No encontramos {resultLabel}s</p>
-              <p className="text-stone-500 dark:text-stone-400 text-sm">Probá con otros términos de búsqueda, tipo o categoría</p>
+              <p className="text-stone-700 dark:text-stone-300 font-semibold text-lg mb-1">
+                No encontramos {resultLabel}s con esos filtros
+              </p>
+              <p className="text-stone-500 dark:text-stone-400 text-sm mb-5">
+                Probá con otros términos, tipo o categoría
+              </p>
+              {hasActiveFilters && (
+                <Link
+                  href="/buscar"
+                  className="inline-flex items-center gap-2 rounded-full border border-stone-200/70 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-orange-200 hover:text-orange-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-stone-200 dark:hover:border-orange-800 dark:hover:text-orange-300"
+                >
+                  Limpiar filtros
+                </Link>
+              )}
             </div>
           )}
 
