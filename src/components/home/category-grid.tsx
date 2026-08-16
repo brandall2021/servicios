@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { CATEGORIAS } from "@/lib/constants"
@@ -16,6 +18,7 @@ import {
   Package,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { useState } from "react"
 
 const iconMap: Record<string, LucideIcon> = {
   materiales: BrickWall,
@@ -48,6 +51,9 @@ const categoryColors: Record<string, { bg: string; icon: string }> = {
 }
 
 export function CategoryGrid() {
+  const [type, setType] = useState<"SERVICE" | "PRODUCT">("SERVICE")
+  const typeParam = (t: "SERVICE" | "PRODUCT") => `?type=${t}`
+
   return (
     <section id="categorias" className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
       <div className="rounded-[32px] border border-stone-200/70 bg-stone-50/85 p-5 sm:p-7 dark:border-zinc-800 dark:bg-zinc-900/55">
@@ -61,10 +67,29 @@ export function CategoryGrid() {
               Entrá por categoría y filtrá rápido lo que necesitás sin perder contexto.
             </p>
           </div>
-          <Link href="/buscar?type=ALL" className="hidden sm:inline-flex shrink-0 items-center gap-2 rounded-full border border-stone-200/70 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-orange-200 hover:text-orange-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-stone-200 dark:hover:border-orange-800 dark:hover:text-orange-300">
-            Ver todo
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="hidden sm:flex shrink-0 items-center gap-2">
+            <div className="inline-flex h-10 items-center gap-0.5 rounded-full border border-stone-200/70 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-950">
+              {(["SERVICE", "PRODUCT"] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setType(t)}
+                  aria-pressed={type === t}
+                  className={`h-8 rounded-full px-4 text-sm font-semibold transition-all duration-200 ${
+                    type === t
+                      ? "bg-[#0B2A55] text-white shadow-sm"
+                      : "text-stone-600 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-300 dark:hover:text-white dark:hover:bg-zinc-800"
+                  }`}
+                >
+                  {t === "SERVICE" ? "Servicios" : "Productos"}
+                </button>
+              ))}
+            </div>
+            <Link href={`/buscar${typeParam(type)}`} className="inline-flex shrink-0 items-center gap-2 rounded-full border border-stone-200/70 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-orange-200 hover:text-orange-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-stone-200 dark:hover:border-orange-800 dark:hover:text-orange-300">
+              Ver todo
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -74,7 +99,7 @@ export function CategoryGrid() {
           return (
             <Link
               key={cat.value}
-              href={`/buscar?type=SERVICE&categoria=${cat.value}`}
+              href={`/buscar${typeParam(type)}&categoria=${cat.value}`}
               className={`group card-premium relative flex flex-col items-center gap-3 p-5 bg-white dark:bg-zinc-900/90 hover:border-orange-200/80 hover:bg-orange-50/30 dark:hover:bg-zinc-800/70 transition-all duration-500 active:scale-[0.98] animate-fade-up animate-fade-up-delay-${Math.min(i + 1, 6)}`}
             >
               <div
@@ -96,8 +121,25 @@ export function CategoryGrid() {
         })}
         </div>
 
-        <div className="mt-6 text-center sm:hidden">
-          <Link href="/buscar?type=ALL" className="inline-flex items-center gap-2 rounded-full border border-stone-200/70 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-orange-200 hover:text-orange-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-stone-200 dark:hover:border-orange-800 dark:hover:text-orange-300">
+        <div className="mt-6 flex flex-col items-center gap-3 sm:hidden">
+          <div className="inline-flex h-10 items-center gap-0.5 rounded-full border border-stone-200/70 bg-white p-1 dark:border-zinc-700 dark:bg-zinc-950">
+            {(["SERVICE", "PRODUCT"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setType(t)}
+                aria-pressed={type === t}
+                className={`h-8 rounded-full px-4 text-sm font-semibold transition-all duration-200 ${
+                  type === t
+                    ? "bg-[#0B2A55] text-white shadow-sm"
+                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-300 dark:hover:text-white dark:hover:bg-zinc-800"
+                }`}
+              >
+                {t === "SERVICE" ? "Servicios" : "Productos"}
+              </button>
+            ))}
+          </div>
+          <Link href={`/buscar${typeParam(type)}`} className="inline-flex items-center gap-2 rounded-full border border-stone-200/70 bg-white px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-orange-200 hover:text-orange-700 dark:border-zinc-700 dark:bg-zinc-950 dark:text-stone-200 dark:hover:border-orange-800 dark:hover:text-orange-300">
             Ver todo
             <ArrowRight className="h-4 w-4" />
           </Link>
