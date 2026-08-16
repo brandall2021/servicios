@@ -1,7 +1,7 @@
 import { HeroSearch } from "@/components/home/hero-search"
 import { CategoryGrid } from "@/components/home/category-grid"
 import { TrustStrip } from "@/components/home/trust-strip"
-import { FeaturedServices } from "@/components/home/featured-services"
+import { FeaturedListings } from "@/components/home/featured-listings"
 import { TrustMetrics } from "@/components/home/trust-metrics"
 import { CompareTray } from "@/components/shared/compare-tray"
 import { auth } from "@/lib/auth"
@@ -45,7 +45,7 @@ export default async function HomePage() {
       <HeroSearch featuredListings={servicios.slice(0, 3)} />
       <CategoryGrid />
       <TrustStrip />
-      <FeaturedServices servicios={servicios} favoriteIds={favoriteIds} />
+      <FeaturedListings servicios={servicios} favoriteIds={favoriteIds} />
       <TrustMetrics />
       <CompareTray />
     </div>

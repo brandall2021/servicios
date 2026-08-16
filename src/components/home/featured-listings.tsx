@@ -5,12 +5,12 @@ import { EmptyServicesState } from "./empty-services-state"
 import type { MarketplaceListingDTO } from "@/lib/marketplace/listings"
 import { ArrowRight } from "lucide-react"
 
-interface FeaturedServicesProps {
+interface FeaturedListingsProps {
   servicios: MarketplaceListingDTO[]
   favoriteIds?: string[]
 }
 
-export function FeaturedServices({ servicios, favoriteIds = [] }: FeaturedServicesProps) {
+export function FeaturedListings({ servicios, favoriteIds = [] }: FeaturedListingsProps) {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
       <div className="rounded-[32px] border border-stone-200/70 bg-white/90 p-5 sm:p-7 shadow-[0_12px_40px_rgba(3,15,37,0.05)] dark:border-zinc-800 dark:bg-zinc-900/55">

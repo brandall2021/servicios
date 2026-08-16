@@ -41,14 +41,12 @@ export function ListingMedia({ src, alt, type, categoryLabel, featured, classNam
         {featured && <Badge className="backdrop-blur-sm bg-orange-600/90 text-white border-orange-500/50">Destacado</Badge>}
       </div>
       <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/90 dark:bg-zinc-900/80 border border-white/70 dark:border-zinc-700/60 text-stone-700 dark:text-stone-200 shadow-sm">
             {fallbackIcon}
           </div>
-          <div>
-            <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">{categoryLabel || alt}</p>
-            <p className="text-xs text-stone-500 dark:text-stone-400">Sin imagen disponible</p>
-          </div>
+          <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">{categoryLabel || alt}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">{type === ListingType.PRODUCT ? "Producto" : "Servicio"}</p>
         </div>
       </div>
     </div>

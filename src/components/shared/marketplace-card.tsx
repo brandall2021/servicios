@@ -49,7 +49,7 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
           />
 
           <div className="p-4">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1 text-base mb-1.5 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-200">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-2 text-base mb-1.5 group-hover:text-orange-700 dark:group-hover:text-orange-400 transition-colors duration-200">
               {listing.title}
             </h3>
 
@@ -65,7 +65,7 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
                     {listing.provider.tradeName || listing.provider.name}
                   </span>
                   {listing.provider.verified ? <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-semibold text-green-800 dark:bg-green-900/30 dark:text-green-300">Verificado</span> : <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-600 dark:bg-zinc-800 dark:text-stone-400">Sin verificar</span>}
-                  {listing.featured ? <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">Destacado</span> : <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-semibold text-stone-600 dark:bg-zinc-800 dark:text-stone-400">Estándar</span>}
+                  {listing.featured ? <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">Destacado</span> : null}
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-stone-500 dark:text-stone-400">
                   {listing.provider.trabajosRealizados > 0 && (
@@ -91,7 +91,7 @@ export function MarketplaceCard({ listing, index = 0, favoriteSaved = false }: M
               </div>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-orange-700 dark:text-orange-400 group-hover:gap-2 transition-all duration-300">
                 <MessageSquare className="h-3.5 w-3.5" />
-                {listing.type === "SERVICE" ? "Ver" : "Proveedor"}
+                {listing.type === "SERVICE" ? "Ver servicio" : "Ver producto"}
               </span>
             </div>
           </div>
